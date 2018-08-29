@@ -1,4 +1,3 @@
-
 <?php
 
 namespace rakesh\apartment;
@@ -15,7 +14,9 @@ class Initiator extends \Controller_Addon {
         }
 
         $m = $this->app->top_menu->addMenu('Apartment');
-        
+        $m->addMenuItem('rakesh_apartment_apartment','Apartment');
+        $m->addMenuItem('rakesh_apartment_flat','Flat');
+        $m->addMenuItem('rakesh_apartment_member','Member');
     	return $this;
     }
 
@@ -30,11 +31,11 @@ class Initiator extends \Controller_Addon {
         $this->routePages('rakesh_apartment');
         $this->addLocation(array('template'=>'templates','js'=>'templates/js','css'=>['templates/css','templates/js']))
         ->setBaseURL('./shared/apps/rakesh/apartment/');
-        
-        $this->app->exportFrontEndTool('rakesh\apartment\Tool_Applicationform','apartment');
-        $this->app->exportFrontEndTool('rakesh\apartment\Tool_Course','apartment');
-        $this->app->exportFrontEndTool('rakesh\apartment\Tool_Login','apartment');
-        $this->app->exportFrontEndTool('rakesh\apartment\Tool_Carousel','apartment');        
+
+        // $this->app->exportFrontEndTool('rakesh\apartment\Tool_Applicationform','apartment');
+        // $this->app->exportFrontEndTool('rakesh\apartment\Tool_Course','apartment');
+        // $this->app->exportFrontEndTool('rakesh\apartment\Tool_Login','apartment');
+        // $this->app->exportFrontEndTool('rakesh\apartment\Tool_Carousel','apartment');        
     	return $this;
     }
 }
