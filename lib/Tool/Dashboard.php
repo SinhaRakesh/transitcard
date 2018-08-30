@@ -12,8 +12,14 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 		if($this->owner instanceof \AbstractController){
 			$this->add('View_Info')->set('dashboard tool, reload');
 			return;
-		} 
+		}
 
-		$this->add('View_Info')->set('hello');
+		if(!@$this->app->apartment->id){
+			$this->add('View_Info')->set('First Update Your Apartment info');
+			$this->add('rakesh\apartment\View_Apartment');
+		}
+
+		$this->add('rakesh\apartment\View_Flat');
+
 	}
 }
