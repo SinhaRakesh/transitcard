@@ -31,6 +31,9 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 			case 'flat':
 				$this->add('rakesh\apartment\View_Flat')->addClass('card');
 				break;
+			case 'member':
+				$this->add('rakesh\apartment\View_Member')->addClass('card');
+				break;
 		}
 
 	}

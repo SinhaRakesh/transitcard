@@ -8,7 +8,7 @@ class View_Apartment extends \View{
 	function init(){
 		parent::init();
 		
-		$this->app->template->set('page_title','Apartment Profile & Setting');
+		$this->app->template->trySet('page_title','Apartment Profile & Setting');
 
 		$model = $this->app->apartment;	
 		$model_id = @$this->app->apartment->id;	

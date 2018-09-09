@@ -14,6 +14,8 @@ class View_Flat extends \View{
 			return;
 		}
 
+		$this->app->template->trySet('page_title','Apartment Flats');
+
 		$model = $this->add('rakesh\apartment\Model_Flat');
 		$model->addCondition('apartment_id',@$this->app->apartment->id);
 		$model->setOrder('name','asc');
@@ -22,6 +24,6 @@ class View_Flat extends \View{
 
 		$crud->grid->addQuickSearch(['name','size']);
 		$crud->grid->addPaginator(10);
-
+		
 	}
 }
