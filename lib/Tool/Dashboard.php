@@ -34,6 +34,13 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 			case 'member':
 				$this->add('rakesh\apartment\View_Member')->addClass('card');
 				break;
+			default:
+				if($this->app->userIsApartmentAdmin){
+					$this->add('rakesh\apartment\View_AdminDashboard');
+				}else{
+					$this->add('rakesh\apartment\View_MemberDashboard');
+				}
+			break;
 		}
 
 	}

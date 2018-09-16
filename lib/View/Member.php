@@ -18,7 +18,12 @@ class View_Member extends \View{
 
 		$model = $this->add('rakesh\apartment\Model_Member');
 		$model->addCondition('apartment_id',@$this->app->apartment->id);
+		if($this->app->userIsApartmentAdmin){
+			$model->addCondition('is_flat_owner',true);
+		}
+
 		$model->setOrder('name','asc');
+
 		$crud = $this->add('xepan\base\CRUD');
 		if($crud->isEditing()){
 			$form = $crud->form;
