@@ -27,6 +27,16 @@ class Model_Member extends \xepan\commerce\Model_Customer{
 		$model_j->addField('marriage_date')->type('date');
 		$model_j->addField('is_flat_owner')->type('boolean')->defaultValue(false);
 		$model_j->addField('is_apartment_admin')->type('boolean')->defaultValue(false);
+
+		$this->addExpression('login_password',function($m,$q){
+			return $m->refSQL('user_id')->fieldQuery('password');
+		});
+
+		$this->addExpression('flat')->set(function($m,$q){
+			$x = $m->add('rakesh\apartment\Model_Flat',['table_alias'=>'flat_str']);
+			return $x->addCondition('member_id',$q->getField('id'))->_dsql()->del('fields')->field($q->expr('group_concat([0] SEPARATOR ",")',[$x->getElement('id')]));
+		})->allowHTML(true);
+
 		// $model_j->addField('mobile_no');
 		// $model_j->addField('email_id');
 	}

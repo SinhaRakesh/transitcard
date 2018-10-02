@@ -21,7 +21,6 @@ class View_Member extends \View{
 		if($this->app->userIsApartmentAdmin){
 			$model->addCondition('is_flat_owner',true);
 		}
-
 		$model->setOrder('name','asc');
 
 		$crud = $this->add('xepan\base\CRUD');
@@ -42,11 +41,72 @@ class View_Member extends \View{
 						'state_id~State'=>'c4~3',
 						'city'=>'c5~3',
 						'address'=>'c6~3',
-						'user_id~Username'=>'Login Credential~c6~3',
+						'login_user_name'=>'Login Credential~c6~6',
+						'password'=>'c7~6',
+						'flat'=>'Flat Association~c7~12',
 					]);
+
+			$form->addField('login_user_name');
+			$form->addField('password','password');
+			$flat_model = $this->add('rakesh\apartment\Model_Flat')->addCondition('apartment_id',@$this->app->apartment->id);
+			$flat_field = $form->addField('xepan\base\Multiselect','flat');
+			$flat_field->setModel($flat_model);
+			$flat_field->setEmptyText('Please Select Associated Flat');
 		}
-		$crud->setModel($model,['first_name','last_name','address','city','state_id','country_id','organization','post','dob','relation_with_head','marriage_date','user_id'],['name','user','address','city','organization','dob','relation_with_head','marriage_date']);
+
+		$crud->setModel($model,['first_name','last_name','address','city','state_id','country_id','organization','post','dob','relation_with_head','marriage_date','login_password','flat'],['name','user','address','city','organization','dob','relation_with_head','marriage_date']);
 		
+		if($crud->isEditing()){
+			$form = $crud->form;
+
+			if($form->isSubmitted()){
+
+				if($form['login_user_name'] && !$form['password']) $form->displayError('password','login password must not be empty');
+
+				if($form['login_user_name']){
+					$user = $this->add('xepan\base\Model_User');
+					$user->addCondition('username',$form['login_user_name']);
+					$this->add('BasicAuth')
+					->usePasswordEncryption('md5')
+					->addEncryptionHook($user);
+					$user->tryLoadAny();
+					if($user->loaded()){
+						$old_contact_model = $this->add('xepan\base\Model_Contact')
+											->addCondition('user_id',$user->id)
+											->tryLoadAny();
+						if($old_contact_model->loaded() && $old_contact_model['id'] != $form->model->id)
+							$form->displayError('login_user_name','User Name is already associated with other member');
+					}
+
+					$user['password'] = $form['password'];
+					$user->save();
+
+					$form->model['user_id'] = $user->id;
+				}else{
+					$form->model['user_id'] = 0;
+				}
+				
+				$form->model->save();
+
+				if($form['flat']){
+					
+					$flat_model = $this->add('rakesh\apartment\Model_Flat');
+					$result = $flat_model->checkMemberAssociation($form['flat'],$form->model->id);
+
+					if(!$result['result'])
+						$form->displayError('flat',"Flat Associated with other Member are: ".trim($result['message'],", ") );
+
+					$flat_model->associateWith($form['flat'],$form->model->id);
+				}
+
+
+			}else{
+				$form->getElement('login_user_name')->set($form->model['user']);
+				$form->getElement('password')->set($form->model['login_password']);
+				$form->getElement('flat')->set(explode(",",$form->model['flat']));
+			}
+		}
+
 		$crud->grid->addQuickSearch(['name','size']);
 		$crud->grid->addPaginator(10);
 		

@@ -2,7 +2,7 @@
 
 namespace rakesh\apartment;
 
-class View_AdminDashboard extends \View{
+class View_MemberDashboard extends \View{
 
 	public $options = [];
 
