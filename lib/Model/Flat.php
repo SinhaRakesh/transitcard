@@ -25,6 +25,7 @@ class Model_Flat extends \xepan\base\Model_Table{
 		$this->addField('size')->setValueList(['1BHK'=>'1 BHK','2BHK'=>'2 BHK','3BHK'=>'3 BHK','4BHK'=>'4 BHK','Other'=>'Other']);
 		$this->addField('is_generate_bill')->type('boolean')->defaultValue(true);
 		$this->addField('status')->enum($this->status);
+		// $this->addField('last_bill_generation_date');
 		
 		$this->is([
 			'apartment_id|to_trim|required',

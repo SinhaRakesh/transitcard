@@ -39,8 +39,14 @@ class Model_Member extends \xepan\commerce\Model_Customer{
 
 		// $model_j->addField('mobile_no');
 		// $model_j->addField('email_id');
+
+		// $this->addHook('afterSave',$this);
 	}
 
+	function afterSave(){
+		$this->add('xepan\commerce\Model_Customer')
+			->load($this['customer_id'])->ledger();
+	}
 
 	function createNewMember($app,$contact_detail=[],$user){
 

@@ -44,5 +44,9 @@ class Model_Apartment extends \xepan\base\Model_Table{
 
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now)->system(true);
 
+		$this->addField('maintenance_amount')->hint('maintenance amount per month')->defaultValue(0);
+		$this->addField('penelty_amount')->hint('panelty amount applicable after last submission date')->defaultValue(0);
+		// $this->addField('penelty_based_on')->setValueList(['']);
+
 	}
 }

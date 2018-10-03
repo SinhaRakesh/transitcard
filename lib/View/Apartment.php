@@ -29,15 +29,18 @@ class View_Apartment extends \View{
 				'city'=>'c33~3',
 				'address'=>'c34~3',
 				'view~<hr/><h3>Billing Dates</h3>'=>'c41~12',
-				'bill_generation_date'=>'c21~6',
-				'last_submission_date'=>'c22~6',
+				'bill_generation_date'=>'c21~3',
+				'last_submission_date'=>'c22~3',
+				'maintenance_amount'=>'c23~3',
+				'penelty_amount'=>'c24~3',
+
 				'view1~<hr/><h3>Builder Information</h3>'=>'c51~12',
 				'builder_name'=>'c11~4',
 				'builder_mobile_no'=>'c12~4',
 				'builder_email_id'=>'c13~4'
 			]);
 
-		$form->setModel($model,['name','city','address','builder_name','builder_email_id','builder_mobile_no','state_id','country_id','bill_generation_date','last_submission_date']);
+		$form->setModel($model,['name','city','address','builder_name','builder_email_id','builder_mobile_no','state_id','country_id','bill_generation_date','last_submission_date','maintenance_amount','penelty_amount']);
 		$form->addSubmit('Update Informartion')->addClass('btn btn-primary text-center');
 
 		if($form->isSubmitted()){
@@ -45,6 +48,7 @@ class View_Apartment extends \View{
 			$apartment_model = $form->model;
 			$this->app->apartmentmember['apartment_id'] = $apartment_model->id;
 			$this->app->apartmentmember->save();
+			$this->app->forget($this->app->auth->model->id.'_apartment');
 
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Apartment Information Updated Successfully')->execute();
 		}
