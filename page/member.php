@@ -12,6 +12,6 @@ class page_member extends \xepan\base\Page{
 		$model = $this->add('rakesh\apartment\Model_Member');
 		
 		$crud = $this->add('xepan\hr\CRUD');
-		$crud->setModel($model);
+		$crud->setModel($model,null,['user','apartment','relation_with_head','flat']);
 	}
 }

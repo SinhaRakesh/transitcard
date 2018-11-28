@@ -8,7 +8,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 
 	function init(){
 		parent::init();
-
+		
 		$this->app->stickyGET('mode');
 		// $menu = $this->add('Menu');
 		// $menu->addMenuItem($this->app->url(null,['mode'=>'apartment']),'Apartment');
@@ -19,32 +19,44 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 			return;
 		}
 		
+		$dashboard = $this->add('rakesh\apartment\View_Dashboard');
+		$title = "Dashboard";
 		if(!@$this->app->apartment->id){
-			$this->add('View_Info')->set('First Update Your Apartment info');
-			$this->add('rakesh\apartment\View_Apartment');
+			$dashboard->add('View_Info')->set('Your Account is created successfully, First Update Your Apartment info');
+			$dashboard->add('rakesh\apartment\View_Apartment');
+			return;
 		}
+
 
 		switch ($_GET['mode']){
 			case 'apartment':
-				$this->add('rakesh\apartment\View_Apartment')->addClass('card');
+				$title = "Apartment Information";
+				$dashboard->add('rakesh\apartment\View_Apartment')->addClass('card');
 				break;
 			case 'flat':
-				$this->add('rakesh\apartment\View_Flat')->addClass('card');
+				$title = "Flat Management";
+				$dashboard->add('rakesh\apartment\View_Flat')->addClass('card');
 				break;
 			case 'member':
-				$this->add('rakesh\apartment\View_Member')->addClass('card');
+				$title = "Member Management";
+				$dashboard->add('rakesh\apartment\View_Member')->addClass('card');
 				break;
 			case 'invoices':
-				$this->add('rakesh\apartment\View_Invoice')->addClass('card');
+				$title = "Maintenance Amount Management";
+				$dashboard->add('rakesh\apartment\View_Invoice')->addClass('card');
 				break;
 			default:
 				if($this->app->userIsApartmentAdmin){
-					$this->add('rakesh\apartment\View_AdminDashboard');
+					$title = "Apartment Admin Dashboard";
+					$dashboard->add('rakesh\apartment\View_AdminDashboard');
 				}else{
-					$this->add('rakesh\apartment\View_MemberDashboard');
+					$title = "Apartment Member Dashboard";
+					$dashboard->add('rakesh\apartment\View_MemberDashboard');
 				}
 			break;
 		}
+
+		$dashboard->template->trySet('page_title',$title);
 
 	}
 }

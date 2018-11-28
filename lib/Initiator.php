@@ -51,7 +51,6 @@ class Initiator extends \Controller_Addon {
 
         $this->app->apartment = $this->app->recall($this->app->auth->model->id.'_apartment');
         
-        
         $this->app->exportFrontEndTool('rakesh\apartment\Tool_Dashboard','apartment');
         // $this->app->exportFrontEndTool('rakesh\apartment\Tool_Course','apartment');
         // $this->app->exportFrontEndTool('rakesh\apartment\Tool_Login','apartment');

@@ -7,8 +7,6 @@ class View_Apartment extends \View{
 
 	function init(){
 		parent::init();
-		
-		$this->app->template->trySet('page_title','Apartment Profile & Setting');
 
 		$model = $this->app->apartment;	
 		$model_id = @$this->app->apartment->id;	
@@ -44,6 +42,7 @@ class View_Apartment extends \View{
 		$form->addSubmit('Update Informartion')->addClass('btn btn-primary text-center');
 
 		if($form->isSubmitted()){
+			
 			$form->save();
 			$apartment_model = $form->model;
 			$this->app->apartmentmember['apartment_id'] = $apartment_model->id;
