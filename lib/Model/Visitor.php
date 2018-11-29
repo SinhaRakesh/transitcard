@@ -33,5 +33,6 @@ class Model_Visitor extends \xepan\base\Model_Table{
 
 		$this->addField('status')->enum($this->status)->defaultValue('Requested');
 
+		$this->add('dynamic_model/Controller_AutoCreator');
 	}
 }

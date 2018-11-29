@@ -23,6 +23,10 @@ class View_Member extends \View{
 		}
 		$model->setOrder('name','asc');
 
+		// $frame_options = [
+		// 					'show'=> ['effect'=> 'fade','duration'=> 50],
+		// 					'hide'=> ['effect'=> 'fade', 'duration'=> 50]
+		// 				];
 		$crud = $this->add('xepan\base\CRUD');
 		if($crud->isEditing()){
 			$form = $crud->form;
