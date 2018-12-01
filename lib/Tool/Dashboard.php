@@ -30,8 +30,8 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 		$menu_active = 'active_dashboard_class';
 		switch ($_GET['mode']){
 			case 'apartment':
-				$menu_active = 'active_dashboard_class';
-				$title = "Apartment Information";
+				$menu_active = 'active_apartment_class';
+				$title = "Apartment Settings";
 				$dashboard->add('rakesh\apartment\View_Apartment');
 				break;
 			case 'flat':

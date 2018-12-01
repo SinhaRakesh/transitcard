@@ -111,8 +111,10 @@ class View_Member extends \View{
 			}
 		}
 
-		$crud->grid->addQuickSearch(['name','size']);
+		$crud->grid->addQuickSearch(['name']);
 		$crud->grid->addPaginator(10);
+
+		// $crud->grid->add('QuickSearch',null,'quick_search');
 		
 	}
 }

@@ -18,7 +18,6 @@ class View_Apartment extends \View{
 
 		$form = $this->add('Form');
 		$form->add('xepan\base\Controller_FLC')
-			->makePanelsCoppalsible(true)
 			->addContentSpot()
 			->layout([
 				'name~Your Apartment Name'=>'Apartment Information~c1~12',
@@ -35,7 +34,8 @@ class View_Apartment extends \View{
 				'view1~<hr/><h3>Builder Information</h3>'=>'c51~12',
 				'builder_name'=>'c11~4',
 				'builder_mobile_no'=>'c12~4',
-				'builder_email_id'=>'c13~4'
+				'builder_email_id'=>'c13~4',
+				'FormButtons~&nbsp;'=>'z1~12'
 			]);
 
 		$form->setModel($model,['name','city','address','builder_name','builder_email_id','builder_mobile_no','state_id','country_id','bill_generation_date','last_submission_date','maintenance_amount','penelty_amount']);

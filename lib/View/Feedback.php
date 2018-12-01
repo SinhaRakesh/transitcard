@@ -14,6 +14,8 @@ class View_Feedback extends \View{
 			return;
 		}
 		
+		$v = $this->add('View_Info')->addClass('callout callout-info');
+		$v->add('H4')->set('Todo Feedback, we are working on it');
 
 	}
 }

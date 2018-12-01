@@ -7,8 +7,6 @@ class View_Dashboard extends \View{
 	function init(){
 		parent::init();
 		
-		$this->add('View_Info')->set('i am dashboard ');
-		
 		$this->template->trySet('member_name',$this->app->apartmentmember['name']);
 		$this->template->trySet('apartment_name',$this->app->apartment['name']);
 
