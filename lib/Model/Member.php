@@ -28,6 +28,11 @@ class Model_Member extends \xepan\commerce\Model_Customer{
 		$model_j->addField('is_flat_owner')->type('boolean')->defaultValue(false);
 		$model_j->addField('is_apartment_admin')->type('boolean')->defaultValue(false);
 
+		$model_j->addField('suggestion_read_at')->type('int')->system(true);
+		$model_j->addField('feedback_read_at')->type('int')->system(true);
+		$model_j->addField('communication_read_at')->type('int')->system(true);
+
+
 		$this->addExpression('login_password',function($m,$q){
 			return $m->refSQL('user_id')->fieldQuery('password');
 		});

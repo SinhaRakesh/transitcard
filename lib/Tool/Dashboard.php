@@ -101,7 +101,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	        </li>
 	        <li class="{$active_block_class}">
 	          <a href="?page=dashboard&mode=block">
-	            <i class="fa fa-users text-green"></i> <span>Apartment Block</span>
+	            <i class="fa fa-th text-green"></i> <span>Apartment Block</span>
 	          </a>
 	        </li>
 	        <li class="{$active_member_class}">
@@ -111,7 +111,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	        </li>
 	        <li class="{$active_flat_class}">
 	          <a href="?page=dashboard&mode=flat">
-	            <i class="fa fa-th text-yellow"></i> <span>Flat</span>
+	            <i class="fa fa-home text-yellow"></i> <span>Flat</span>
 	          </a>
 	        </li>
 
