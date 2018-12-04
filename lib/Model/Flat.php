@@ -19,6 +19,7 @@ class Model_Flat extends \xepan\base\Model_Table{
 		parent::init();
 
 		$this->hasOne('rakesh\apartment\Apartment','apartment_id');
+		$this->hasOne('rakesh\apartment\Block','block_id');
 		$this->hasOne('rakesh\apartment\Member','member_id');
 
 		$this->addField('name')->sortable(true)->caption('Flat Name');

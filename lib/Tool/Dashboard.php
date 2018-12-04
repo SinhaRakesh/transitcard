@@ -34,6 +34,11 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "Apartment Settings";
 				$dashboard->add('rakesh\apartment\View_Apartment');
 				break;
+			case 'block':
+				$menu_active = 'active_block_class';
+				$title = "Apartment Block Management";
+				$dashboard->add('rakesh\apartment\View_Block');
+				break;
 			case 'flat':
 				$menu_active = 'active_flat_class';
 				$title = "Flat Management";
@@ -92,6 +97,11 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	        <li class="{$active_apartment_class}">
 	          <a href="?page=dashboard&mode=apartment">
 	            <i class="fa fa-cog text-red"></i> <span>Apartment Settings</span>
+	          </a>
+	        </li>
+	        <li class="{$active_block_class}">
+	          <a href="?page=dashboard&mode=block">
+	            <i class="fa fa-users text-green"></i> <span>Apartment Block</span>
 	          </a>
 	        </li>
 	        <li class="{$active_member_class}">
