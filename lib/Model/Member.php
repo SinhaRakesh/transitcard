@@ -20,6 +20,7 @@ class Model_Member extends \xepan\commerce\Model_Customer{
 		$model_j = $this->join('r_member.customer_id');
 
 		$model_j->hasOne('rakesh\apartment\Apartment','apartment_id');
+		$model_j->hasOne('rakesh\apartment\Category','category_id');
 
 		$model_j->addField('customer_id');
 		$model_j->addField('relation_with_head')->enum(['Onwer','Father','Mother','Son','Daughter','Grand Son','Grand Daughter','Nephew','Other','Son-in-law','Daughter-in-law','Other']);

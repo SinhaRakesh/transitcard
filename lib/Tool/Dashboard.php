@@ -74,6 +74,16 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "staff Management";
 				$dashboard->add('rakesh\apartment\View_Staff');
 				break;
+			case 'helpdesk':
+				$menu_active = 'active_helpdesk_class';
+				$title = "Help Desk";
+				$dashboard->add('rakesh\apartment\View_HelpDesk');
+				break;
+			case 'chat':
+				$menu_active = 'active_chat_class';
+				$title = "Chat Pannel";
+				$dashboard->add('rakesh\apartment\View_Chat');
+				break;
 			default:
 				$menu_active = 'active_dashboard_class';
 				if($this->app->userIsApartmentAdmin){
@@ -120,6 +130,11 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	            <i class="fa fa-cog text-red"></i> <span>Visitors</span>
 	          </a>
 	        </li>
+	        <li class="{$active_chat_class}">
+	          <a href="?page=dashboard&mode=chat">
+	            <i class="fa fa-comment text-blue"></i> <span>Chat</span>
+	          </a>
+	        </li>
 	        <li class="{$active_suggestion_class}">
 	          <a href="?page=dashboard&mode=suggestion">
 	            <i class="fa fa-cog text-red"></i> <span>Suggestions</span>
@@ -128,12 +143,18 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	            </span>
 	          </a>
 	        </li>
+
 	        <li class="{$active_feedback_class}">
 	          <a href="?page=dashboard&mode=feedback">
 	            <i class="fa fa-cog text-red"></i> <span>Feedback</span>
 	            <span class="pull-right-container">
 	              <small class="label pull-right bg-yellow" title="new Feedback">12</small>
 	            </span>
+	          </a>
+	        </li>
+	        <li class="{$active_helpdesk_class}">
+	          <a href="?page=dashboard&mode=helpdesk">
+	            <i class="fa fa-support text-red"></i> <span>Help Desk</span>
 	          </a>
 	        </li>
 
