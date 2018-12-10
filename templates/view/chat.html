@@ -12,7 +12,7 @@
         <div id="{$_name}" class="contacts">
           <ul>
             {rows}{row}
-            <li class="contact" data-memberid="{$id}" data-name="{$name}">
+            <li class="contact" data-memberid="{$id}" data-name="{$name}" data-profileimage="{$profile_image}">
               <div class="wrap">
                 <span class="contact-statusonline"></span>
                 <img src="{profile_image}{/}" alt="" />
@@ -31,14 +31,16 @@
   </div>
   <div class="col-md-8">
     <div class="frame">
+
       <div class="content">
-        <div class="contact-profile">
-          <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-          <p>Harvey Specter</p>
-          
-        </div>
         {ap_chat_lister}
-        <div class="messages" id="{$_name}">
+        <div id="{$_name}" class="message-wrapper">
+          <div class="contact-profile selected-member">
+          <img src="{$selected_member_img}" alt="" class="selected-member-img" />
+          <p class="selected-member-name">{$selected_name}</p>
+          </div>
+
+          <div class="messages" id="{$_name}-message">
             <ul>
               {rows}{row}
                 <li class="{$chat_direction}">
@@ -58,15 +60,14 @@
                 </li>
                 {/}{/}
             </ul>
+          </div>
         </div>
         {/}
-
         {$message_form}
         <!-- <div class="message-input">
           <div class="wrap">
           </div>
         </div> -->
-
       </div>
     </div>
     {$Content}

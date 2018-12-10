@@ -9,9 +9,9 @@ class View_Chat extends \View{
 	private $form;
 	private $chat_history_lister;
 
-	private $apmember_id=0;
 	private $contact_to_id = 0;
 	private $contact_to_name = "";
+	private $contact_to_mage = "";
 
 	function init(){
 		parent::init();
@@ -20,9 +20,9 @@ class View_Chat extends \View{
 		// 	$this->add('View_Error')->set('first update partment data');
 		// 	return;
 		// }
-		$this->apmember_id = $this->app->stickyGET('apmember_id')?:0;
 		$this->contact_to_id = $this->app->stickyGET('contact_to_id')?:0;
-		$this->contact_to_name = $this->app->stickyGET('contact_to_name')?:0;
+		$this->contact_to_name = $this->app->stickyGET('contact_to_name')?:"";
+		$this->contact_to_image = $this->app->stickyGET('contact_to_image')?:"";
 
 		$this->addChatHistory();
 		$this->addMemberLister();
@@ -47,18 +47,6 @@ class View_Chat extends \View{
 			}
 		});
 
-		// $url = $this->app->url(null,['cut_object'=>$this->chat_history_lister->name]);
-		// $lister->on('click','li.contact',function($js,$data)use($url){
-		// 	return $js->univ()->reload(['apmember_id'=>$data['memberid']],null,$url);
-		// 	// return $this->chat_history_lister->js()->reload(['apmember_id'=>$data['memberid']],null,$url);
-		// });
-
-		// $lister2 = $this->add('CompleteLister');
-		// $lister2->setModel('rakesh\apartment\Model_Member');
-		// $lister2->on('click',function($js,$data)use($url){
-		// 	return $js->univ()->reload(['apmember_id'=>$data['memberid']],null,$url);
-		// 	// return $this->chat_history_lister->js()->reload(['apmember_id'=>$data['memberid']],null,$url);
-		// });
 	}
 
 	function addChatHistory(){
@@ -93,7 +81,13 @@ class View_Chat extends \View{
 		$chat_history_model = $this->add('rakesh\apartment\Model_MessageSent');
 		$chat_history_model->addCondition('related_id',$this->app->apartment->id);
 		$chat_history_model->addCondition([['from_id',$this->app->apartmentmember->id],['to_id',$this->app->apartmentmember->id]]);
+		if($this->contact_to_id)
+			$chat_history_model->addCondition([['from_id',$this->contact_to_id],['to_id',$this->contact_to_id]]);
+
 		$this->chat_history_lister->setModel($chat_history_model);
+		// if contact is selected then updated name
+		$this->chat_history_lister->template->trySet('selected_name',$this->contact_to_name);
+		$this->chat_history_lister->template->trySet('selected_member_img',$this->contact_to_image);
 
 		// form submission
 		if($this->form->isSubmitted()){
@@ -117,12 +111,17 @@ class View_Chat extends \View{
 				->successMessage('send')->execute();
 		}
 
+		// reload member chat
 		$this->member_lister->js('click',$this->chat_history_lister->js()->reload(
 			[
-				'apmember_id'=>$this->js()->_selectorThis()->data('memberid')
+				'contact_to_id'=>$this->js()->_selectorThis()->data('memberid'),
+				'contact_to_name'=>$this->js()->_selectorThis()->data('name'),
+				'contact_to_image'=>$this->js()->_selectorThis()->data('profileimage'),
 			])
 		)->_selector('li.contact');
 		
+
+
 		parent::recursiveRender();
 
 	}
