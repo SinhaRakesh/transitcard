@@ -24,8 +24,8 @@ class View_Chat extends \View{
 		$this->contact_to_id = $this->app->stickyGET('contact_to_id')?:0;
 		$this->contact_to_name = $this->app->stickyGET('contact_to_name')?:0;
 
-		$this->addMemberLister();
 		$this->addChatHistory();
+		$this->addMemberLister();
 		$this->addForm();
 	}
 
@@ -46,12 +46,26 @@ class View_Chat extends \View{
 				$l->current_row_html['profile_image'] = 'websites/apartment/www/dist/img/avatar04.png';
 			}
 		});
+
+		// $url = $this->app->url(null,['cut_object'=>$this->chat_history_lister->name]);
+		// $lister->on('click','li.contact',function($js,$data)use($url){
+		// 	return $js->univ()->reload(['apmember_id'=>$data['memberid']],null,$url);
+		// 	// return $this->chat_history_lister->js()->reload(['apmember_id'=>$data['memberid']],null,$url);
+		// });
+
+		// $lister2 = $this->add('CompleteLister');
+		// $lister2->setModel('rakesh\apartment\Model_Member');
+		// $lister2->on('click',function($js,$data)use($url){
+		// 	return $js->univ()->reload(['apmember_id'=>$data['memberid']],null,$url);
+		// 	// return $this->chat_history_lister->js()->reload(['apmember_id'=>$data['memberid']],null,$url);
+		// });
 	}
 
 	function addChatHistory(){
 		// sent
 		// replies
 		$this->chat_history_lister = $lister = $this->add('CompleteLister',null,'ap_chat_lister',['view\chat','ap_chat_lister']);
+
 		$lister->addHook('formatRow',function($l){
 			if($l->model['from_id'] == $this->app->apartmentmember->id){
 				$l->current_row_html['chat_direction'] = "sent";
@@ -79,9 +93,7 @@ class View_Chat extends \View{
 		$chat_history_model = $this->add('rakesh\apartment\Model_MessageSent');
 		$chat_history_model->addCondition('related_id',$this->app->apartment->id);
 		$chat_history_model->addCondition([['from_id',$this->app->apartmentmember->id],['to_id',$this->app->apartmentmember->id]]);
-
 		$this->chat_history_lister->setModel($chat_history_model);
-		
 
 		// form submission
 		if($this->form->isSubmitted()){
@@ -98,11 +110,19 @@ class View_Chat extends \View{
 			// $send_msg['title'] = $f['subject'];
 			$send_msg['description'] = $this->form['message'];
 			$send_msg->save();
-
-			$this->form->js(null,$this->chat_history_lister->js()->reload())->reload()->execute();
+			
+			// $this->chat_history_lister->js()->reload()->execute();
+			$this->form->js(null,$this->chat_history_lister->js()->reload())
+				->univ()
+				->successMessage('send')->execute();
 		}
 
-
+		$this->member_lister->js('click',$this->chat_history_lister->js()->reload(
+			[
+				'apmember_id'=>$this->js()->_selectorThis()->data('memberid')
+			])
+		)->_selector('li.contact');
+		
 		parent::recursiveRender();
 
 	}
