@@ -13,6 +13,8 @@ class View_Chat extends \View{
 	private $contact_to_name = "";
 	private $contact_to_mage = "";
 
+	private $my_uuid = "";
+
 	function init(){
 		parent::init();
 		
@@ -80,6 +82,9 @@ class View_Chat extends \View{
 
 		});
 
+		// $lister->addClass('ap-chat-message-trigger-reload');
+		$lister->js('reload')->reload();
+
 		if($this->contact_to_id){
 			$this->form = $form = $lister->add('Form');
 			$form->addField('Line','message');
@@ -103,8 +108,9 @@ class View_Chat extends \View{
 		if($this->contact_to_id)
 			$chat_history_model->addCondition([['from_id',$this->contact_to_id],['to_id',$this->contact_to_id]]);
 
-		$chat_history_model->setLimit(5);
-		$chat_history_model->setOrder('id','desc');
+		$chat_history_model->setLimit(4);
+		$chat_history_model->setorder('id','desc');
+
 		$this->chat_history_lister->setModel($chat_history_model);
 
 		// if contact is selected then updated name
@@ -164,6 +170,10 @@ class View_Chat extends \View{
 		$this->member_lister->js('click',$js_reload)->_selector('li.contact');
 		
 
+		// // regiter login customer for live chat
+		// $host = "ws://127.0.0.1:8890/";
+		// $uu_id = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $this->app->apartmentmember->id;
+		// $this->app->js(true)->_load('wsclient')->univ()->runWebSocketClient($host,$uu_id);
 
 		parent::recursiveRender();
 

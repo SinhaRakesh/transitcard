@@ -33,7 +33,7 @@
     <div class="frame" id="{$_name}" style="{$style}">
       <div class="content">
         {ap_chat_lister}
-        <div id="{$_name}" class="message-wrapper">
+        <div id="{$_name}" class="message-wrapper ap-chat-message-trigger-reload">
           <div class="contact-profile selected-member">
           <img src="{$selected_member_img}" alt="" class="selected-member-img" />
           <p class="selected-member-name">{selected_name}Previous Chat History{/}</p>
@@ -442,53 +442,6 @@ li.replies > div{
 .frame .contact-profile{
   back
 }
-
 </style>
-
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('#chatsend').addClass('btn btn-primary');
-
-    if (window.WebSocket) {
-      console.log("WebSocket is supported");
-    } else {
-      console.log("WebSocket is not supported");
-    }
-
-    url = "ws://127.0.0.1:8890/";
-    ws = new WebSocket(url);
-    ws.onopen = function(msg) {
-      // Logic for opened connection
-      console.log('Connection successfully opened');
-    };
-
-    ws.error =function(err){
-      console.log(' Error console '); // Write errors to console
-    }
-
-    //on close event
-    ws.onclose = function(evt) { /* do stuff */ 
-      console.log('on close connection close'); 
-    }; 
-
-    // on message event
-    ws.onmessage = function(evt) { /* do stuff */ 
-
-      console.log('on message'); 
-    }; 
-
-    // ws.close(); //close method
-
-    $('#chatsend').click(function(){
-      var message = {
-        'message':'new message here',
-        'name':'user client',
-      };
-      ws.send(JSON.stringify(message)); //send method
-      console.log('send from client');
-    });
-
-  });  
-</script>
 
 </div>

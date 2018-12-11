@@ -3,7 +3,7 @@
 require_once '../../../../../wsserver/vendor/autoload.php';
 
 include '../config-default.php';
-
+	
 	$clients=[];
 
 	if(isset($config['ap-ssl-websocket-notifications']) && $config['ap-ssl-websocket-notifications']){
@@ -29,18 +29,22 @@ include '../config-default.php';
 	);
 
 	$websocket->on('open', function (Hoa\Event\Bucket $bucket) {
-	    echo 'new connection '."\n";
+	    echo 'wsp new connection '."\n";
 	    return;
 	});
 
 
 	$websocket->on('message', function (Hoa\Event\Bucket $bucket) use(&$clients) {
-		echo "on message";
+		echo "wsp on message"."\n";
 	    $data = $bucket->getData();
-	    print_r($data);
+	    // echo "data \n";
+	    // print_r($data);
 	    $message = json_decode($data['message'],true);
-	    $response="";
-	    if(isset($message['cmd'])){
+	    // echo "message \n";
+	    // print_r($message);
+	    $response = "";
+
+	    if(isset($message['cmd'])){			
 	    	switch ($message['cmd']) {
 	    		case 'register':
 	    			$clients[$message['uu_id']] = $bucket->getSource()->getConnection()->getCurrentNode();
@@ -52,8 +56,15 @@ include '../config-default.php';
 	    		default:
 	    			$response=[];
 	    			foreach ($message['clients'] as $client) {
+
+	    				// echo "message client ".$client."\n";
+	    				// echo "registered saved client "."\n";
+	    				// echo "<pre>";
+	    				// print_r($clients);
+	    				// echo "<\pre>";
 	    				if(isset($clients[$client])){
-		    				$bucket->getSource()->send($message['message'],$clients[$client]);
+	    					echo "wsp notification send \n";
+		    				$bucket->getSource()->send(json_encode($message['message']),$clients[$client]);
 		    				$response[]=$client; 
 	    				}
 	    			}
@@ -63,12 +74,12 @@ include '../config-default.php';
 	    	}
 	    }
 
+	    echo "wsp bucket send "."\n";
 	    $bucket->getSource()->send($response);
 	    return;
 	});
 	$websocket->on('close', function (Hoa\Event\Bucket $bucket) {
-	    echo 'connection closed', "\n";
-
+	    echo 'wsp websocket connection closed', "\n";
 	    return;
 	});
 

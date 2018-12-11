@@ -171,4 +171,15 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	    $menu_html = str_replace('{$'.$menu_active.'}', 'active', $menu_html);
 		$dashboard->template->trySetHtml('sidebar_menu',$menu_html);
 	}
+
+
+	function recursiveRender(){
+		
+		// regiter login customer for live chat
+		$host = "ws://127.0.0.1:8890/";
+		$uu_id = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $this->app->apartmentmember->id;
+		$this->app->js(true)->_load('wsclient')->univ()->runWebSocketClient($host,$uu_id);
+
+		parent::recursiveRender();
+	}
 }
