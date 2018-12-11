@@ -24,15 +24,18 @@ class View_Chat extends \View{
 		$this->contact_to_name = $this->app->stickyGET('contact_to_name')?:"";
 		$this->contact_to_image = $this->app->stickyGET('contact_to_image')?:"";
 
+		// $this->addForm();
 		$this->addChatHistory();
 		$this->addMemberLister();
-		$this->addForm();
+
+		$this->add('View')->set('ID: '.$this->app->apartment->id);
 	}
 
 	function addForm(){
 
 		$this->form = $form = $this->add('Form',null,'message_form',['form/horizontal']);
 		$form->addField('Line','message','')->validate('required');
+		
 		$form->addSubmit('send');
 	}
 
@@ -67,6 +70,12 @@ class View_Chat extends \View{
 				$l->current_row_html['profile_image'] = 'websites/apartment/www/dist/img/avatar04.png';
 			}
 		});
+
+		if($this->contact_to_id){
+			$this->form = $form = $lister->add('Form');
+			$form->addField('Line','message');
+			$form->addSubmit('save');
+		}
 	}
 
 	function recursiveRender(){
@@ -74,7 +83,8 @@ class View_Chat extends \View{
 		// member lister
 		$member_model = $this->add('rakesh\apartment\Model_Member');
 		$member_model->addCondition('apartment_id',$this->app->apartment->id)
-					->addCondition('status','Active');
+					->addCondition('status','Active')
+					->addCondition('id','<>',$this->app->apartmentmember->id);
 		$this->member_lister->setModel($member_model);
 
 		// chat history
@@ -84,13 +94,19 @@ class View_Chat extends \View{
 		if($this->contact_to_id)
 			$chat_history_model->addCondition([['from_id',$this->contact_to_id],['to_id',$this->contact_to_id]]);
 
+		$chat_history_model->setLimit(5);
+		$chat_history_model->setOrder('id','desc');
 		$this->chat_history_lister->setModel($chat_history_model);
+
 		// if contact is selected then updated name
-		$this->chat_history_lister->template->trySet('selected_name',$this->contact_to_name);
+		$this->chat_history_lister->template->trySet('selected_name',$this->contact_to_name?:'Chat History');
 		$this->chat_history_lister->template->trySet('selected_member_img',$this->contact_to_image);
 
 		// form submission
-		if($this->form->isSubmitted()){
+		if($this->contact_to_id && $this->form->isSubmitted()){
+			
+			if(!$this->contact_to_id) $this->form->js()->univ()->errorMessage('please select member first from your member list')->execute();
+
 			$send_msg = $this->add('rakesh\apartment\Model_MessageSent');
 			
 			$send_msg['from_id'] = $this->app->apartmentmember->id;
@@ -102,23 +118,44 @@ class View_Chat extends \View{
 			$send_msg['created_by_id'] = $this->contact_to_id;
 			$send_msg['related_id'] = $this->app->apartment->id;
 			// $send_msg['title'] = $f['subject'];
-			$send_msg['description'] = $this->form['message'];
+			$send_msg['description'] = $message = $this->form['message'];
 			$send_msg->save();
 			
+			$send_date = $this->app->now;
 			// $this->chat_history_lister->js()->reload()->execute();
-			$this->form->js(null,$this->chat_history_lister->js()->reload())
-				->univ()
-				->successMessage('send')->execute();
+			$send_html = '<li class="sent">
+                  <div class="message-wrapper">
+                    <img src="'.$this->contact_to_image.'" alt="" style="" />
+                    <div class="message-content">'.$message.'</div>
+                  </div>
+                  <div class="message-otherinfo-wrapper">
+                    <div class="chat-otherinfo">
+                      <span class="">'.$send_date.'</span>
+                    </div>
+                  </div>
+                </li>';
+			$js_array = [
+					$this->chat_history_lister->js()->append($send_html)->_selector('.messages > ul'),
+					$this->form->js()->reload()
+				];
+			$this->form->js(null,$js_array)->univ()->execute();
 		}
 
 		// reload member chat
-		$this->member_lister->js('click',$this->chat_history_lister->js()->reload(
-			[
+
+		$js_reload = [
+			$this->chat_history_lister->js()->reload([
 				'contact_to_id'=>$this->js()->_selectorThis()->data('memberid'),
 				'contact_to_name'=>$this->js()->_selectorThis()->data('name'),
-				'contact_to_image'=>$this->js()->_selectorThis()->data('profileimage'),
+				'contact_to_image'=>$this->js()->_selectorThis()->data('profileimage')
 			])
-		)->_selector('li.contact');
+			// $this->form->js()->reload([
+			// 	'contact_to_id'=>$this->js()->_selectorThis()->data('memberid'),
+			// 	'contact_to_name'=>$this->js()->_selectorThis()->data('name'),
+			// 	'contact_to_image'=>$this->js()->_selectorThis()->data('profileimage')
+			// ])
+		];
+		$this->member_lister->js('click',$js_reload)->_selector('li.contact');
 		
 
 

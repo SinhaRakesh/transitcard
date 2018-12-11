@@ -9,7 +9,7 @@ class Model_MessageSent extends \xepan\communication\Model_Communication_Abstrac
 		$this->addCondition('status','Sent');
 		$this->addCondition('direction','Out');
 		
-		$this->addHook('afterSave',$this);
+		// $this->addHook('afterSave',$this);
 		$this->addHook('afterInsert',$this);
 	}
 	

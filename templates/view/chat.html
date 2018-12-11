@@ -30,14 +30,13 @@
     </div>
   </div>
   <div class="col-md-8">
-    <div class="frame">
-
+    <div class="frame" id="{$_name}" style="{$style}">
       <div class="content">
         {ap_chat_lister}
         <div id="{$_name}" class="message-wrapper">
           <div class="contact-profile selected-member">
           <img src="{$selected_member_img}" alt="" class="selected-member-img" />
-          <p class="selected-member-name">{$selected_name}</p>
+          <p class="selected-member-name">{selected_name}Previous Chat History{/}</p>
           </div>
 
           <div class="messages" id="{$_name}-message">
@@ -61,13 +60,14 @@
                 {/}{/}
             </ul>
           </div>
+          {$Content}
         </div>
         {/}
-        {$message_form}
         <!-- <div class="message-input">
           <div class="wrap">
           </div>
         </div> -->
+      {$message_form}
       </div>
     </div>
     {$Content}

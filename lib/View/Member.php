@@ -58,7 +58,10 @@ class View_Member extends \View{
 			$flat_field->setEmptyText('Please Select Associated Flat');
 		}
 
-		$crud->setModel($model,['first_name','last_name','address','city','state_id','country_id','organization','post','dob','relation_with_head','marriage_date','login_password','flat'],['name','user','address','city','organization','dob','relation_with_head','marriage_date']);
+		$crud->setModel($model,
+			['first_name','last_name','address','city','state_id','country_id','organization','post','dob','relation_with_head','marriage_date','login_password','flat'],
+			['name','user','organization','dob','is_flat_owner','relation_with_head']
+		);
 		
 		if($crud->isEditing()){
 			$form = $crud->form;
