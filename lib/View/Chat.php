@@ -69,6 +69,15 @@ class View_Chat extends \View{
 			}else{
 				$l->current_row_html['profile_image'] = 'websites/apartment/www/dist/img/avatar04.png';
 			}
+
+			if($l->model['created_at']){
+				// $date = $this->add('xepan\base\xDate');
+				// $diff = $date->diff($this->app->now,$l->model['created_at']);
+				// $l->current_row_html['send_date'] = $diff;
+				$l->current_row_html['send_date'] = date('M d H:i a',strtotime($l->model['created_at']));
+			}else
+				$l->current_row_html['send_date'] = "";
+
 		});
 
 		if($this->contact_to_id){
@@ -106,13 +115,13 @@ class View_Chat extends \View{
 		if($this->contact_to_id && $this->form->isSubmitted()){
 			
 			if(!$this->contact_to_id) $this->form->js()->univ()->errorMessage('please select member first from your member list')->execute();
-
-			$send_msg = $this->add('rakesh\apartment\Model_MessageSent');
 			
+			$send_msg = $this->add('rakesh\apartment\Model_MessageSent');
+
 			$send_msg['from_id'] = $this->app->apartmentmember->id;
 			$send_msg['from_raw'] = ['name'=>$this->app->apartmentmember['name'],'id'=>$this->app->apartmentmember->id];
 			$send_msg['to_id'] = $this->contact_to_id;
-			$send_msg['to_raw'] = json_encode(['name'=>$this->contact_to_name,'id'=>$this->contact_to_id]);
+			$send_msg['to_raw'] = json_encode([['name'=>$this->contact_to_name,'id'=>$this->contact_to_id]]);
 			$send_msg['related_contact_id'] = $this->contact_to_id; // if communication is around some contact like group because group is contact
 			$send_msg['mailbox'] = "InternalMessage";
 			$send_msg['created_by_id'] = $this->contact_to_id;
@@ -148,12 +157,9 @@ class View_Chat extends \View{
 				'contact_to_id'=>$this->js()->_selectorThis()->data('memberid'),
 				'contact_to_name'=>$this->js()->_selectorThis()->data('name'),
 				'contact_to_image'=>$this->js()->_selectorThis()->data('profileimage')
-			])
-			// $this->form->js()->reload([
-			// 	'contact_to_id'=>$this->js()->_selectorThis()->data('memberid'),
-			// 	'contact_to_name'=>$this->js()->_selectorThis()->data('name'),
-			// 	'contact_to_image'=>$this->js()->_selectorThis()->data('profileimage')
-			// ])
+			]),
+			$this->js()->removeClass('active')->_selector('#'.$this->member_lister->name.' li.active'),
+			$this->js()->_selectorThis()->addClass('active'),
 		];
 		$this->member_lister->js('click',$js_reload)->_selector('li.contact');
 		
