@@ -18,7 +18,7 @@ class Model_Block extends \xepan\base\Model_Table{
 
 		$this->hasOne('rakesh\apartment\Apartment','apartment_id');
 		$this->addField('name')->sortable(true);
-		$this->addField('status')->enum($this->status);
+		$this->addField('status')->enum($this->status)->defaultValue('Active');
 		
 		$this->is([
 			'apartment_id|to_trim|required',

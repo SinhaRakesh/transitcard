@@ -23,7 +23,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 		$title = "Dashboard";
 		if(!@$this->app->apartment->id){
 			$dashboard->add('View_Info')->set('Your Account is created successfully, First Update Your Apartment info');
-			$dashboard->add('rakesh\apartment\View_Apartment');
+			$view = $dashboard->add('rakesh\apartment\View_Apartment');
 			return;
 		}
 
@@ -32,70 +32,78 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 			case 'apartment':
 				$menu_active = 'active_apartment_class';
 				$title = "Apartment Settings";
-				$dashboard->add('rakesh\apartment\View_Apartment');
+				$view = $dashboard->add('rakesh\apartment\View_Apartment');
 				break;
 			case 'block':
 				$menu_active = 'active_block_class';
-				$title = "Apartment Block Management";
-				$dashboard->add('rakesh\apartment\View_Block');
+				$title = "Apartment Block";
+				$view = $dashboard->add('rakesh\apartment\View_Block');
 				break;
+			case 'blockedit':
+				$menu_active = 'active_block_class';
+				$title = "Edit Block";
+				$view = $dashboard->add('rakesh\apartment\View_BlockEdit');
+				break;
+
 			case 'flat':
 				$menu_active = 'active_flat_class';
 				$title = "Flat Management";
-				$dashboard->add('rakesh\apartment\View_Flat');
+				$view = $dashboard->add('rakesh\apartment\View_Flat');
 				break;
 			case 'member':
 				$menu_active = 'active_member_class';
 				$title = "Member Management";
-				$dashboard->add('rakesh\apartment\View_Member');
+				$view = $dashboard->add('rakesh\apartment\View_Member');
 				break;
 			case 'invoices':
 				$menu_active = 'active_invoice_class';
 				$title = "Maintenance Amount Management";
-				$dashboard->add('rakesh\apartment\View_Invoice');
+				$view = $dashboard->add('rakesh\apartment\View_Invoice');
 				break;
 			case 'visitor':
 				$menu_active = 'active_visitor_class';
 				$title = "Visitor Management";
-				$dashboard->add('rakesh\apartment\View_Visitor');
+				$view = $dashboard->add('rakesh\apartment\View_Visitor');
 				break;
 			case 'suggestion':
 				$menu_active = 'active_suggestion_class';
 				$title = "Suggestions Management";
-				$dashboard->add('rakesh\apartment\View_Suggestion');
+				$view = $dashboard->add('rakesh\apartment\View_Suggestion');
 				break;
 			case 'feedback':
 				$menu_active = 'active_feedback_class';
 				$title = "Feedback Management";
-				$dashboard->add('rakesh\apartment\View_Feedback');
+				$view = $dashboard->add('rakesh\apartment\View_Feedback');
 				break;
 			case 'staff':
 				$menu_active = 'active_staff_class';
 				$title = "staff Management";
-				$dashboard->add('rakesh\apartment\View_Staff');
+				$view = $dashboard->add('rakesh\apartment\View_Staff');
 				break;
 			case 'helpdesk':
 				$menu_active = 'active_helpdesk_class';
 				$title = "Help Desk";
-				$dashboard->add('rakesh\apartment\View_HelpDesk');
+				$view = $dashboard->add('rakesh\apartment\View_HelpDesk');
 				break;
 			case 'chat':
 				$menu_active = 'active_chat_class';
 				$title = "Chat Pannel";
-				$dashboard->add('rakesh\apartment\View_Chat');
+				$view = $dashboard->add('rakesh\apartment\View_Chat');
 				break;
 			default:
 				$menu_active = 'active_dashboard_class';
 				if($this->app->userIsApartmentAdmin){
 					$title = "Apartment Admin Dashboard";
-					$dashboard->add('rakesh\apartment\View_AdminDashboard');
+					$view = $dashboard->add('rakesh\apartment\View_AdminDashboard');
 				}else{
 					$title = "Apartment Member Dashboard";
-					$dashboard->add('rakesh\apartment\View_MemberDashboard');
+					$view = $dashboard->add('rakesh\apartment\View_MemberDashboard');
 				}
 			break;
 		}
-			
+		
+		if(isset($view->title) && $view->title)  $title = $view->title;
+
 		$dashboard->template->trySet('page_title',$title);
 
 		$menu_html = '
@@ -170,6 +178,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 
 	    $menu_html = str_replace('{$'.$menu_active.'}', 'active', $menu_html);
 		$dashboard->template->trySetHtml('sidebar_menu',$menu_html);
+
 	}
 
 
