@@ -19,7 +19,9 @@ class Model_Category extends \xepan\base\Model_Table{
 		$this->hasOne('rakesh\apartment\Apartment','apartment_id');
 		$this->addField('name')->sortable(true);
 		$this->addField('status')->enum($this->status)->defaultValue('Active');
-		
+
+		$this->hasMany('rakesh\apartment\Model_Affiliate','category_id',null,'Affiliates');
+
 		$this->is([
 			'apartment_id|to_trim|required',
 			'name|to_trim|required'
