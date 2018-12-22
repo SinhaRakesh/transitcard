@@ -48,7 +48,13 @@ class Model_Member extends \xepan\commerce\Model_Customer{
 		// $model_j->addField('mobile_no');
 		// $model_j->addField('email_id');
 
-		// $this->addHook('afterSave',$this);
+		$this->addHook('beforeDelete',$this);
+	}
+
+	function beforeDelete(){
+		if($this['flat']){
+			$this->add('rakesh\apartment\Model_Flat')->removeAssociation($this->id);
+		}
 	}
 
 	function afterSave(){

@@ -62,6 +62,17 @@ class Model_Flat extends \xepan\base\Model_Table{
 		}
 	}
 
+	function removeAssociation($member_id){
+		if(!$member_id) throw new \Exception("member id not defined");
+		
+		$flat_model = $this->add('rakesh\apartment\Model_Flat')
+			->addCondition('member_id',$member_id);
+		foreach ($flat_model as $m) {
+			$m['member_id'] = 0;
+			$m->saveAndUnload();
+		}
+
+	}
 
 
 	function checkMemberAssociation($flat_comma_string,$member_id){

@@ -60,7 +60,7 @@ class View_Member extends \View{
 
 		$crud->setModel($model,
 			['first_name','last_name','address','city','state_id','country_id','organization','post','dob','relation_with_head','marriage_date','login_password','flat'],
-			['name','user','organization','dob','is_flat_owner','relation_with_head']
+			['name','flat']
 		);
 		
 		if($crud->isEditing()){
