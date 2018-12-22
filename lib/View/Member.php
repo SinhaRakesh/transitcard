@@ -27,7 +27,7 @@ class View_Member extends \View{
 		// 					'show'=> ['effect'=> 'fade','duration'=> 50],
 		// 					'hide'=> ['effect'=> 'fade', 'duration'=> 50]
 		// 				];
-		$crud = $this->add('xepan\base\CRUD');
+		$crud = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'memberedit']),'action_page'=>$this->app->url('dashboard',['mode'=>'memberedit'])]);
 		if($crud->isEditing()){
 			$form = $crud->form;
 			$form->add('xepan\base\Controller_FLC')
@@ -114,8 +114,10 @@ class View_Member extends \View{
 			}
 		}
 
-		$crud->grid->addQuickSearch(['name']);
-		$crud->grid->addPaginator(10);
+		$crud->grid->addColumn('edit');
+		$crud->grid->addColumn('delete');
+		$crud->grid->addQuickSearch(['name'],['cancel_icon'=>'fa fa-remove']);
+		$crud->grid->addPaginator(25);
 
 		// $crud->grid->add('QuickSearch',null,'quick_search');
 		

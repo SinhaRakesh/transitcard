@@ -20,18 +20,18 @@ class View_Block extends \View{
 		$model->setOrder('name','asc');
 		$crud = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'blockedit']),'action_page'=>$this->app->url('dashboard',['mode'=>'blockedit'])]);
 
-		if($crud->form){
-			$form = $crud->form;
-			$form->add('xepan\base\Controller_FLC')
-				->showLables(true)
-				->addContentSpot()
-				->makePanelsCoppalsible(true)
-				->layout([
-					'name~Block Name'=>'c1~6',
-					'status'=>'c3~3',
-					'FormButtons~&nbsp;'=>'c4~3'
-				]);
-		}
+		// if($crud->form){
+		// 	$form = $crud->form;
+		// 	$form->add('xepan\base\Controller_FLC')
+		// 		->showLables(true)
+		// 		->addContentSpot()
+		// 		->makePanelsCoppalsible(true)
+		// 		->layout([
+		// 			'name~Block Name'=>'c1~6',
+		// 			'status'=>'c3~3',
+		// 			'FormButtons~&nbsp;'=>'c4~3'
+		// 		]);
+		// }
 
 		$crud->setModel($model,null,['name','status']);
 

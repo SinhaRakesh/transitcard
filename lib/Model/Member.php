@@ -23,7 +23,9 @@ class Model_Member extends \xepan\commerce\Model_Customer{
 		$model_j->hasOne('rakesh\apartment\Category','category_id');
 
 		$model_j->addField('customer_id');
-		$model_j->addField('relation_with_head')->enum(['Onwer','Father','Mother','Son','Daughter','Grand Son','Grand Daughter','Nephew','Other','Son-in-law','Daughter-in-law','Other']);
+		$model_j->addField('relation_with_head')
+				->enum(['Onwer','Father','Mother','Son','Daughter','Grand Son','Grand Daughter','Nephew','Son-in-law','Daughter-in-law','Other'])
+				->defaultValue('Onwer');
 		$model_j->addField('dob')->type('date');
 		$model_j->addField('marriage_date')->type('date');
 		$model_j->addField('is_flat_owner')->type('boolean')->defaultValue(false);

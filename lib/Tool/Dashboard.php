@@ -52,9 +52,15 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				break;
 			case 'member':
 				$menu_active = 'active_member_class';
-				$title = "Member Management";
+				$title = "Flat Members";
 				$view = $dashboard->add('rakesh\apartment\View_Member');
 				break;
+			case 'memberedit':
+				$menu_active = 'active_member_class';
+				$title = "Flat Members";
+				$view = $dashboard->add('rakesh\apartment\View_MemberEdit');
+				break;
+
 			case 'invoices':
 				$menu_active = 'active_invoice_class';
 				$title = "Maintenance Amount Management";
