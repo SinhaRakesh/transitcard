@@ -16,13 +16,122 @@ class View_HelpDesk extends \View{
 		}
 
 		$this->catid = $this->app->stickyGET('helpid')?:0;
+		$this->app->stickyGET('type');
+		$this->app->stickyGET('r_category_id');
+		$this->app->stickyGET('r_affiliate_id');
+		$this->app->stickyGET('action');
 
-		if($this->catid){
+		if($_GET['type'] == "category"){
+			$this->addCategoryForm();
+		}elseif ($_GET['type'] == "affiliate") {
+			$this->addAffiliateForm();
+		}elseif($this->catid){
 			$this->showRecords();
 		}else{
 			$this->showCategory();
 		}
 
+		$this->js(true)->find('.main-box-body')->addClass('table-responsive');
+
+	}
+
+	function addCategoryForm(){
+		$model = $this->add('rakesh\apartment\Model_Category');
+		$model->addCondition('apartment_id',$this->app->apartment->id);
+
+		if($_GET['action'] == "edit"){
+			$model->addCondition('id',$_GET['r_category_id']);
+			$model->tryLoadAny();
+			if(!$model->loaded()){
+				$this->add('View_Error')->set('Record not loaded');
+				return;
+			}
+		}
+
+		$form = $this->add('Form');
+		$form->add('xepan\base\Controller_FLC')
+			->addContentSpot()
+			->layout([
+					'name'=>'c1~4',
+					'status'=>'c2~4',
+					'FormButtons~&nbsp;'=>'c3~4',
+				]);
+		$form->setModel($model);
+
+		$action = $_GET['action'];
+		if($action == "add"){
+			$this->title = "Add New Help Category";
+		}elseif($action == "edit"){
+			$this->title = "Edit Help Category";
+		}
+		$form->addSubmit('Save')->addClass('btn btn-primary');
+
+		if($form->isSubmitted()){			
+			$form->save();
+			$this->app->stickyForget('type');
+			$this->app->stickyForget('action');
+			$this->app->stickyForget('r_category_id');
+
+			$form->js()->univ()->redirect($this->app->url('dashboard',['mode'=>'helpdesk']))->execute();
+		}
+
+		
+	}
+
+	function addAffiliateForm(){
+		$cat_model = $this->add('rakesh\apartment\Model_Category');
+		$cat_model->addCondition('apartment_id',$this->app->apartment->id);
+		$cat_model->addCondition('id',$_GET['helpid']);
+		$cat_model->tryLoadAny();
+		if(!$cat_model->loaded()) throw new \Exception("category record not found");
+
+		$model = $this->add('rakesh\apartment\Model_Affiliate');
+		$model->addCondition('apartment_id',$this->app->apartment->id);
+		$model->addCondition('category_id',$cat_model->id);
+
+		if($_GET['action'] == "edit"){
+			$model->addCondition('id',$_GET['r_affiliate_id']);
+			$model->tryLoadAny();
+			if(!$model->loaded()){
+				$this->add('View_Error')->set('Record not loaded');
+				return;
+			}
+		}
+
+		$form = $this->add('Form');
+		$form->add('xepan\base\Controller_FLC')
+			->addContentSpot()
+			->layout([
+					'name'=>'c1~6',
+					'status'=>'c2~6',
+					'contact_no'=>'c3~6',
+					'email_id'=>'c4~6',
+					'address'=>'c5~6',
+					'narration'=>'c6~6',
+					'FormButtons~&nbsp;'=>'c7~12',
+				]);
+		$form->setModel($model);
+
+		$action = $_GET['action'];
+		if($action == "add"){
+			$this->title = "Add New Record of ( ".$cat_model['name']." )";
+		}elseif($action == "edit"){
+			$this->title = "Edit Record";
+		}
+		$form->addSubmit('Save')->addClass('btn btn-primary');
+
+		if($form->isSubmitted()){			
+			$form->save();
+
+			$this->app->stickyForget('type');
+			$this->app->stickyForget('action');
+			$this->app->stickyForget('r_category_id');
+			$this->app->stickyForget('r_affiliate_id');
+			// $this->app->stickyForget('helpid');
+			$form->js()->univ()->redirect($this->app->url('dashboard',['mode'=>'helpdesk']))->execute();
+		}
+
+		
 	}
 
 	function showCategory(){
@@ -36,7 +145,8 @@ class View_HelpDesk extends \View{
 		$model->addCondition('apartment_id',$this->app->apartment->id);
 		$model->setOrder('name','asc');
 
-		$crud = $this->add('xepan\base\CRUD');
+		$crud = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'category']),'action_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'category'])]);
+
 		if(!$this->app->userIsApartmentAdmin){
 			$crud->allow_add = false;
 			$crud->allow_edit = false;
@@ -49,7 +159,7 @@ class View_HelpDesk extends \View{
 		}
 		$crud->grid->addQuickSearch(['name']);
 		$crud->grid->addPaginator(25);
-		$url = $this->app->url(null);
+
 		$crud->grid->js('click',$this->js()->reload(['helpid'=>$this->js()->_selectorThis()->attr('data-id')]))->univ()->_selector('tbody tr[data-id]');
 	}
 
@@ -68,14 +178,22 @@ class View_HelpDesk extends \View{
 		$model->setOrder('name','desc');
 
 		if($this->app->userIsApartmentAdmin){
-			$lister = $this->add('xepan\base\CRUD');
+			$lister = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate']),'action_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate'])]);
 		}else{
 			$lister = $this->add('xepan\base\Grid');
 		}
-		
+
 		$btn = $lister->addButton('Back')->addClass('btn btn-warning');
 		$btn->js('click',$this->js()->reload(['helpid'=>0]));
 		$lister->setModel($model,['name','contact_no','email_id','address','narration']);
+
+		
+		if($this->app->userIsApartmentAdmin){
+			$lister->grid->addQuickSearch(['name','contact_no']);
+			$lister->grid->addColumn('edit');
+			$lister->grid->addColumn('delete');
+		}else
+			$lister->addQuickSearch(['name','contact_no']);
 	}
 
 }
