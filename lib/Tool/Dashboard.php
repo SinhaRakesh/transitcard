@@ -50,6 +50,12 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "Flat Management";
 				$view = $dashboard->add('rakesh\apartment\View_Flat');
 				break;
+			case 'flatedit':
+				$menu_active = 'active_flat_class';
+				$title = "Edit Flat";
+				$view = $dashboard->add('rakesh\apartment\View_FlatEdit');
+				break;
+
 			case 'member':
 				$menu_active = 'active_member_class';
 				$title = "Flat Members";

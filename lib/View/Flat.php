@@ -5,7 +5,7 @@ namespace rakesh\apartment;
 class View_Flat extends \View{
 
 	public $options = [];
-
+	public $title = "Apartment Flats";
 	function init(){
 		parent::init();
 		
@@ -18,8 +18,8 @@ class View_Flat extends \View{
 		$model = $this->add('rakesh\apartment\Model_Flat');
 		$model->addCondition('apartment_id',@$this->app->apartment->id);
 		$model->setOrder('name','asc');
-		$crud = $this->add('xepan\base\CRUD');
-
+		$crud = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'flatedit']),'action_page'=>$this->app->url('dashboard',['mode'=>'flatedit'])]);
+		$crud->grid->js(true)->find('.main-box-body')->addClass('table-responsive');
 		if($crud->form){
 			$form = $crud->form;
 			$form->add('xepan\base\Controller_FLC')
@@ -36,10 +36,11 @@ class View_Flat extends \View{
 				]);
 		}
 
-		$crud->setModel($model,null,['name','size','member','block','status','is_generate_bill']);
+		$crud->setModel($model,null,['name','size']);
 
 		$crud->grid->addQuickSearch(['name','size']);
 		$crud->grid->addPaginator(25);
-		
+		$crud->grid->addColumn('edit');
+		$crud->grid->addColumn('delete');
 	}
 }
