@@ -72,10 +72,16 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "Maintenance Amount Management";
 				$view = $dashboard->add('rakesh\apartment\View_Invoice');
 				break;
+
 			case 'visitor':
 				$menu_active = 'active_visitor_class';
 				$title = "Visitor Management";
 				$view = $dashboard->add('rakesh\apartment\View_Visitor');
+				break;
+			case 'visitoredit':
+				$menu_active = 'active_visitor_class';
+				$title = "Edit Visitor";
+				$view = $dashboard->add('rakesh\apartment\View_VisitorEdit');
 				break;
 			case 'suggestion':
 				$menu_active = 'active_suggestion_class';

@@ -16,8 +16,9 @@ class Model_Visitor extends \xepan\base\Model_Table{
 	function init(){
 		parent::init();
 
-		$this->hasOne('xepan\base\Model_Contact','created_by_id')->system(true); // must be employee or gatekipper
+		$this->hasOne('xepan\base\Model_Contact','created_by_id')->system(true)->caption('Visitor Added By'); // must be employee or gatekipper
 		$this->hasOne('rakesh\apartment\Model_Flat','flat_id');
+		$this->hasOne('rakesh\apartment\Model_Member','member_id');
 
 		$this->addField('name');
 		$this->addField('mobile_no');
@@ -30,9 +31,22 @@ class Model_Visitor extends \xepan\base\Model_Table{
 		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now)->system(true);
 		$this->addField('permitted_at')->type('datetime');
 		$this->addField('denied_at')->type('datetime');
+		$this->hasOne('xepan\base\Model_Contact','permitted_by_id');
+		$this->hasOne('xepan\base\Model_Contact','denied_by_id');
 
 		$this->addField('status')->enum($this->status)->defaultValue('Requested');
 
 		$this->add('dynamic_model/Controller_AutoCreator');
+		$this->addHook('beforeSave',$this);
+	}
+
+	function beforeSave(){
+		if(!$this['created_by_id']){
+			$contact = $this->add('xepan\base\Model_Contact');
+			if($contact->loadLoggedIn()){
+				$this['created_by_id']	= $contact->id;
+			}
+		}
+
 	}
 }
