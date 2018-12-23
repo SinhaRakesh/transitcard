@@ -1,0 +1,273 @@
+<div class="{$class} ap-chat chatpanel" id="{$_name}" style="{$style}">
+<div class="ap-internalchat">
+  <div class="">
+    <div class="frame" id="{$_name}" style="{$style}">
+      <div class="contentsection">
+        {ap_chat_lister}
+        <div id="{$_name}" class="message-wrapper ap-chat-message-trigger-reload">
+          <div class="contact-profile selected-member">
+          <img src="{$selected_member_img}" alt="" class="selected-member-img" />
+          <p class="selected-member-name">{selected_name}Previous Chat History{/}</p>
+          </div>
+
+          <div class="messages" id="{$_name}-message">
+            <ul>
+              {rows}{row}
+                <li class="{$chat_direction}">
+                  <div class="message-wrapper">
+                    <img src="{$profile_image}" alt="" style="" />
+                    <div class="message-content">
+                      {$description}
+                      <!-- <br/> -->
+                      <!-- <small style="text-align: right;font-size: 10px;">{$send_date}</small> -->
+                    </div>
+                  </div>
+                  <div class="message-otherinfo-wrapper">
+                    <div class="chat-otherinfo">
+                      <span class="">{$send_date}</span>
+                    </div>
+                  </div>
+                </li>
+                {/}{/}
+            </ul>
+          </div>
+          {$Content}
+        </div>
+        {/}
+        <div class="message-input">
+          <div class="wrap">
+            <div class="row">
+              <div class="col-md-8">
+                {$message_form}
+              </div>
+              <div class="col-md-2">
+                {$send_button}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {$Content}
+  </div>
+</div>
+
+<!-- Inline CSS -->
+
+<style>
+.frame {
+  width: 100%;
+  height: 92vh;
+  min-height: 300px;
+  max-height: 720px;
+  background: #E6EAEA;
+}
+
+.frame .contentsection {
+  /*float: right;*/
+  width: 100% !important;
+  height: 100%;
+  /*overflow: hidden;*/
+  position: relative;
+}
+@media screen and (max-width: 735px) {
+  .frame .contentsection {
+    width: calc(100%);
+    min-width: 300px !important;
+  }
+}
+@media screen and (min-width: 900px) {
+  .frame .contentsection {
+    width: calc(100% - 340px);
+  }
+}
+.frame .contentsection .contact-profile {
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  color: white;
+  background: #32465a;
+  border-bottom: 5px solid #435f7a;
+}
+.frame .contentsection .contact-profile img {
+  width: 40px;
+  border-radius: 50%;
+  float: left;
+  /*margin: 9px 12px 0 9px;*/
+}
+.frame .contentsection .contact-profile p {
+  float: left;
+}
+.frame .contentsection .contact-profile .social-media {
+  float: right;
+}
+.frame .contentsection .contact-profile .social-media i {
+  margin-left: 14px;
+  cursor: pointer;
+}
+.frame .contentsection .contact-profile .social-media i:nth-last-child(1) {
+  margin-right: 20px;
+}
+.frame .contentsection .contact-profile .social-media i:hover {
+  color: #435f7a;
+}
+.frame .contentsection .messages {
+  height: auto;
+  min-height: calc(100% - 150px);
+  max-height: calc(100% - 150px);
+  overflow-y: auto;
+  width: 100%;
+  padding: 5px 10px 5px 10px;
+}
+
+@media screen and (max-width: 735px) {
+  .frame .contentsection .messages {
+    max-height: calc(100% - 105px);
+  }
+}
+.frame .contentsection .messages::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+.frame .contentsection .messages::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.frame .contentsection .messages ul{
+  margin: 0px auto;
+  padding: 0px;
+}
+
+.frame .contentsection .messages ul li {
+  display: inline-block;
+  clear: both;
+  float: left;
+  width: 100%;
+  font-size: 0.9em;
+  margin-bottom:3px; 
+}
+
+.frame .contentsection .messages ul li:nth-last-child(1) {
+  margin-bottom: 20px;
+}
+.frame .contentsection .messages ul li.sent img {
+  margin: 6px 8px 0 0;
+}
+
+.frame .contentsection .messages ul li.sent .message-content {
+  background: #435f7a;
+  color: #f5f5f5;
+  max-width: 90%;
+}
+
+.frame .contentsection .messages ul li.sent .message-wrapper {
+  max-width: 80%;
+  width: auto;
+}
+
+.frame .contentsection .messages ul li.sent .chat-otherinfo{
+  margin-left: 5px;
+}
+
+.frame .contentsection .messages ul li.replies .message-wrapper {
+  max-width: 80%;
+  width: auto;
+  float: right;
+}
+
+.frame .contentsection .messages ul li.replies img {
+  float: right;
+  margin: 6px 0 0 8px;
+}
+.frame .contentsection .messages ul li.replies .message-content {
+  background: #f5f5f5;
+  float: left;
+  max-width: 90%;
+}
+.frame .contentsection .messages ul li.replies .chat-otherinfo{
+  float:left;
+  margin-right: 5px;
+}
+.frame .contentsection .messages ul li img {
+  width: 22px;
+  border-radius: 50%;
+  float: left;
+}
+
+li.sent > div{
+  float: left;
+}
+
+li.replies > div{
+  float: right;
+}
+
+.frame .contentsection .messages ul li .message-content {
+  display: inline-block;
+  padding: 10px 15px;
+  border-radius: 20px;
+  line-height: 130%;
+}
+
+@media screen and (min-width: 735px) {
+  .frame .contentsection .messages ul li .message-content {
+    max-width: 90%;
+  }
+  .frame .contentsection .messages ul li .message-wrapper {
+    max-width: 80%;
+  }
+}
+
+.frame #form {
+  float: right;
+}
+
+.chat-action-wrapper{
+  display: none;
+}
+ .messages > ul > li:hover .chat-action-wrapper{
+  display: block;
+ }
+
+.content.ap-pagesection{
+  padding: 0px;
+}
+
+.contentsection .message-input{
+  position: fixed;
+  width:100%;
+  bottom:0px;
+  background-color: white;
+  /*height: 50px;*/
+}
+.contentsection .message-input .atk-form-label{
+  display: none;
+}
+.contentsection .message-input .wrap{
+  margin: 10px;
+  bottom:10px;
+}
+
+.contentsection .message-input input{
+    background: no-repeat center bottom, center calc(100% - 1px);
+    background-image: none, none;
+    background-image: none, none;
+    background-image: linear-gradient(to top, #f3f3f3 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px);
+    border: 1px solid #f3f3f3;
+    height: 25px;
+    width: 100%;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    padding:20px;
+    margin-left:10px; 
+}
+.contentsection .message-input input:focus
+{
+    background-image: linear-gradient(to top, #9c27b0 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px);
+    border: 1px solid #f3f3f3;
+}
+</style>
+
+</div>

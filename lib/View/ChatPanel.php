@@ -2,7 +2,7 @@
 
 namespace rakesh\apartment;
 
-class View_Chat extends \View{
+class View_ChatPanel extends \View{
 
 	public $options = [];
 	private $member_lister;
@@ -11,34 +11,52 @@ class View_Chat extends \View{
 
 	private $contact_to_id = 0;
 	private $contact_to_name = "";
-	private $contact_to_mage = "";
+	private $contact_to_image = "";
 
 	private $my_uuid = "";
-
+	public $title = "";
 	function init(){
 		parent::init();
 		
-		// if(!@$this->app->apartment->id){
-		// 	$this->add('View_Error')->set('first update partment data');
-		// 	return;
-		// }
-		$this->contact_to_id = $this->app->stickyGET('contact_to_id')?:0;
-		$this->contact_to_name = $this->app->stickyGET('contact_to_name')?:"";
-		$this->contact_to_image = $this->app->stickyGET('contact_to_image')?:"";
+		if(!@$this->app->apartment->id){
+			$this->add('View_Error')->set('first update partment data');
+			return;
+		}
+
+		$chat_id = $this->app->stickyGET('chatid');
+		if($chat_id){
+			$this->contact_to_id = $chat_id;
+			$member_model = $this->add('rakesh\apartment\Model_Member');
+			$member_model->addCondition('apartment_id',$this->app->apartment->id)
+					->addCondition('status','Active')
+					->addCondition('id',$chat_id);
+			$member_model->tryLoadAny();
+			if(!$member_model->loaded()) throw new \Exception("member / record not found");
+			
+			$this->contact_to_image = $member_model['image'];
+			$this->contact_to_name = $member_model['name'];
+		}else{
+			$this->contact_to_id = $this->app->stickyGET('contact_to_id')?:0;
+			$this->contact_to_name = $this->app->stickyGET('contact_to_name')?:"";
+			$this->contact_to_image = $this->app->stickyGET('contact_to_image')?:"";
+		}
+
 
 		// $this->addForm();
 		$this->addChatHistory();
-		$this->addMemberLister();
-
-		$this->add('View')->set('ID: '.$this->app->apartment->id);
+		// $this->addMemberLister();
+		
 	}
 
 	function addForm(){
 
-		$this->form = $form = $this->add('Form',null,'message_form',['form/horizontal']);
-		$form->addField('Line','message','')->validate('required');
-		
-		$form->addSubmit('send');
+		$this->form = $form = $this->add('Form',null,'message_form');
+		$form->addField('Line','message')
+				->setAttr('autofocus','autofocus')
+				->setAttr('PlaceHolder','Type a message')
+				->addClass('msginputbox')
+				->validate('required');
+		$this->send_button = $this->add('Button',null,'send_button')->set(' ')->setIcon('fa fa fa-send')->addClass('btn btn-primary');
 	}
 
 	function addMemberLister(){
@@ -50,6 +68,8 @@ class View_Chat extends \View{
 			}else{
 				$l->current_row_html['profile_image'] = 'websites/apartment/www/dist/img/avatar04.png';
 			}
+
+			$l->current_row_html['uuid'] = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $l->model->id;
 		});
 
 	}
@@ -86,20 +106,21 @@ class View_Chat extends \View{
 		$lister->js('reload')->reload();
 
 		if($this->contact_to_id){
-			$this->form = $form = $lister->add('Form');
-			$form->addField('Line','message');
-			$form->addSubmit('save');
+			$this->addForm();
+			// $this->form = $form = $lister->add('Form');
+			// $form->addField('Line','message');
+			// $form->addSubmit('save');
 		}
 	}
 
 	function recursiveRender(){
 
 		// member lister
-		$member_model = $this->add('rakesh\apartment\Model_Member');
-		$member_model->addCondition('apartment_id',$this->app->apartment->id)
-					->addCondition('status','Active')
-					->addCondition('id','<>',$this->app->apartmentmember->id);
-		$this->member_lister->setModel($member_model);
+		// $member_model = $this->add('rakesh\apartment\Model_Member');
+		// $member_model->addCondition('apartment_id',$this->app->apartment->id)
+		// 			->addCondition('status','Active')
+		// 			->addCondition('id','<>',$this->app->apartmentmember->id);
+		// $this->member_lister->setModel($member_model);
 
 		// chat history
 		$chat_history_model = $this->add('rakesh\apartment\Model_MessageSent');
@@ -115,7 +136,7 @@ class View_Chat extends \View{
 
 		// if contact is selected then updated name
 		$this->chat_history_lister->template->trySet('selected_name',$this->contact_to_name?:'Chat History');
-		$this->chat_history_lister->template->trySet('selected_member_img',$this->contact_to_image);
+		$this->chat_history_lister->template->trySet('selected_member_img',$this->contact_to_image?:'websites/apartment/www/dist/img/avatar5.png');
 
 		// form submission
 		if($this->contact_to_id && $this->form->isSubmitted()){
@@ -149,38 +170,36 @@ class View_Chat extends \View{
                     </div>
                   </div>
                 </li>';
+
+
 			$js_array = [
-					$this->chat_history_lister->js()->append($send_html)->_selector('.messages > ul'),
-					$this->form->js()->reload()
+				$this->form->js()->_selector('.msginputbox')->val(""),
+					$this->chat_history_lister->js()->append($send_html)->_selector('.messages > ul')
+					// $this->form->js()->reload(),
 				];
 			$this->form->js(null,$js_array)->univ()->execute();
 		}
 
 		// reload member chat
 
-		$js_reload = [
-			$this->chat_history_lister->js()->reload([
-				'contact_to_id'=>$this->js()->_selectorThis()->data('memberid'),
-				'contact_to_name'=>$this->js()->_selectorThis()->data('name'),
-				'contact_to_image'=>$this->js()->_selectorThis()->data('profileimage')
-			]),
-			$this->js()->removeClass('active')->_selector('#'.$this->member_lister->name.' li.active'),
-			$this->js()->_selectorThis()->addClass('active'),
-		];
-		$this->member_lister->js('click',$js_reload)->_selector('li.contact');
-		
+		// $js_reload = [
+		// 	$this->chat_history_lister->js()->reload([
+		// 		'contact_to_id'=>$this->js()->_selectorThis()->data('memberid'),
+		// 		'contact_to_name'=>$this->js()->_selectorThis()->data('name'),
+		// 		'contact_to_image'=>$this->js()->_selectorThis()->data('profileimage')
+		// 	]),
+		// 	$this->js()->removeClass('active')->_selector('#'.$this->member_lister->name.' li.active'),
+		// 	$this->js()->_selectorThis()->addClass('active'),
+		// ];
+		// $this->member_lister->js('click',$js_reload)->_selector('li.contact');
 
-		// // regiter login customer for live chat
-		// $host = "ws://127.0.0.1:8890/";
-		// $uu_id = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $this->app->apartmentmember->id;
-		// $this->app->js(true)->_load('wsclient')->univ()->runWebSocketClient($host,$uu_id);
-
+		$this->send_button->js('click',[$this->form->js()->submit()]);
 		parent::recursiveRender();
 
 	}
 	
 	function defaultTemplate(){
-		return ['view\chat'];
+		return ['view\chatpanel'];
 	}
 
 }

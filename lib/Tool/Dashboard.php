@@ -106,7 +106,12 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 			case 'chat':
 				$menu_active = 'active_chat_class';
 				$title = "Chat Pannel";
-				$view = $dashboard->add('rakesh\apartment\View_Chat');
+				$view = $dashboard->add('rakesh\apartment\View_ChatMember');
+				break;
+			case 'chatpanel':
+				$menu_active = 'active_chat_class';
+				$title = " ";
+				$view = $dashboard->add('rakesh\apartment\View_ChatPanel');
 				break;
 			default:
 				$menu_active = 'active_dashboard_class';

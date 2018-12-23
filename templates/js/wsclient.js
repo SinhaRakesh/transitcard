@@ -13,24 +13,24 @@ $.each({
 		try {
 		      socket = new WebSocket(host);
 		      socket.onopen = function () {
-		          console.log('ws connection is open successfully');
+		          // console.log('ws connection is open successfully');
 		          socket.send(JSON.stringify({'cmd':'register','uu_id':uu_id}));
-		          console.log('ws registere '+uu_id);
+		          // console.log('ws registere '+uu_id);
 		          return;
 		      };
 		      socket.onmessage = function (msg) {
-		      	console.log('ws on message');
+		      	// console.log('ws on message');
 		      	
-		        console.log(msg);
+		        // console.log(msg);
 		        if(msg.data.length == 0){
 		        	// console.log('msg.data.length == 0, returning');
 		        	return;
 		        }
 
 		        var $data = JSON.parse(msg.data);
-		        console.log('ws Parsed data');
-		        console.log($data);
-		        console.log($data.message.length);
+		        // console.log('ws Parsed data');
+		        // console.log($data);
+		        // console.log($data.message.length);
 				if($data.message.length > 0){
 						
 						var title= "Notification";
@@ -57,10 +57,10 @@ $.each({
 				return;
 		      };
 		      socket.onclose = function (e) {
-		          console.log('ws connection is closed '+e.reason);
+		          // console.log('ws connection is closed '+e.reason);
 		          setTimeout(function() {
-		          		// console.log('raload auto '+host);
-		          		// console.log('raload '+uu_id);
+		          		// console.log('reload auto '+host);
+		          		// console.log('reload '+uu_id);
 				      	$.univ().runWebSocketClient(host,uu_id);
 				    }, 5000);
 		          return;
