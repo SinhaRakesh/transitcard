@@ -6,8 +6,11 @@
         {ap_chat_lister}
         <div id="{$_name}" class="message-wrapper ap-chat-message-trigger-reload">
           <div class="contact-profile selected-member">
-          <img src="{$selected_member_img}" alt="" class="selected-member-img" />
-          <p class="selected-member-name">{selected_name}Previous Chat History{/}</p>
+            <div class="pull-left backtochatmember" style="cursor: pointer;padding: 0 20px;">
+              <i class="fa fa-arrow-left"></i>
+            </div>
+            <img src="{$selected_member_img}" alt="" class="selected-member-img" />
+            <p class="selected-member-name">{selected_name}Previous Chat History{/}</p>
           </div>
 
           <div class="messages" id="{$_name}-message">
@@ -37,10 +40,10 @@
         <div class="message-input">
           <div class="wrap">
             <div class="row">
-              <div class="col-md-8">
+              <div class="col-md-8 col-lg-8 col-sm-8 col-xs-8">
                 {$message_form}
               </div>
-              <div class="col-md-2">
+              <div class="col-md-2 col-lg-2 col-sm-2 col-xs-2">
                 {$send_button}
               </div>
             </div>
@@ -216,6 +219,19 @@ li.replies > div{
   .frame .contentsection .messages ul li .message-wrapper {
     max-width: 80%;
   }
+
+}
+@media screen and (max-width: 768px) {
+  .navbar.navbar-static-top{
+    display: none;
+  }
+  .fixed .content-wrapper, .fixed .right-side{
+    padding-top:50px;
+  }
+}
+
+.content-header{
+  padding: 0px;
 }
 
 .frame #form {
@@ -268,6 +284,22 @@ li.replies > div{
     background-image: linear-gradient(to top, #9c27b0 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px);
     border: 1px solid #f3f3f3;
 }
+.selected-member-name{
+  margin-left:10px; 
+}
+.selected-member-img{
+  margin-top:8px; 
+}
+
+.main-sidebar,
+.sidebar-toggle{
+  display: none;
+}
+
+.content-wrapper{
+  margin-left: 0px !important;
+}
+
 </style>
 
 </div>

@@ -33,19 +33,16 @@ class View_ChatPanel extends \View{
 			$member_model->tryLoadAny();
 			if(!$member_model->loaded()) throw new \Exception("member / record not found");
 			
-			$this->contact_to_image = $member_model['image'];
+			$this->contact_to_image = $member_model['image']?:"websites/apartment/www/dist/img/avatar04.png";
 			$this->contact_to_name = $member_model['name'];
 		}else{
 			$this->contact_to_id = $this->app->stickyGET('contact_to_id')?:0;
 			$this->contact_to_name = $this->app->stickyGET('contact_to_name')?:"";
-			$this->contact_to_image = $this->app->stickyGET('contact_to_image')?:"";
+			$this->contact_to_image = $this->app->stickyGET('contact_to_image')?:"websites/apartment/www/dist/img/avatar04.png";
 		}
 
 
-		// $this->addForm();
-		$this->addChatHistory();
-		// $this->addMemberLister();
-		
+		$this->addChatHistory();		
 	}
 
 	function addForm(){
@@ -59,25 +56,25 @@ class View_ChatPanel extends \View{
 		$this->send_button = $this->add('Button',null,'send_button')->set(' ')->setIcon('fa fa fa-send')->addClass('btn btn-primary');
 	}
 
-	function addMemberLister(){
+	// function addMemberLister(){
 
-		$this->member_lister = $lister = $this->add('CompleteLister',null,'ap_member_list',['view\chat','ap_member_list']);
-		$lister->addHook('formatRow',function($l){
-			if($l->model['image_id']){
-				$l->current_row_html['profile_image'] = $l->model['image'];
-			}else{
-				$l->current_row_html['profile_image'] = 'websites/apartment/www/dist/img/avatar04.png';
-			}
+	// 	$this->member_lister = $lister = $this->add('CompleteLister',null,'ap_member_list',['view\chat','ap_member_list']);
+	// 	$lister->addHook('formatRow',function($l){
+	// 		if($l->model['image_id']){
+	// 			$l->current_row_html['profile_image'] = $l->model['image'];
+	// 		}else{
+	// 			$l->current_row_html['profile_image'] = 'websites/apartment/www/dist/img/avatar04.png';
+	// 		}
 
-			$l->current_row_html['uuid'] = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $l->model->id;
-		});
+	// 		$l->current_row_html['uuid'] = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $l->model->id;
+	// 	});
 
-	}
+	// }
 
 	function addChatHistory(){
 		// sent
 		// replies
-		$this->chat_history_lister = $lister = $this->add('CompleteLister',null,'ap_chat_lister',['view\chat','ap_chat_lister']);
+		$this->chat_history_lister = $lister = $this->add('CompleteLister',null,'ap_chat_lister',['view\chatpanel','ap_chat_lister']);
 
 		$lister->addHook('formatRow',function($l){
 			if($l->model['from_id'] == $this->app->apartmentmember->id){
@@ -194,6 +191,9 @@ class View_ChatPanel extends \View{
 		// $this->member_lister->js('click',$js_reload)->_selector('li.contact');
 
 		$this->send_button->js('click',[$this->form->js()->submit()]);
+		
+		$this->app->stickyForget('chatid');
+		$this->js('click')->univ()->redirect($this->app->url('dashboard',['mode'=>'chat']))->_selector('.backtochatmember');
 		parent::recursiveRender();
 
 	}
