@@ -44,7 +44,7 @@ class View_ChatMember extends \View{
 			}
 
 			$l->current_row_html['uuid'] = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $l->model->id;
-			$l->current_row_html['chaturl'] = $this->app->url('dashboard',['mode'=>'chatpanel','chatid'=>$l->model->id]);
+			// $l->current_row_html['chaturl'] = $this->app->url('dashboard',['mode'=>'chatpanel','chatid'=>$l->model->id]);
 		});
 
 		$group_model = $this->add('rakesh\apartment\Model_Group');
@@ -57,13 +57,34 @@ class View_ChatMember extends \View{
 		});
 		$group_model->addCondition('apartment_id',$this->app->apartment->id)
 					->addCondition('status','Active')
-					->addCondition('id','<>',$this->app->apartmentmember->id);
+					;
+
+		if(!$this->app->userIsApartmentAdmin){
+			$group_array = $this->app->apartmentmember->getPermittedGroups();
+			if(count($group_array)){
+				$group_model->addCondition([['id',$group_array],['created_by_id',$this->app->apartmentmember->id]]);
+			}else{
+				$group_model->addCondition('created_by_id',$this->app->apartmentmember->id);
+			}
+		}
+
 		$crud->setModel($group_model,['name','members']);
 		$crud->grid->addQuickSearch(['name']);
 		$crud->grid->addPaginator(25);
 		$crud->grid->addColumn('edit');
 		$crud->grid->addColumn('delete');
 
+		$this->app->stickyForget('mode');
+		$crud->on('click','tr')->univ()->location(
+				[
+					$this->api->url('dashboard'),
+					[
+						'mode'=>'chatpanel',
+						'chattype'=>'group',
+						'chatid'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')
+					]
+				]
+			);
 	}
 
 	function addMemberLister(){

@@ -45,9 +45,15 @@ class Model_MemberAbstract extends \xepan\commerce\Model_Customer{
 			return $x->addCondition('member_id',$q->getField('id'))->_dsql()->del('fields')->field($q->expr('group_concat([0] SEPARATOR ",")',[$x->getElement('id')]));
 		})->allowHTML(true);
 
+
 		// $model_j->addField('mobile_no');
 		// $model_j->addField('email_id');
 		$this->addHook('beforeDelete',$this);
+		$this->addHook('beforeSave',$this);
+	}
+
+	function beforeSave(){
+		if(!$this['created_by_id']) $this['created_by_id'] = $this->app->apartmentmember->id;
 	}
 
 	function beforeDelete(){

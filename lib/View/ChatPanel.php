@@ -16,24 +16,41 @@ class View_ChatPanel extends \View{
 	private $my_uuid = "";
 	public $title = "";
 	public $usertyping = false;
+	public $hasError = false;
 
 	function init(){
 		parent::init();
 		
 		if(!@$this->app->apartment->id){
-			$this->add('View_Error')->set('first update partment data');
+			$this->add('View_Error')->set('first update apartment data');
 			return;
 		}
 
 		$chat_id = $this->app->stickyGET('chatid');
+		$this->chat_type = $chat_type = $this->app->stickyGET('chattype');
 		if($chat_id){
 			$this->contact_to_id = $chat_id;
-			$member_model = $this->add('rakesh\apartment\Model_Member');
+
+			if($chat_type == "group")
+				$member_model = $this->add('rakesh\apartment\Model_Group');
+			else
+				$member_model = $this->add('rakesh\apartment\Model_Member');
+
 			$member_model->addCondition('apartment_id',$this->app->apartment->id)
 					->addCondition('status','Active')
 					->addCondition('id',$chat_id);
 			$member_model->tryLoadAny();
-			if(!$member_model->loaded()) throw new \Exception("member / record not found");
+			if(!$member_model->loaded()){
+				$this->add('View_Error')->set('record not found');
+				$this->hasError = true;
+				return;
+			} 
+
+			if($chat_type == "group" AND !$member_model->isPermitted($this->app->apartmentmember->id)){
+				$this->add('View_Error')->set('You are not found permitted');
+				$this->hasError = true;
+				return;	
+			}
 			
 			$this->contact_to_image = $member_model['image']?:"websites/apartment/www/dist/img/avatar04.png";
 			$this->contact_to_name = $member_model['name'];
@@ -43,8 +60,9 @@ class View_ChatPanel extends \View{
 			$this->contact_to_image = $this->app->stickyGET('contact_to_image')?:"websites/apartment/www/dist/img/avatar04.png";
 		}
 
-
-		$this->addChatHistory();		
+		if(!$this->hasError){
+			$this->addChatHistory();		
+		}
 	}
 
 	function addForm(){
@@ -142,6 +160,11 @@ class View_ChatPanel extends \View{
 	}
 
 	function recursiveRender(){
+		if($this->hasError){
+			$this->js('click')->univ()->redirect($this->app->url('dashboard',['mode'=>'chat']))->_selector('.backtochatmember');
+			parent::recursiveRender();
+			return;
+		}
 
 		// member lister
 		// $member_model = $this->add('rakesh\apartment\Model_Member');
@@ -153,9 +176,14 @@ class View_ChatPanel extends \View{
 		// chat history
 		$chat_history_model = $this->add('rakesh\apartment\Model_MessageSent');
 		$chat_history_model->addCondition('related_id',$this->app->apartment->id);
-		$chat_history_model->addCondition([['from_id',$this->app->apartmentmember->id],['to_id',$this->app->apartmentmember->id]]);
-		if($this->contact_to_id)
+
+		if($this->chat_type == "group"){
+			$chat_history_model->addCondition('to_id',$this->contact_to_id);
+		}else{
+			$chat_history_model->addCondition([['from_id',$this->app->apartmentmember->id],['to_id',$this->app->apartmentmember->id]]);
 			$chat_history_model->addCondition([['from_id',$this->contact_to_id],['to_id',$this->contact_to_id]]);
+		}
+
 
 		$chat_history_model->setLimit(10);
 		$chat_history_model->setorder('id','desc');
