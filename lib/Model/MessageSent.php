@@ -19,11 +19,10 @@ class Model_MessageSent extends \xepan\communication\Model_Communication_Abstrac
 		$msg = [
 				'title'=>$this['from'].' messaged you:',
 				'message'=>$this['description'],
-				'type'=>'success',
+				'type'=>'',
 				'sticky'=>false,
 				'desktop'=>strip_tags($this['description']),
 				'js'=>(string) $this->app->js()->_selector('.ap-chat-message-trigger-reload')->trigger('reload')
-				// 'js'=>(string) $this->app->js()->univ()->successMessage('send')
 			];
 		$to_id = [];
 		foreach ($this['to_raw'] as $key => $value) {

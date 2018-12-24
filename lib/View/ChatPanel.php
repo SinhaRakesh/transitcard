@@ -81,7 +81,7 @@ class View_ChatPanel extends \View{
 				];
 			$ml = $this->add('rakesh\apartment\Model_MessageSent');
 			$ml->pushToWebSocket([$this->contact_to_id],$msg);
-			
+
 			$this->usertyping = false;
 		});
 
@@ -157,7 +157,7 @@ class View_ChatPanel extends \View{
 		if($this->contact_to_id)
 			$chat_history_model->addCondition([['from_id',$this->contact_to_id],['to_id',$this->contact_to_id]]);
 
-		$chat_history_model->setLimit(4);
+		$chat_history_model->setLimit(10);
 		$chat_history_model->setorder('id','desc');
 
 		$this->chat_history_lister->setModel($chat_history_model);
