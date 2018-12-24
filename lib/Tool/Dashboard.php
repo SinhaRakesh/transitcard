@@ -113,6 +113,13 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = " ";
 				$view = $dashboard->add('rakesh\apartment\View_ChatPanel');
 				break;
+
+			case 'groupedit':
+				$menu_active = 'active_chat_class';
+				$title = "Edit Group";
+				$view = $dashboard->add('rakesh\apartment\View_GroupEdit');
+				break;
+			
 			default:
 				$menu_active = 'active_dashboard_class';
 				if($this->app->userIsApartmentAdmin){

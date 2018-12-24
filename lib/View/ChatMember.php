@@ -18,16 +18,25 @@ class View_ChatMember extends \View{
 		$this->tab = $this->add('Tabs');
 		// $group_tab = $tab->addTab('Groups');
 
-		$this->addMemberLister();
-		$this->addGroupLister();
+		if($_GET['active'] == "group"){
+			$this->addGroupLister();
+			$this->addMemberLister();
+		}else{
+			$this->addMemberLister();
+			$this->addGroupLister();
+		}
 	}
 
 	function addGroupLister(){
 
 		$group_tab = $this->tab->addTab('Groups');
 
-		$this->group_lister = $lister = $group_tab->add('xepan\base\Grid',null,null,['view/chatmember']);
-		$lister->addHook('formatRow',function($l){
+		$this->group_lister = $crud = $group_tab->add('xepan\base\CRUD',[
+						'edit_page'=>$this->app->url('dashboard',['mode'=>'groupedit']),
+						'action_page'=>$this->app->url('dashboard',['mode'=>'groupedit'])
+					]);
+
+		$crud->addHook('formatRow',function($l){
 			if($l->model['image_id']){
 				$l->current_row_html['profile_image'] = $l->model['image'];
 			}else{
@@ -38,14 +47,22 @@ class View_ChatMember extends \View{
 			$l->current_row_html['chaturl'] = $this->app->url('dashboard',['mode'=>'chatpanel','chatid'=>$l->model->id]);
 		});
 
-		$group_model = $this->add('rakesh\apartment\Model_Member');
+		$group_model = $this->add('rakesh\apartment\Model_Group');
+		$group_model->addExpression('members')->set(function($m,$q){
+			$asso = $m->add('rakesh\apartment\Model_GroupMemberAssociation')
+					->addCondition('group_id',$m->getElement('id'))
+					->addCondition('apartment_id',$m->getElement('apartment_id'))
+					;
+			return $q->expr('[0]',[$asso->count()]);
+		});
 		$group_model->addCondition('apartment_id',$this->app->apartment->id)
 					->addCondition('status','Active')
 					->addCondition('id','<>',$this->app->apartmentmember->id);
-
-		$this->group_lister->setModel($group_model);
-		$this->group_lister->addQuickSearch(['name']);
-		$this->group_lister->addPaginator(25);
+		$crud->setModel($group_model,['name','members']);
+		$crud->grid->addQuickSearch(['name']);
+		$crud->grid->addPaginator(25);
+		$crud->grid->addColumn('edit');
+		$crud->grid->addColumn('delete');
 
 	}
 
