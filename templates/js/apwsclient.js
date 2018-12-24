@@ -9,7 +9,7 @@ $.each({
 	      alert('your browser doest not support WebSocket');
 	      return;
 	    }
-
+	    
 		try {
 		      socket = new WebSocket(host);
 		      socket.onopen = function () {
@@ -18,8 +18,9 @@ $.each({
 		          // console.log('ws registere '+uu_id);
 		          return;
 		      };
+
 		      socket.onmessage = function (msg) {
-		      	// console.log('ws on message');
+		      	console.log('ws on message');
 		      	
 		        // console.log(msg);
 		        if(msg.data.length == 0){

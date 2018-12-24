@@ -15,6 +15,8 @@ class View_ChatPanel extends \View{
 
 	private $my_uuid = "";
 	public $title = "";
+	public $usertyping = false;
+
 	function init(){
 		parent::init();
 		
@@ -48,12 +50,41 @@ class View_ChatPanel extends \View{
 	function addForm(){
 
 		$this->form = $form = $this->add('Form',null,'message_form');
-		$form->addField('Line','message')
-				->setAttr('autofocus','autofocus')
+		$msg_field = $form->addField('Line','message');
+		$msg_field->setAttr('autofocus','autofocus')
 				->setAttr('PlaceHolder','Type a message')
 				->addClass('msginputbox')
 				->validate('required');
+
 		$this->send_button = $this->add('Button',null,'send_button')->set(' ')->setIcon('fa fa fa-send')->addClass('btn btn-primary');
+
+		$msg_field->on('focus',function(){
+			if($this->usertyping) return;
+
+			$msg = [
+					'message'=>"",
+					'sticky'=>false,
+					'desktop'=>false,
+					'js'=>(string)$this->app->js()->show()->_selector('.chat-user-typing')
+				];
+			$ml = $this->add('rakesh\apartment\Model_MessageSent');
+			$ml->pushToWebSocket([$this->contact_to_id],$msg);
+
+			$this->usertyping = true;
+		});
+		$msg_field->on('focusout',function(){
+			$msg = [
+					'message'=>"",
+					'sticky'=>false,
+					'desktop'=>false,
+					'js'=>(string)$this->app->js()->hide()->_selector('.chat-user-typing')
+				];
+			$ml = $this->add('rakesh\apartment\Model_MessageSent');
+			$ml->pushToWebSocket([$this->contact_to_id],$msg);
+			
+			$this->usertyping = false;
+		});
+
 	}
 
 	// function addMemberLister(){
@@ -168,12 +199,10 @@ class View_ChatPanel extends \View{
                   </div>
                 </li>';
 
-
 			$js_array = [
 				$this->form->js()->_selector('.msginputbox')->val(""),
-					$this->chat_history_lister->js()->append($send_html)->_selector('.messages > ul')
-					// $this->form->js()->reload(),
-				];
+				$this->chat_history_lister->js()->append($send_html)->_selector('.messages > ul'),
+			];
 			$this->form->js(null,$js_array)->univ()->execute();
 		}
 
@@ -195,7 +224,6 @@ class View_ChatPanel extends \View{
 		$this->app->stickyForget('chatid');
 		$this->js('click')->univ()->redirect($this->app->url('dashboard',['mode'=>'chat']))->_selector('.backtochatmember');
 		parent::recursiveRender();
-
 	}
 	
 	function defaultTemplate(){

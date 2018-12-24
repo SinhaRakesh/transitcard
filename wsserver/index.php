@@ -76,6 +76,7 @@ include '../config-default.php';
 
 	    echo "wsp bucket send "."\n";
 	    $bucket->getSource()->send($response);
+	    $config['wsclients'] = $clients;
 	    return;
 	});
 	$websocket->on('close', function (Hoa\Event\Bucket $bucket) {

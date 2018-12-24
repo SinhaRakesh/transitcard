@@ -13,3 +13,5 @@ if($config['ap-ssl-websocket-notifications']) { //HTTPS
 	$config['ap-websocket-server']='wss://'.$ip.':8890';
 	$config['ap-ssl-certificate-pem-path']='./cert/wss_lets.pem';
 }
+
+$config['wsclients'] = [];
