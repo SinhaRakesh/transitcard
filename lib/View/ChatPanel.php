@@ -166,14 +166,6 @@ class View_ChatPanel extends \View{
 			return;
 		}
 
-		// member lister
-		// $member_model = $this->add('rakesh\apartment\Model_Member');
-		// $member_model->addCondition('apartment_id',$this->app->apartment->id)
-		// 			->addCondition('status','Active')
-		// 			->addCondition('id','<>',$this->app->apartmentmember->id);
-		// $this->member_lister->setModel($member_model);
-
-		// chat history
 		$chat_history_model = $this->add('rakesh\apartment\Model_MessageSent');
 		$chat_history_model->addCondition('related_id',$this->app->apartment->id);
 
@@ -183,9 +175,14 @@ class View_ChatPanel extends \View{
 			$chat_history_model->addCondition([['from_id',$this->app->apartmentmember->id],['to_id',$this->app->apartmentmember->id]]);
 			$chat_history_model->addCondition([['from_id',$this->contact_to_id],['to_id',$this->contact_to_id]]);
 		}
-		$chat_history_model->setorder('id','desc');
-
-		$this->chat_history_lister->setModel($chat_history_model);
+		$chat_history_model->setOrder('id','desc');
+		$chat_history_model->setLimit(10);
+		$result = $chat_history_model->getRows();
+		$result = array_reverse($result);
+		// $sql = 'SELECT * FROM (SELECT * FROM communication ORDER BY id DESC LIMIT 10 ) AS a ORDER BY id;';
+		// $result = $chat_history_model->_dsql()->expr($sql)->execute()->getAll();
+		$this->chat_history_lister->setSource($result);
+		// $this->chat_history_lister->setModel($chat_history_model);
 
 		// if contact is selected then updated name
 		$this->chat_history_lister->template->trySet('selected_name',$this->contact_to_name?:'Chat History');
@@ -228,6 +225,7 @@ class View_ChatPanel extends \View{
 				$this->form->js()->_selector('.msginputbox')->val(""),
 				$this->chat_history_lister->js()->append($send_html)->_selector('.messages > ul'),
 			];
+			
 			$this->form->js(null,$js_array)->univ()->execute();
 		}
 
