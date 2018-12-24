@@ -36,7 +36,7 @@ class View_GroupEdit extends \View{
 			->addContentSpot()
 			->layout([
 				'first_name~Group Name'=>'c1~8',
-				'FormButtons~&nbsp;'=>'c2~4',
+				// 'FormButtons~&nbsp;'=>'c2~4',
 				'members~'=>'c2~12'
 			]);
 		$form->setModel($model,['first_name','status']);
@@ -56,7 +56,7 @@ class View_GroupEdit extends \View{
 		$grid->setModel($member_model,['name']);
 		$grid->addSelectable($member_asso_field);
 
-		$form->addSubmit('save')->addClass('btn btn-primary');
+		$form->add('Button')->set('save')->addClass('btn btn-primary')->js('click',$form->js()->submit());
 		if($form->isSubmitted()){
 			
 			$form->save();
