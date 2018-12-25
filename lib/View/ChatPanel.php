@@ -16,7 +16,7 @@ class View_ChatPanel extends \View{
 	private $my_uuid = "";
 	public $title = "";
 	public $usertyping = false;
-	public $hasError = false;
+	public $hasError = false; /*used for display error properly*/
 
 	function init(){
 		parent::init();
@@ -105,31 +105,18 @@ class View_ChatPanel extends \View{
 
 	}
 
-	// function addMemberLister(){
-
-	// 	$this->member_lister = $lister = $this->add('CompleteLister',null,'ap_member_list',['view\chat','ap_member_list']);
-	// 	$lister->addHook('formatRow',function($l){
-	// 		if($l->model['image_id']){
-	// 			$l->current_row_html['profile_image'] = $l->model['image'];
-	// 		}else{
-	// 			$l->current_row_html['profile_image'] = 'websites/apartment/www/dist/img/avatar04.png';
-	// 		}
-
-	// 		$l->current_row_html['uuid'] = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $l->model->id;
-	// 	});
-
-	// }
-
 	function addChatHistory(){
-		// sent
-		// replies
-		$this->chat_history_lister = $lister = $this->add('CompleteLister',null,'ap_chat_lister',['view\chatpanel','ap_chat_lister']);
+		// left
+		// right
+		$this->chat_history_lister = $lister = $this->add('CompleteLister',null,'ap_chat_lister',['view\chatpanel2','ap_chat_lister']);
 
 		$lister->addHook('formatRow',function($l){
 			if($l->model['from_id'] == $this->app->apartmentmember->id){
-				$l->current_row_html['chat_direction'] = "sent";
+				$l->current_row_html['chat_direction'] = "left";
+				$l->current_row_html['member_name'] = $l->model['from'];
 			}else{
-				$l->current_row_html['chat_direction'] = "replies";
+				$l->current_row_html['chat_direction'] = "right";
+				$l->current_row_html['member_name'] = $l->model['to'];
 			}
 
 			if($l->model['image_id']){
@@ -153,9 +140,6 @@ class View_ChatPanel extends \View{
 
 		if($this->contact_to_id){
 			$this->addForm();
-			// $this->form = $form = $lister->add('Form');
-			// $form->addField('Line','message');
-			// $form->addSubmit('save');
 		}
 	}
 
@@ -185,8 +169,8 @@ class View_ChatPanel extends \View{
 		// $this->chat_history_lister->setModel($chat_history_model);
 
 		// if contact is selected then updated name
-		$this->chat_history_lister->template->trySet('selected_name',$this->contact_to_name?:'Chat History');
-		$this->chat_history_lister->template->trySet('selected_member_img',$this->contact_to_image?:'websites/apartment/www/dist/img/avatar5.png');
+		$this->template->trySet('selected_name',$this->contact_to_name?:'Chat History');
+		$this->template->trySet('selected_member_img',$this->contact_to_image?:'websites/apartment/www/dist/img/avatar5.png');
 
 		// form submission
 		if($this->contact_to_id && $this->form->isSubmitted()){
@@ -207,40 +191,38 @@ class View_ChatPanel extends \View{
 			$send_msg['description'] = $message = $this->form['message'];
 			$send_msg->save();
 			
-			$send_date = $this->app->now;
+			$send_date = date('M d H:i a',strtotime($send_msg['created_at']));
 			// $this->chat_history_lister->js()->reload()->execute();
-			$send_html = '<li class="sent">
-                  <div class="message-wrapper">
-                    <img src="'.$this->contact_to_image.'" alt="" style="" />
-                    <div class="message-content">'.$message.'</div>
-                  </div>
-                  <div class="message-otherinfo-wrapper">
-                    <div class="chat-otherinfo">
-                      <span class="">'.$send_date.'</span>
-                    </div>
-                  </div>
-                </li>';
+			// chatpanel html 1 append html send message 
+			// $send_html = '<li class="sent">
+   //                <div class="message-wrapper">
+   //                  <img src="'.$this->contact_to_image.'" alt="" style="" />
+   //                  <div class="message-content">'.$message.'</div>
+   //                </div>
+   //                <div class="message-otherinfo-wrapper">
+   //                  <div class="chat-otherinfo">
+   //                    <span class="">'.$send_date.'</span>
+   //                  </div>
+   //                </div>
+   //              </li>';
+	// $this->chat_history_lister->js()->append($send_html)->_selector('.messages > ul'),
+
+			$send_html = '<div class="direct-chat-msg">
+							<div class="direct-chat-info clearfix">
+			            		<span class="direct-chat-name pull-left">'.$this->app->apartmentmember['name'].'</span>
+			            		<span class="direct-chat-timestamp pull-right">'.$send_date.'</span>
+			          		</div>
+			          		<img src="'.($this->app->apartmentmember['image']?:'websites/apartment/www/dist/img/avatar04.png').'" class="direct-chat-img"/>
+			          		<div class="direct-chat-text">'.$message.'</div>
+						</div>';
 
 			$js_array = [
 				$this->form->js()->_selector('.msginputbox')->val(""),
-				$this->chat_history_lister->js()->append($send_html)->_selector('.messages > ul'),
+				$this->chat_history_lister->js()->append($send_html)->_selector('.direct-chat-messages'),
 			];
 			
 			$this->form->js(null,$js_array)->univ()->execute();
 		}
-
-		// reload member chat
-
-		// $js_reload = [
-		// 	$this->chat_history_lister->js()->reload([
-		// 		'contact_to_id'=>$this->js()->_selectorThis()->data('memberid'),
-		// 		'contact_to_name'=>$this->js()->_selectorThis()->data('name'),
-		// 		'contact_to_image'=>$this->js()->_selectorThis()->data('profileimage')
-		// 	]),
-		// 	$this->js()->removeClass('active')->_selector('#'.$this->member_lister->name.' li.active'),
-		// 	$this->js()->_selectorThis()->addClass('active'),
-		// ];
-		// $this->member_lister->js('click',$js_reload)->_selector('li.contact');
 
 		$this->send_button->js('click',[$this->form->js()->submit()]);
 		
@@ -250,7 +232,7 @@ class View_ChatPanel extends \View{
 	}
 	
 	function defaultTemplate(){
-		return ['view\chatpanel'];
+		return ['view\chatpanel2'];
 	}
 
 }

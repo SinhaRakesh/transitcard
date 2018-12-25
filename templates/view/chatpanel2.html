@@ -1,0 +1,98 @@
+<div class="{$class} ap-chat chatpanel" id="{$_name}" style="{$style}">
+  <div class="box box-warning direct-chat direct-chat-warning">
+    <div class="box-header with-border">
+      <div class="">
+        <div class="pull-left backtochatmember" style="cursor: pointer;padding:10px;" title="back to member list">
+          <i class="fa fa-arrow-left"></i>
+        </div>
+        <img class="direct-chat-img" src="{$selected_member_img}">
+        <h3 class="box-title" style="padding: 10px;">{$selected_name}</h3>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    {ap_chat_lister}
+    <div class="box-body" id="{$_name}" class="{$class}" style="{$style}">
+      <!-- Conversations are loaded here -->
+      <div class="direct-chat-messages">
+        <!-- Message. Default to the left -->
+        {rows}{row}
+        <div class="direct-chat-msg {$chat_direction}">
+          <div class="direct-chat-info clearfix">
+            <span class="direct-chat-name pull-left">{$member_name}</span>
+            <span class="direct-chat-timestamp pull-right">{$send_date}</span>
+          </div>
+          <!-- /.direct-chat-info -->
+          <img class="direct-chat-img" src="{$profile_image}" alt="{$to}{$from}">
+          <!-- /.direct-chat-img -->
+          <div class="direct-chat-text">
+            {$description}
+          </div>
+          <!-- /.direct-chat-text -->
+        </div>
+        {/row}{/rows}
+      </div>
+      <!--/.direct-chat-messages-->
+    </div>
+    {/ap_chat_lister}
+    <!-- /.box-body -->
+    <div class="box-footer">
+        <div class="wrap">
+          <div class="chat-user-typing" style="display: none;">
+            user is typing&nbsp;<i class="fa fa-spinner fa-spin"></i>
+          </div>
+
+          <div class="row">
+            <div class="col-md-8 col-lg-8 col-sm-8 col-xs-8">
+              {$message_form}
+            </div>
+            <div class="col-md-2 col-lg-2 col-sm-2 col-xs-2">
+              {$send_button}
+            </div>
+          </div>
+        </div>
+    </div>
+      <!-- /.box-footer-->
+  </div>
+  <style type="text/css">
+  @media screen and (min-width: 750px){
+    .direct-chat-messages {
+      height: 450px;
+    }
+  }
+  .box-footer .atk-form-label{
+    display: none;
+  }
+  .box-footer input{
+    background: no-repeat center bottom, center calc(100% - 1px);
+    background-image: none, none;
+    background-image: none, none;
+    background-image: linear-gradient(to top, #f3f3f3 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px);
+    border: 1px solid #f3f3f3;
+    height: 25px;
+    width: 100%;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    padding:20px;
+    margin-left:10px; 
+  }
+  .box-footer input:focus
+  {
+    background-image: linear-gradient(to top, #9c27b0 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px);
+    border: 1px solid #f3f3f3;
+  }
+
+  .main-sidebar,
+  .sidebar-toggle{
+    display: none;
+  }
+  .content-wrapper{
+    margin-left: 0px !important;
+  }
+  .content.ap-pagesection,.content-header{
+    padding: 0px;
+  }
+
+  </style>
+</div>
