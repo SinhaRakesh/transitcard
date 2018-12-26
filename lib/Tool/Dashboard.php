@@ -173,23 +173,6 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	            <i class="fa fa-comment text-blue"></i> <span>Chat</span>
 	          </a>
 	        </li>
-	        <li class="{$active_suggestion_class}">
-	          <a href="?page=dashboard&mode=suggestion">
-	            <i class="fa fa-cog text-red"></i> <span>Suggestions</span>
-	            <span class="pull-right-container">
-	              <small class="label pull-right bg-yellow">12</small>
-	            </span>
-	          </a>
-	        </li>
-
-	        <li class="{$active_feedback_class}">
-	          <a href="?page=dashboard&mode=feedback">
-	            <i class="fa fa-cog text-red"></i> <span>Feedback</span>
-	            <span class="pull-right-container">
-	              <small class="label pull-right bg-yellow" title="new Feedback">12</small>
-	            </span>
-	          </a>
-	        </li>
 	        <li class="{$active_helpdesk_class}">
 	          <a href="?page=dashboard&mode=helpdesk">
 	            <i class="fa fa-support text-red"></i> <span>Help Desk</span>
@@ -205,6 +188,25 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	          </a>
 	        </li>
 	    ';
+
+	    // feedback and suggestion are temporary commented
+	    	   //      <li class="{$active_suggestion_class}">
+	        //   <a href="?page=dashboard&mode=suggestion">
+	        //     <i class="fa fa-cog text-red"></i> <span>Suggestions</span>
+	        //     <span class="pull-right-container">
+	        //       <small class="label pull-right bg-yellow">12</small>
+	        //     </span>
+	        //   </a>
+	        // </li>
+
+	        // <li class="{$active_feedback_class}">
+	        //   <a href="?page=dashboard&mode=feedback">
+	        //     <i class="fa fa-cog text-red"></i> <span>Feedback</span>
+	        //     <span class="pull-right-container">
+	        //       <small class="label pull-right bg-yellow" title="new Feedback">12</small>
+	        //     </span>
+	        //   </a>
+	        // </li>
 
 	    $menu_html = str_replace('{$'.$menu_active.'}', 'active', $menu_html);
 		$dashboard->template->trySetHtml('sidebar_menu',$menu_html);
