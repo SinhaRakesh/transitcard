@@ -17,6 +17,7 @@ class View_Dashboard extends \View{
 		}
 
 		// $this->template->trySet('page_title',$this->app->page_name);
+		$this->template->trySet('website_name',$this->app->current_website_name);
 	}
 
 	function defaultTemplate(){
