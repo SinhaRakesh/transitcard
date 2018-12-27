@@ -13,6 +13,7 @@ class Model_Flat extends \xepan\base\Model_Table{
 			'Vacant'=>['View','edit','delete'],
 			'Deactive'=>['View','edit','delete']
 		];
+	public $size = ['1BHK'=>'1 BHK','2BHK'=>'2 BHK','3BHK'=>'3 BHK','4BHK'=>'4 BHK','Other'=>'Other'];
 	public $acl_type = "Flat";
 
 	function init(){
@@ -23,9 +24,9 @@ class Model_Flat extends \xepan\base\Model_Table{
 		$this->hasOne('rakesh\apartment\Member','member_id');
 
 		$this->addField('name')->sortable(true)->caption('Flat Name');
-		$this->addField('size')->setValueList(['1BHK'=>'1 BHK','2BHK'=>'2 BHK','3BHK'=>'3 BHK','4BHK'=>'4 BHK','Other'=>'Other']);
+		$field_size = $this->addField('size');
 		$this->addField('is_generate_bill')->type('boolean')->defaultValue(true);
-		$this->addField('status')->enum($this->status);
+		$field_status = $this->addField('status');
 		// $this->addField('last_bill_generation_date');
 		
 		$this->is([
@@ -35,6 +36,23 @@ class Model_Flat extends \xepan\base\Model_Table{
 			'status|to_trim|required'
 		]);
 
+		// flat master data
+		$config_model = $this->add('rakesh\apartment\Model_Config_Master')->tryLoadAny();
+		if($config_model['flat_size']){
+			$this->size = [];
+			foreach (explode(",", $config_model['flat_size']) as $key => $value) {
+				$this->size[trim($value)] = trim($value);
+			}
+		}
+		$field_size->setValueList($this->size);
+		if($config_model['flat_status']){
+			$this->status = [];
+			foreach (explode(",", $config_model['flat_status']) as $key => $value) {
+				$this->status[trim($value)] = trim($value);
+			}
+			$this->status['Deactive'] = 'Deactive';
+		}
+		$field_status->setValueList($this->status);
 	}
 
 	function getMemberId($flat_id){

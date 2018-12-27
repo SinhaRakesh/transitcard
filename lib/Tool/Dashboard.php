@@ -119,6 +119,12 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "Edit Group";
 				$view = $dashboard->add('rakesh\apartment\View_GroupEdit');
 				break;
+			case 'master':
+				$this->addClass('clear-page-padding');
+				$menu_active = 'active_master';
+				$title = "Apartment Configuration";
+				$view = $dashboard->add('rakesh\apartment\View_Master');
+				break;
 			
 			default:
 				$menu_active = 'active_dashboard_class';
@@ -188,6 +194,14 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	          </a>
 	        </li>
 	    ';
+
+	    if($this->app->userIsApartmentAdmin){
+		    $menu_html .= '<li class="{$active_master}">
+		          <a href="?page=dashboard&mode=master">
+		            <i class="fa fa-cog text-red"></i> <span>Master</span>
+		          </a>
+		        </li>';
+	    }
 
 	    // feedback and suggestion are temporary commented
 	    	   //      <li class="{$active_suggestion_class}">

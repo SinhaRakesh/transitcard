@@ -26,6 +26,8 @@ class View_ChatPanel extends \View{
 			return;
 		}
 
+		$this->default_img_url = 'websites/'.$this->app->current_website_name.'/www/dist/img/avatar04.png';
+
 		$chat_id = $this->app->stickyGET('chatid');
 		$this->chat_type = $chat_type = $this->app->stickyGET('chattype');
 		if($chat_id){
@@ -52,12 +54,12 @@ class View_ChatPanel extends \View{
 				return;	
 			}
 			
-			$this->contact_to_image = $member_model['image']?:"websites/apartment/www/dist/img/avatar04.png";
+			$this->contact_to_image = $member_model['image']?:$this->default_img_url;
 			$this->contact_to_name = $member_model['name'];
 		}else{
 			$this->contact_to_id = $this->app->stickyGET('contact_to_id')?:0;
 			$this->contact_to_name = $this->app->stickyGET('contact_to_name')?:"";
-			$this->contact_to_image = $this->app->stickyGET('contact_to_image')?:"websites/apartment/www/dist/img/avatar04.png";
+			$this->contact_to_image = $this->app->stickyGET('contact_to_image')?:$this->default_img_url;
 		}
 
 		if(!$this->hasError){
@@ -122,7 +124,7 @@ class View_ChatPanel extends \View{
 			if($l->model['image_id']){
 				$l->current_row_html['profile_image'] = $l->model['image'];
 			}else{
-				$l->current_row_html['profile_image'] = 'websites/apartment/www/dist/img/avatar04.png';
+				$l->current_row_html['profile_image'] = $this->default_img_url;
 			}
 
 			if($l->model['created_at']){
@@ -170,7 +172,7 @@ class View_ChatPanel extends \View{
 
 		// if contact is selected then updated name
 		$this->template->trySet('selected_name',$this->contact_to_name?:'Chat History');
-		$this->template->trySet('selected_member_img',$this->contact_to_image?:'websites/apartment/www/dist/img/avatar5.png');
+		$this->template->trySet('selected_member_img',$this->contact_to_image?:$this->default_img_url);
 
 		// form submission
 		if($this->contact_to_id && $this->form->isSubmitted()){
@@ -212,7 +214,7 @@ class View_ChatPanel extends \View{
 			            		<span class="direct-chat-name pull-left">'.$this->app->apartmentmember['name'].'</span>
 			            		<span class="direct-chat-timestamp pull-right">'.$send_date.'</span>
 			          		</div>
-			          		<img src="'.($this->app->apartmentmember['image']?:'websites/apartment/www/dist/img/avatar04.png').'" class="direct-chat-img"/>
+			          		<img src="'.($this->app->apartmentmember['image']?:$this->default_img_url).'" class="direct-chat-img"/>
 			          		<div class="direct-chat-text">'.$message.'</div>
 						</div>';
 
