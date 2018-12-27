@@ -16,6 +16,20 @@ class View_Visitor extends \View{
 
 		$crud = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'visitoredit']),'action_page'=>$this->app->url('dashboard',['mode'=>'visitoredit'])]);
 		$model = $this->add('rakesh\apartment\Model_Visitor');
+		$model->addCondition('apartment_id',$this->app->apartment->id);
+		if($this->app->apartmentmember['flat']){
+			$model->addCondition([
+					['created_by_id',$this->app->apartmentmember->id],
+					['member_id',$this->app->apartmentmember->id],
+					['flat_id',explode(",",$this->app->apartmentmember['flat'])]
+				]);
+		}else{
+			$model->addCondition([
+					['created_by_id',$this->app->apartmentmember->id],
+					['member_id',$this->app->apartmentmember->id]
+				]);
+		}
+		
 		$model->setOrder('id','desc');
 
 		$crud->grid->addColumn('visitor_detail');
@@ -55,5 +69,7 @@ class View_Visitor extends \View{
 		}
 
 		$crud->grid->addPaginator(25);
+		
+		$acl = $crud->add('rakesh\apartment\Controller_ACL');
 	}
 }

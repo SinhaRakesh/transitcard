@@ -42,5 +42,6 @@ class View_Flat extends \View{
 		$crud->grid->addPaginator(25);
 		$crud->grid->addColumn('edit');
 		$crud->grid->addColumn('delete');
+		$crud->add('rakesh\apartment\Controller_ACL');
 	}
 }

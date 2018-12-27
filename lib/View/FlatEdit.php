@@ -39,6 +39,11 @@ class View_FlatEdit extends \View{
 			$this->app->template->trySet('page_title','Add New Flat');
 		}
 
+		$model->getElement('member_id')
+			->getModel()
+				->addCondition('is_flat_owner',true)
+				->addCondition('apartment_id',@$this->app->apartment->id);
+		
 		$form = $this->add('Form');
 		$form->add('xepan\base\Controller_FLC')
 			->showLables(true)

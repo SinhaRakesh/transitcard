@@ -45,7 +45,7 @@ class View_MemberEdit extends \View{
 					'dob'=>'c11~4',
 					'relation_with_head'=>'c12~4',
 					'marriage_date'=>'c13~4',
-					'organization'=>'c14~6',
+					'organization~Organization\Business'=>'c14~6',
 					'post'=>'c15~6',
 					'country_id~Country'=>'c3~3',
 					'state_id~State'=>'c4~3',

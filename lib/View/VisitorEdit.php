@@ -39,8 +39,16 @@ class View_VisitorEdit extends \View{
 					'name~Visitor Name'=>'Visitor Detail~c1~12',
 					'mobile_no'=>'c2~6',
 					'email_id'=>'c3~6',
-					'address'=>'c4~12',
-					
+					'address'=>'c4~6',
+					'visitor_narration'=>'c5~6',
+
+					'vehical_type'=>'Vehical Details~e1~3~Bike, Car etc',
+					'vehical_no'=>'e2~3',
+					'vehical_model'=>'e3~3',
+					'vehical_color'=>'e4~3',
+					'person_count'=>'e5~3',
+					'vehical_detail~Vehical Other Details'=>'e6~6',
+
 					'title'=>'Meeting Purpose~d1~12',
 					'message'=>'d2~12',
 
@@ -49,7 +57,7 @@ class View_VisitorEdit extends \View{
 					'FormButtons~&nbsp;'=>'z1~12'
 				]);
 
-		$form->setModel($model,['name','mobile_no','email_id','address','title','message','flat_id','member_id']);
+		$form->setModel($model,['name','mobile_no','email_id','address','title','message','flat_id','member_id','visitor_narration','vehical_type','vehical_no','vehical_model','vehical_color','vehical_detail','person_count']);
 		$form->getElement('flat_id')->setEmptyText('Please Select');
 
 		$form->getElement('name')->validate('required');

@@ -18,9 +18,9 @@ class View_Member extends \View{
 
 		$model = $this->add('rakesh\apartment\Model_Member');
 		$model->addCondition('apartment_id',@$this->app->apartment->id);
-		if($this->app->userIsApartmentAdmin){
-			$model->addCondition('is_flat_owner',true);
-		}
+		$model->addCondition('is_flat_owner',true);
+		// if($this->app->userIsApartmentAdmin){
+		// }
 		$model->setOrder('name','asc');
 
 		// $frame_options = [
@@ -60,7 +60,7 @@ class View_Member extends \View{
 
 		$crud->setModel($model,
 			['first_name','last_name','address','city','state_id','country_id','organization','post','dob','relation_with_head','marriage_date','login_password','flat'],
-			['name','flat']
+			['name','flat_name']
 		);
 		
 		if($crud->isEditing()){
@@ -120,6 +120,6 @@ class View_Member extends \View{
 		$crud->grid->addPaginator(25);
 
 		// $crud->grid->add('QuickSearch',null,'quick_search');
-		
+		$acl = $crud->add('rakesh\apartment\Controller_ACL');
 	}
 }

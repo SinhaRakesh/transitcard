@@ -18,7 +18,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 			$this->add('View_Info')->set('dashboard tool, reload');
 			return;
 		}
-		
+
 		$dashboard = $this->add('rakesh\apartment\View_Dashboard');
 		$title = "Dashboard";
 		if(!@$this->app->apartment->id){
@@ -148,19 +148,9 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	            <i class="fa fa-dashboard text-info"></i> <span>Dashboard</span>
 	          </a>
 	        </li>
-	        <li class="{$active_apartment_class}">
-	          <a href="?page=dashboard&mode=apartment">
-	            <i class="fa fa-cog text-red"></i> <span>Apartment Settings</span>
-	          </a>
-	        </li>
 	        <li class="{$active_block_class}">
 	          <a href="?page=dashboard&mode=block">
-	            <i class="fa fa-th text-green"></i> <span>Apartment Block</span>
-	          </a>
-	        </li>
-	        <li class="{$active_member_class}">
-	          <a href="?page=dashboard&mode=member">
-	            <i class="fa fa-users text-green"></i> <span>Flat Members</span>
+	            <i class="fa fa-th text-green"></i> <span>Blocks</span>
 	          </a>
 	        </li>
 	        <li class="{$active_flat_class}">
@@ -168,7 +158,11 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	            <i class="fa fa-home text-yellow"></i> <span>Flat</span>
 	          </a>
 	        </li>
-
+	        <li class="{$active_member_class}">
+	          <a href="?page=dashboard&mode=member">
+	            <i class="fa fa-users text-green"></i> <span>Flat Owners</span>
+	          </a>
+	        </li>
 	        <li class="{$active_visitor_class}">
 	          <a href="?page=dashboard&mode=visitor">
 	            <i class="fa fa-cog text-red"></i> <span>Visitors</span>
@@ -203,6 +197,11 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 		        </li>';
 	    }
 
+	    $menu_html .= '<li class="{$active_apartment_class}">
+	          <a href="?page=dashboard&mode=apartment">
+	            <i class="fa fa-cog text-red"></i> <span>Apartment Settings</span>
+	          </a>
+	        </li>';
 	    // feedback and suggestion are temporary commented
 	    	   //      <li class="{$active_suggestion_class}">
 	        //   <a href="?page=dashboard&mode=suggestion">

@@ -45,6 +45,11 @@ class Model_MemberAbstract extends \xepan\commerce\Model_Customer{
 			return $x->addCondition('member_id',$q->getField('id'))->_dsql()->del('fields')->field($q->expr('group_concat([0] SEPARATOR ",")',[$x->getElement('id')]));
 		})->allowHTML(true);
 
+		$this->addExpression('flat_name')->set(function($m,$q){
+			$x = $m->add('rakesh\apartment\Model_Flat',['table_alias'=>'flat_str']);
+			return $x->addCondition('member_id',$q->getField('id'))->_dsql()->del('fields')->field($q->expr('group_concat([0] SEPARATOR ",")',[$x->getElement('name')]));
+		})->allowHTML(true);
+
 
 		// $model_j->addField('mobile_no');
 		// $model_j->addField('email_id');
@@ -85,5 +90,9 @@ class Model_MemberAbstract extends \xepan\commerce\Model_Customer{
 		$contact['type'] = 'Customer';
 		$contact['user_id'] = $user->id;
 		$contact->save();
+	}
+
+	function getFlatIds(){
+		return explode(",",$this->app->apartmentmember['flat']);
 	}
 }
