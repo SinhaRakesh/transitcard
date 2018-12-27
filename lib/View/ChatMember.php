@@ -48,6 +48,8 @@ class View_ChatMember extends \View{
 		});
 
 		$group_model = $this->add('rakesh\apartment\Model_Group');
+		$group_model->addCondition('apartment_id',$this->app->apartment->id);
+		
 		$group_model->addExpression('members')->set(function($m,$q){
 			$asso = $m->add('rakesh\apartment\Model_GroupMemberAssociation')
 					->addCondition('group_id',$m->getElement('id'))

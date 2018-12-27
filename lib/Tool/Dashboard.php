@@ -195,13 +195,14 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 		            <i class="fa fa-cog text-red"></i> <span>Master</span>
 		          </a>
 		        </li>';
+		    
+		    $menu_html .= '<li class="{$active_apartment_class}">
+		          <a href="?page=dashboard&mode=apartment">
+		            <i class="fa fa-cog text-red"></i> <span>Apartment Settings</span>
+		          </a>
+		        </li>';
 	    }
 
-	    $menu_html .= '<li class="{$active_apartment_class}">
-	          <a href="?page=dashboard&mode=apartment">
-	            <i class="fa fa-cog text-red"></i> <span>Apartment Settings</span>
-	          </a>
-	        </li>';
 	    // feedback and suggestion are temporary commented
 	    	   //      <li class="{$active_suggestion_class}">
 	        //   <a href="?page=dashboard&mode=suggestion">

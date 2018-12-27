@@ -32,7 +32,7 @@ class Controller_ACL extends \AbstractController {
 				$this->acl_array = $acl_array['admin'];
 			}else
 				$this->acl_array = $acl_array['member'];
-			
+
 			if(!$this->canAdd()) $this->ACLObject->add_button->destroy();
 			if(!$this->canEdit()) $this->ACLObject->grid->removeColumn('edit');
 			if(!$this->canDelete()) $this->ACLObject->grid->removeColumn('delete');
@@ -74,7 +74,16 @@ class Controller_ACL extends \AbstractController {
 					'rakesh\apartment\Model_Visitor'=>[
 									'member'=>['edit'=>true,'delete'=>false,'view'=>true,'add'=>true],
 									'admin'=>['edit'=>true,'delete'=>false,'view'=>true,'add'=>true]
-								]
+								],
+					'rakesh\apartment\Model_Category'=>[
+									'member'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false],
+									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
+								],
+					'rakesh\apartment\Model_Affiliate'=>[
+									'member'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false],
+									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
+								],
+
 
 				];
 	}

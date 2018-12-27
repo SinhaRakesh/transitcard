@@ -146,21 +146,24 @@ class View_HelpDesk extends \View{
 		$model->setOrder('name','asc');
 
 		$crud = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'category']),'action_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'category'])]);
-
-		if(!$this->app->userIsApartmentAdmin){
-			$crud->allow_add = false;
-			$crud->allow_edit = false;
-			$crud->allow_del = false;
-		}
+		// if(!$this->app->userIsApartmentAdmin){
+		// 	$crud->allow_add = false;
+		// 	$crud->allow_edit = false;
+		// 	$crud->allow_del = false;
+		// }
+		$crud->grid->addHook('formatRow',function($g){
+			$g->setTDParam('name','class','helpcategory');
+			$g->setTDParam('records','class','helpcategory');
+		});
 		$crud->setModel($model,['name','records']);
-		if($this->app->userIsApartmentAdmin){
-			$crud->grid->addColumn('edit');
-			$crud->grid->addColumn('delete');
-		}
+		$crud->grid->addColumn('edit');
+		$crud->grid->addColumn('delete');
+		$crud->add('rakesh\apartment\Controller_ACL');
+		// if($this->app->userIsApartmentAdmin){
+		// }
 		$crud->grid->addQuickSearch(['name']);
 		$crud->grid->addPaginator(25);
-
-		$crud->grid->js('click',$this->js()->reload(['helpid'=>$this->js()->_selectorThis()->attr('data-id')]))->univ()->_selector('tbody tr[data-id]');
+		$crud->grid->js('click',$this->js()->reload(['helpid'=>$this->js()->_selectorThis()->closest('tr')->attr('data-id')]))->univ()->_selector('tbody tr .helpcategory');
 	}
 
 	function showRecords(){
@@ -177,23 +180,16 @@ class View_HelpDesk extends \View{
 		}
 		$model->setOrder('name','desc');
 
-		if($this->app->userIsApartmentAdmin){
-			$lister = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate']),'action_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate'])]);
-		}else{
-			$lister = $this->add('xepan\base\Grid');
-		}
-
+		$lister = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate']),'action_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate'])]);
 		$btn = $lister->addButton('Back')->addClass('btn btn-warning');
 		$btn->js('click',$this->js()->reload(['helpid'=>0]));
 		$lister->setModel($model,['name','contact_no','email_id','address','narration']);
 
 		
-		if($this->app->userIsApartmentAdmin){
-			$lister->grid->addQuickSearch(['name','contact_no']);
-			$lister->grid->addColumn('edit');
-			$lister->grid->addColumn('delete');
-		}else
-			$lister->addQuickSearch(['name','contact_no']);
-	}
+		$lister->grid->addQuickSearch(['name','contact_no']);
+		$lister->grid->addColumn('edit');
+		$lister->grid->addColumn('delete');
+		$lister->add('rakesh\apartment\Controller_ACL');
 
+	}
 }
