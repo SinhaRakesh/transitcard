@@ -1,0 +1,47 @@
+<div class="{$class} bg-black" id="{$_name}" style="{$style} padding: 10px;border-radius:10px;">
+  {Pannel}
+    <div class="atk-actions text-center">
+      {$grid_buttons}
+      {$quick_search}{quick_search_icon}{/}
+    </div>
+  {/}
+  <ul class="timeline bg-black">
+    <!-- timeline time label -->
+
+    {rows}{row}
+      <li class="time-label">
+            <span class="bg-red">
+              {$display_date}
+            </span>
+      </li>
+    <!-- /.timeline-label -->
+    <!-- timeline item -->
+    <li>
+      <i class="fa fa-envelope bg-purple"></i>
+
+      <div class="timeline-item">
+        <!-- <span class="time"><i class="fa fa-clock-o"></i> 12:05</span> -->
+        <h3 class="timeline-header" style="color:#605ca8;"><b>{$title}</b></h3>
+
+        <div class="timeline-body">
+          {$description}
+        </div>
+        <div class="timeline-footer">
+          <div class="btn btn-primary btn-xs">
+            <i class="fa fa-user"></i>&nbsp;{$created_by}
+          </div>
+          {$edit}
+          {$delete}
+        </div>
+      </div>
+    </li>
+    {/row}{/rows}
+    <!-- <li>
+      <i class="fa fa-clock-o bg-gray"></i>
+    </li> -->
+    <li class="bg-black">
+      {Paginator}{/}
+    </li>
+    {not_found}{not_found_message}{/}{/}
+  </ul>
+</div>

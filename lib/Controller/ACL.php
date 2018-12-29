@@ -83,7 +83,10 @@ class Controller_ACL extends \AbstractController {
 									'member'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false],
 									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
 								],
-
+					'rakesh\apartment\Model_NoticeBoard'=>[
+									'member'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false],
+									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
+								]
 
 				];
 	}

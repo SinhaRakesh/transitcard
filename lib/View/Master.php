@@ -30,6 +30,7 @@ class View_Master extends \View{
 		$tabs = $ft->add('Tabs');
 		$flat_size_tab = $tabs->addTab('Flat Size');
 		$flat_status_tab = $tabs->addTab('Flat Status');
+		$notice_tab = $tabs->addTab('Notice Board');
 
 
 		// flat size
@@ -63,5 +64,7 @@ class View_Master extends \View{
 			$form_size->js(null,$form_size->js()->reload())->univ()->successMessage('saved successfully ')->execute();
 		}
 
+		// notice board
+		$nb = $notice_tab->add('rakesh\apartment\View_NoticeBoard');
 	}
 }

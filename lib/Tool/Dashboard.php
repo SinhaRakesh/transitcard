@@ -103,6 +103,11 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "Help Desk";
 				$view = $dashboard->add('rakesh\apartment\View_HelpDesk');
 				break;
+			case 'noticeboard':
+				$menu_active = 'active_master_class';
+				$title = "Notice Board";
+				$view = $dashboard->add('rakesh\apartment\View_NoticeBoardEdit');
+				break;
 			case 'chat':
 				$menu_active = 'active_chat_class';
 				$title = "Chat Pannel";
