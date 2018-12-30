@@ -5,7 +5,7 @@ namespace rakesh\apartment;
 class View_Block extends \View{
 
 	public $options = [];
-
+	public $title = "Block";
 	function init(){
 		parent::init();
 		

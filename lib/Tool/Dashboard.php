@@ -36,7 +36,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				break;
 			case 'block':
 				$menu_active = 'active_block_class';
-				$title = "Apartment Block";
+				$title = "Block";
 				$view = $dashboard->add('rakesh\apartment\View_Block');
 				break;
 			case 'blockedit':
@@ -134,10 +134,10 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 			default:
 				$menu_active = 'active_dashboard_class';
 				if($this->app->userIsApartmentAdmin){
-					$title = "Apartment Admin Dashboard";
+					$title = "Admin Dashboard";
 					$view = $dashboard->add('rakesh\apartment\View_AdminDashboard');
 				}else{
-					$title = "Apartment Member Dashboard";
+					$title = "Dashboard";
 					$view = $dashboard->add('rakesh\apartment\View_MemberDashboard');
 				}
 			break;

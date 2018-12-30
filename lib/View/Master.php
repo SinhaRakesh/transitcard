@@ -5,7 +5,7 @@ namespace rakesh\apartment;
 class View_Master extends \View{
 
 	public $options = [];
-	// public $title = "Configuration";
+	public $title = "Configuration";
 
 	function init(){
 		parent::init();
@@ -25,7 +25,7 @@ class View_Master extends \View{
 					'application'=>'rakesh\apartment'
 			]);
 		$master_model->tryLoadAny();
-
+		
 		$ft = $this->add('View')->addClass('flattabs');
 		$tabs = $ft->add('Tabs');
 		$flat_size_tab = $tabs->addTab('Flat Size');

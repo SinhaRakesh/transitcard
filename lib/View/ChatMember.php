@@ -6,7 +6,7 @@ class View_ChatMember extends \View{
 
 	public $options = [];
 	public $member_lister;
-	public $title="Apartment Member/Groups";
+	public $title="Member/ Groups";
 	function init(){
 		parent::init();
 		

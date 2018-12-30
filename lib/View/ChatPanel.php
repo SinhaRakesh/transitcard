@@ -65,6 +65,8 @@ class View_ChatPanel extends \View{
 		if(!$this->hasError){
 			$this->addChatHistory();		
 		}
+
+		$this->title = 'Chat with '.$this->contact_to_name;
 	}
 
 	function addForm(){
