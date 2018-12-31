@@ -15,7 +15,7 @@ class Model_NoticeBoard extends \xepan\communication\Model_Communication{
 
 		$this->getElement('related_id')->defaultValue($this->app->apartment->id);
 
-		$this->getElement('tags')->caption('Valid Till Date');
-		$this->getElement('flags')->caption('Display From Date');
+		$this->getElement('tags')->type('datetime')->caption('Valid Till Date');
+		$this->getElement('flags')->type('datetime')->caption('Display From Date');
 	}
 }

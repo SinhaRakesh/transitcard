@@ -19,7 +19,8 @@ class View_Master extends \View{
 			[
 				'fields'=>[
 							'flat_size'=>'Text',
-							'flat_status'=>'Text'
+							'flat_status'=>'Text',
+							'complain_category'=>'Text'
 							],
 					'config_key'=>'Apartment_Config',
 					'application'=>'rakesh\apartment'
@@ -31,6 +32,8 @@ class View_Master extends \View{
 		$flat_size_tab = $tabs->addTab('Flat Size');
 		$flat_status_tab = $tabs->addTab('Flat Status');
 		$notice_tab = $tabs->addTab('Notice Board');
+		$complain_tab = $tabs->addTab('Complain Category');
+		$complain_department_tab = $tabs->addTab('Complain Department');
 
 
 		// flat size
@@ -65,6 +68,34 @@ class View_Master extends \View{
 		}
 
 		// notice board
-		$nb = $notice_tab->add('rakesh\apartment\View_NoticeBoard');
+		$notice_tab->add('rakesh\apartment\View_NoticeBoard');
+
+		// complain category
+		$complain_form = $complain_tab->add('Form');
+		$complain_status_field = $complain_form->addField('Text','complain_category',"")
+				->setFieldHint('Comma(,) seperated values i.e. Accounts,Lifts')
+				->set($master_model['complain_category']);
+		if(!$master_model['complain_category']){
+			$complain_status_field->set('Accounts,Drains,Electrical,Garbage Disposal,Garden,Housekeeping,Lifts,Playarea,Security,Plumbing');
+		}
+		$complain_form->addSubmit('Save')->addClass('btn btn-primary');
+		if($complain_form->isSubmitted()){
+			$master_model['complain_category'] = $complain_form['complain_category'];
+			$master_model->save();
+			$complain_form->js(null,$complain_form->js()->reload())->univ()->successMessage('saved successfully ')->execute();
+		}
+
+		// complain Department
+		$cmp_dept_model = $this->add('rakesh\apartment\Model_ComplainDepartment');
+		$cmp_dept_model->addCondition('apartment_id',$this->app->apartment->id);
+
+		$complain_dept_crud = $complain_department_tab->add('xepan\base\CRUD');
+		$complain_dept_crud->setModel($cmp_dept_model,null,['name']);
+		$complain_dept_crud->grid->addPaginator(5);
+		$complain_dept_crud->grid->js(true)->find('.main-box-body')->addClass('table-responsive');
+		$complain_dept_crud->grid->addColumn('edit');
+		$complain_dept_crud->grid->addColumn('delete');
+
+
 	}
 }

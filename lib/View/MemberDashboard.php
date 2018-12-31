@@ -15,7 +15,9 @@ class View_MemberDashboard extends \View{
 		}
 
 		// $this->app->template->trySet('page_title',$this->app->apartment['name'].' Member Dashboard');
-		
+				
+		$this->add('rakesh\apartment\View_QuickLink');
+		$this->add('rakesh\apartment\View_PayNow');		
 		$this->add('rakesh\apartment\View_NoticeBoard');
 	}
 }

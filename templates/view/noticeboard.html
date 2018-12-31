@@ -1,4 +1,5 @@
 <div class="{$class} bg-black" id="{$_name}" style="{$style} padding: 10px;border-radius:10px;margin-bottom: 10px;">
+  {$header}
   {Pannel}
     <div class="atk-actions text-center">
       <h4 class="box-title">Notice Board</h4>
@@ -40,9 +41,15 @@
     <!-- <li>
       <i class="fa fa-clock-o bg-gray"></i>
     </li> -->
+    {not_found}
+    <li style="padding-left: 50px;">
+      <div class="alert alert-warning">
+        {not_found_message}{/}
+      </div>
+    </li>
+    {/}
     <li class="bg-black">
       {Paginator}{/}
     </li>
-    {not_found}{not_found_message}{/}{/}
   </ul>
 </div>

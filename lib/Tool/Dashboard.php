@@ -130,6 +130,20 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "Apartment Configuration";
 				$view = $dashboard->add('rakesh\apartment\View_Master');
 				break;
+
+			case 'complain':
+				$this->addClass('clear-page-padding');
+				$menu_active = 'active_complain_class';
+				$title = "Complain";
+				$view = $dashboard->add('rakesh\apartment\View_Complain');
+				break;
+			case 'complainedit':
+				$this->addClass('clear-page-padding');
+				$menu_active = 'active_complain_class';
+				$title = "Edit Complain";
+				$view = $dashboard->add('rakesh\apartment\View_ComplainEdit');
+				break;
+
 			
 			default:
 				$menu_active = 'active_dashboard_class';
@@ -178,9 +192,14 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	            <i class="fa fa-comment text-blue"></i> <span>Chat</span>
 	          </a>
 	        </li>
+	        <li class="{$active_complain_class}">
+	          <a href="?page=dashboard&mode=complain">
+	            <i class="fa fa-support text-yellow"></i> <span>Complain</span>
+	          </a>
+	        </li>
 	        <li class="{$active_helpdesk_class}">
 	          <a href="?page=dashboard&mode=helpdesk">
-	            <i class="fa fa-support text-red"></i> <span>Help Desk</span>
+	            <i class="fa fa-headphones text-red"></i> <span>Help Desk</span>
 	          </a>
 	        </li>
 

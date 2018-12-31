@@ -15,6 +15,8 @@ class View_NoticeBoard extends \View{
 		$nb = $this->add('rakesh\apartment\Model_NoticeBoard');
 		$nb->getElement('description')->display(['form'=>'xepan\base\RichText']);
 		$nb->addCondition('related_id',$this->app->apartment->id);
+		$nb->addCondition('flags','<',$this->app->now);
+		$nb->addCondition('tags','>=',$this->app->nextDate($this->app->now));
 		$nb->setOrder('created_at','desc');
 
 		if($this->app->userIsApartmentAdmin){
