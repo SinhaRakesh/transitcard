@@ -1,0 +1,45 @@
+<div class="ap-grid box box-primary {$class}" style="{$style}" id="{$_name}">
+  {header}
+  <div class="box-header with-border">
+    <h3 class="box-title">{$title}</h3>
+    {Pannel}
+    <div class="box-tools">
+          {$grid_buttons}
+          <div class="xepan-filter-form">
+            {$quick_search}
+          </div>
+    </div>
+    {/}
+  </div>
+  {/}
+  <!-- /.box-header -->
+  <div class="box-body">
+    <ul class="products-list product-list-in-box">
+      {rows}{row}
+      <li class="item">
+        <div class="product-img text-center" title="Created By {$created_by}">
+          <img src="{$profile_image}" alt="{$created_by}" style="width:50px;height: 50px;">
+          <p>{$created_by}</p>
+        </div>
+        <div class="product-info">
+          <a class="product-title text-purple">{$category}</a>
+          <div class="pull-right">
+            {$action}
+          </div>
+          <span class="product-description">
+            {$description}
+          </span>
+          <span class="fa fa-timer">{$created_at}</span>
+          {urget_wrapper}<span class="label label-danger">Urget</span>{/}
+        </div>
+      </li>
+      {/row}{/rows}
+    </ul>
+  </div>
+  <!-- /.box-body -->
+  <div class="box-footer text-center">
+    {$Paginator}
+  </div>
+  {not_found}{$not_found_message}{/}
+  <!-- /.box-footer -->
+</div>
