@@ -134,7 +134,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 			case 'complain':
 				$this->addClass('clear-page-padding');
 				$menu_active = 'active_complain_class';
-				$title = "Complain";
+				$title = "Complaint";
 				$view = $dashboard->add('rakesh\apartment\View_Complain');
 				break;
 			case 'complainedit':

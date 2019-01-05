@@ -35,7 +35,7 @@ class Model_Complain extends \xepan\base\Model_Table{
 
 		$this->addField('close_narration')->type('text');
 		$this->addField('reject_narration')->type('text');
-
+		
 		$config_model = $this->add('rakesh\apartment\Model_Config_Master')
 					->tryLoadAny();
 		$this->cat_value = [];
@@ -53,7 +53,7 @@ class Model_Complain extends \xepan\base\Model_Table{
 	function receive(){
 		$this['status'] = 'Pending';
 		$this['name'] = $this->getNextID() + 1;
-		$this['pending_at'] = $this->app->now();
+		$this['pending_at'] = $this->app->now;
 		$this['pending_by_id'] = $this->app->apartmentmember->id;
 		$this->save();
 	}
