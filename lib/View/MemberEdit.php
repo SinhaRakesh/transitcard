@@ -84,7 +84,7 @@ class View_MemberEdit extends \View{
 					'relation_with_head'=>'c12~4',
 					'dob'=>'c11~4',
 					'marriage_date'=>'c13~4',
-					'login_user_name'=>'Login Credential~b1~6',
+					'login_user_name'=>'Login Credential~b1~6~Please enter member valid Email Id or Mobile No',
 					'password'=>'b2~6',
 					'flat'=>'Flat Association~b3~12',
 				]);
@@ -120,12 +120,26 @@ class View_MemberEdit extends \View{
 
 			// condition 1 : check login user name is already exit or not
 			if($form['login_user_name']){
+				$username = trim($form['login_user_name']);
+				$username_is_mobile = false;
+				$username_is_email = false;
+				if(is_numeric($username) && strlen($username) == 10){
+					$username_is_mobile = true;
+				}elseif(filter_var($username,FILTER_VALIDATE_EMAIL)){
+					$username_is_email = true;
+				}else{
+					$form->displayError($form->getElement('login_user_name'),'username must be either mobile no or email id');
+				}
+
 				$user = $this->add('xepan\base\Model_User');
-				$user->addCondition('username',$form['login_user_name']);
+				if($model->loaded()){
+					$user->load($model['user_id']);
+				}else
+					$user->addCondition('username',$form['login_user_name']);
+
 				$this->add('BasicAuth')
 					->usePasswordEncryption('md5')
 					->addEncryptionHook($user);
-					$user->tryLoadAny();
 
 					if($user->loaded()){
 						$old_contact_model = $this->add('xepan\base\Model_Contact')
@@ -149,6 +163,7 @@ class View_MemberEdit extends \View{
 				$this->api->db->beginTransaction();
 
 				$user['password'] = $form['password'];
+				$user['username'] = $form['login_user_name'];
 				$user->save();
 				$form->model['user_id'] = $user->id;
 				$form->save();
