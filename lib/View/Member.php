@@ -29,8 +29,14 @@ class View_Member extends \View{
 		$crud = $this->add('xepan\base\CRUD',['entity_name'=>"",'edit_page'=>$this->app->url('dashboard',['mode'=>'memberedit']),'action_page'=>$this->app->url('dashboard',['mode'=>'memberedit'])]);
 
 		$crud->grid->addHook('formatRow',function($g){
-			$admin_html = ($g->model['is_apartment_admin']?'<span class="label bg-green">Apartment Admin</span>':"");
-			$g->current_row_html['name'] = $g->model['name']." - ".$g->model['flat_name']."<br/>".$admin_html;
+			$admin_html = ($g->model['is_apartment_admin']?'<span class="label bg-blue">Apartment Admin</span>':"");
+							
+			if($g->model['status'] == "Active")
+				$status_html = '<span class="label bg-green">Active</span>';
+			else
+				$status_html = '<span class="label bg-red">InActive</span>';
+
+			$g->current_row_html['name'] = $g->model['name']." - ".$g->model['flat_name']."<br/>".$admin_html."<br/>".$status_html;
 		});
 
 		$crud->add('xepan\base\Controller_Avatar',['name_field'=>'name']);
@@ -38,7 +44,7 @@ class View_Member extends \View{
 		// $crud->grid->noSno();
 		$crud->setModel($model,
 			['first_name','last_name','address','city','state_id','country_id','organization','post','dob','relation_with_head','marriage_date','login_password','flat'],
-			['name','flat_name','image']
+			['name','flat_name','image','status']
 		);
 		
 		$crud->grid->removeColumn('image');
