@@ -22,7 +22,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 		$dashboard = $this->add('rakesh\apartment\View_Dashboard');
 		$title = "Dashboard";
 		if(!@$this->app->apartment->id){
-			$dashboard->add('View_Info')->set('Your Account is created successfully, First Update Your Apartment info');
+			$dashboard->add('View_Info')->addClass('alert alert-success')->set('Your Account is created successfully, First Update Your Apartment information');
 			$view = $dashboard->add('rakesh\apartment\View_Apartment');
 			return;
 		}
@@ -255,9 +255,11 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	function recursiveRender(){
 		
 		// regiter login customer for live chat
-		$host = "ws://127.0.0.1:8890/";
-		$uu_id = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $this->app->apartmentmember->id;
-		$this->app->js(true)->_load('apwsclient')->univ()->runWebSocketClient($host,$uu_id);
+		if(isset($this->app->apartment->id)){
+			$host = "ws://127.0.0.1:8890/";
+			$uu_id = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $this->app->apartmentmember->id;
+			$this->app->js(true)->_load('apwsclient')->univ()->runWebSocketClient($host,$uu_id);
+		}
 		parent::recursiveRender();
 	}
 }

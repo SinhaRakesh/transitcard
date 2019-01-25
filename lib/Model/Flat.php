@@ -53,6 +53,20 @@ class Model_Flat extends \xepan\base\Model_Table{
 			$this->status['Deactive'] = 'Deactive';
 		}
 		$field_status->setValueList($this->status);
+
+		$this->addHook('beforeSave',[$this,'checkDuplicate']);
+	}
+
+	function checkDuplicate(){
+		$model = $this->add('rakesh\apartment\Model_Flat');
+		$model->addCondition('apartment_id',$this->app->apartment->id);
+		$model->addCondition('block_id',$this['block_id']);
+		$model->addCondition('name',$this['name']);
+		$model->addCondition('id','<>',$this->id);
+		$model->tryLoadAny();
+
+		if($model->loaded()) throw $this->exception('name is already taken','ValidityCheck')->setField('name');
+
 	}
 
 	function getMemberId($flat_id){

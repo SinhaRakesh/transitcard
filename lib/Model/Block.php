@@ -25,7 +25,19 @@ class Model_Block extends \xepan\base\Model_Table{
 			'name|to_trim|required'
 		]);
 
-		$this->add('dynamic_model\Controller_AutoCreator');
+		// $this->add('dynamic_model\Controller_AutoCreator');
+
+		$this->addHook('beforeSave',[$this,'checkDuplicate']);
 	}
 
+	function checkDuplicate(){
+		$block = $this->add('rakesh\apartment\Model_Block');
+		$block->addCondition('apartment_id',$this->app->apartment->id);
+		$block->addCondition('name',$this['name']);
+		$block->addCondition('id','<>',$this->id);
+		$block->tryLoadAny();
+
+		if($block->loaded()) throw $this->exception('name is already taken','ValidityCheck')->setField('name');			
+
+	}
 }
