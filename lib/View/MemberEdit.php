@@ -19,8 +19,36 @@ class View_MemberEdit extends \View{
 		$model = $this->add('rakesh\apartment\Model_Member');
 		$model->addCondition('apartment_id',@$this->app->apartment->id);
 		if($this->app->userIsApartmentAdmin){
-			$model->addCondition('is_flat_owner',true);
+			$model->addCondition([['is_flat_owner',true],['is_apartment_admin',true]]);
 		}
+		$model->addExpression('email_id_1')->set(function($m,$q){
+			$email = $m->add('xepan\base\Model_Contact_Email');
+			$email->addCondition("contact_id",$q->fieldQuery('customer_id'));
+			$email->addCondition("head","Official");
+			$email->setLimit(1);
+			return $q->expr('[0]',[$email->fieldQuery('value')]);
+		});
+		$model->addExpression('email_id_2')->set(function($m,$q){
+			$email = $m->add('xepan\base\Model_Contact_Email');
+			$email->addCondition("contact_id",$q->fieldQuery('customer_id'));
+			$email->addCondition("head","Personal");
+			$email->setLimit(1);
+			return $q->expr('[0]',[$email->fieldQuery('value')]);
+		});
+		$model->addExpression('mobile_no_1')->set(function($m,$q){
+			$phone = $m->add('xepan\base\Model_Contact_Phone');
+			$phone->addCondition("contact_id",$q->fieldQuery('customer_id'));
+			$phone->addCondition("head","Official");
+			$phone->setLimit(1);
+			return $q->expr('[0]',[$phone->fieldQuery('value')]);
+		});
+		$model->addExpression('mobile_no_2')->set(function($m,$q){
+			$phone = $m->add('xepan\base\Model_Contact_Phone');
+			$phone->addCondition("contact_id",$q->fieldQuery('customer_id'));
+			$phone->addCondition("head","Personal");
+			$phone->setLimit(1);
+			return $q->expr('[0]',[$phone->fieldQuery('value')]);
+		});
 
 		if($action == "edit" && $contact_id){
 			$this->title = "Edit Member Details";
@@ -42,28 +70,37 @@ class View_MemberEdit extends \View{
 			->layout([
 					'first_name'=>'Member Section~c1~6',
 					'last_name'=>'c2~6',
-					'dob'=>'c11~4',
-					'relation_with_head'=>'c12~4',
-					'marriage_date'=>'c13~4',
-					'organization~Organization\Business'=>'c14~6',
-					'post'=>'c15~6',
 					'country_id~Country'=>'c3~3',
 					'state_id~State'=>'c4~3',
 					'city'=>'c5~3',
 					'address'=>'c6~3',
-					'login_user_name'=>'Login Credential~c6~6',
-					'password'=>'c7~6',
-					'flat'=>'Flat Association~c7~12',
+					'mobile_no_1'=>'c7~3',
+					'mobile_no_2'=>'c8~3',
+					'email_id_1'=>'c9~3',
+					'email_id_2'=>'c10~3',
+					'image_id~Profile Picture'=>'a1~12',
+					'organization~Organization\Business'=>'c14~6',
+					'post'=>'c15~6',
+					'relation_with_head'=>'c12~4',
+					'dob'=>'c11~4',
+					'marriage_date'=>'c13~4',
+					'login_user_name'=>'Login Credential~b1~6',
+					'password'=>'b2~6',
+					'flat'=>'Flat Association~b3~12',
 				]);
 
 		$form->addField('login_user_name');
 		$form->addField('password','password');
+		$form->addField('mobile_no_1')->set($model['mobile_no_1']);
+		$form->addField('mobile_no_2')->set($model['mobile_no_2']);
+		$form->addField('email_id_1')->set($model['email_id_1']);
+		$form->addField('email_id_2')->set($model['email_id_2']);
+
 		$flat_model = $this->add('rakesh\apartment\Model_Flat')->addCondition('apartment_id',@$this->app->apartment->id);
 		$flat_field = $form->addField('xepan\base\Multiselect','flat');
 		$flat_field->setModel($flat_model);
 		$flat_field->setEmptyText('Please Select Associated Flat');
-
-		$form->setModel($model,['first_name','last_name','dob','relation_with_head','marriage_date','organization','post','country_id','state_id','city','address']);
+		$form->setModel($model,['first_name','last_name','dob','relation_with_head','marriage_date','organization','post','country_id','state_id','city','address','image_id','image']);
 		$form->getElement('first_name')->validate('required');
 		$form->getElement('last_name')->validate('required');
 		$form->getElement('login_user_name')->validate('required');
@@ -119,6 +156,49 @@ class View_MemberEdit extends \View{
 					$flat_model->associateWith($form['flat'],$form->model->id);
 				}
 				
+				$member_model = $form->model;
+				$member_model->reload();
+				$this->app->apartmentmember = $member_model;
+				// email id association
+				if($form['email_id_1']){
+					$member_model->checkEmail($form['email_id_1'],$member_model,'email_id_1');
+					$email = $this->add('xepan\base\Model_Contact_Email',['bypass_hook'=>true]);
+					$email->addCondition("contact_id",$member_model->id);
+					$email->addCondition("head","Official");
+					$email->tryLoadAny();
+					$email['value'] = $form['email_id_1'];
+					$email->save();
+				}
+				if($form['email_id_2']){
+					$member_model->checkEmail($form['email_id_2'],$member_model,'email_id_2');
+					$email = $this->add('xepan\base\Model_Contact_Email',['bypass_hook'=>true]);
+					$email->addCondition("contact_id",$member_model->id);
+					$email->addCondition("head","Personal");
+					$email->tryLoadAny();
+					$email['value'] = $form['email_id_2'];
+					$email->save();
+				}
+
+				if($form['mobile_no_1']){
+					$member_model->checkPhone($form['mobile_no_1'],$member_model,'mobile_no_1');
+					$phone = $this->add('xepan\base\Model_Contact_Phone',['bypass_hook'=>true]);
+					$phone->addCondition("contact_id",$member_model->id);
+					$phone->addCondition("head","Official");
+					$phone->tryLoadAny();
+					$phone['value'] = $form['mobile_no_1'];
+					$phone->save();
+				}
+				if($form['mobile_no_2']){
+					$member_model->checkPhone($form['mobile_no_2'],$member_model,'mobile_no_2');
+					$phone = $this->add('xepan\base\Model_Contact_Phone',['bypass_hook'=>true]);
+					$phone->addCondition("contact_id",$member_model->id);
+					$phone->addCondition("head","Personal");
+					$phone->tryLoadAny();
+					$phone['value'] = $form['mobile_no_2'];
+					$phone->save();
+				}
+
+				// contact no association
 				$this->api->db->commit();
 			}catch(\Exception_StopInit $e){
 
