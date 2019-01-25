@@ -47,7 +47,7 @@ class Model_MemberAbstract extends \xepan\commerce\Model_Customer{
 
 		$this->addExpression('flat_name')->set(function($m,$q){
 			$x = $m->add('rakesh\apartment\Model_Flat',['table_alias'=>'flat_str']);
-			return $x->addCondition('member_id',$q->getField('id'))->_dsql()->del('fields')->field($q->expr('group_concat([0] SEPARATOR ",")',[$x->getElement('name')]));
+			return $x->addCondition('member_id',$q->getField('id'))->_dsql()->del('fields')->field($q->expr('group_concat([0] SEPARATOR ",")',[$x->getElement('name_with_block')]));
 		})->allowHTML(true);
 
 
