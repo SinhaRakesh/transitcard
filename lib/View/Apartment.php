@@ -49,6 +49,10 @@ class View_Apartment extends \View{
 			$this->app->apartmentmember->save();
 			$this->app->forget($this->app->auth->model->id.'_apartment');
 
+			if(!isset($this->app->apartment->id)){
+				$form->js()->redirect($this->app->url())->execute();
+			} 
+			
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Apartment Information Updated Successfully')->execute();
 		}
 
