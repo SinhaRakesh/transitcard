@@ -15,6 +15,7 @@ class Model_Flat extends \xepan\base\Model_Table{
 		];
 	public $size = ['1BHK'=>'1 BHK','2BHK'=>'2 BHK','3BHK'=>'3 BHK','4BHK'=>'4 BHK','Other'=>'Other'];
 	public $acl_type = "Flat";
+	public $title_field = "name_with_block";
 
 	function init(){
 		parent::init();
@@ -29,6 +30,10 @@ class Model_Flat extends \xepan\base\Model_Table{
 		$field_status = $this->addField('status');
 		// $this->addField('last_bill_generation_date');
 		
+		$this->addExpression('name_with_block')->set(function($m,$q){
+			return $q->expr('CONCAT([1]," (",[0],")")',[$m->getElement('block'),$m->getElement('name')]);
+		});
+
 		$this->is([
 			'apartment_id|to_trim|required',
 			'name|to_trim|required',
