@@ -44,6 +44,11 @@ class View_FlatEdit extends \View{
 				->addCondition('is_flat_owner',true)
 				->addCondition('apartment_id',@$this->app->apartment->id);
 		
+		$model->getElement('block_id')
+			->getModel()
+				->addCondition('apartment_id',@$this->app->apartment->id);
+		
+
 		$form = $this->add('Form');
 		$form->add('xepan\base\Controller_FLC')
 			->showLables(true)
