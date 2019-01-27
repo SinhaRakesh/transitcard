@@ -36,7 +36,7 @@ class Initiator extends \Controller_Addon {
         $model = $this->add('rakesh\apartment\Model_Member');
         $this->app->addHook('userCreated',[$model,'createNewMember']);
 
-        $this->app->apartmentmember = $memeber_model = $this->add('rakesh\apartment\Model_MemberAbstract');
+        $this->app->apartmentmember = $memeber_model = $this->add('rakesh\apartment\Model_Member');
         if($memeber_model->loadLoggedIn()){
             if(!($this->app->apartment = $this->app->recall($this->app->auth->model->id.'_apartment',false)) AND $memeber_model['apartment_id']){
                 $this->app->apartment = $this->app->apartmentmember->ref('apartment_id');
