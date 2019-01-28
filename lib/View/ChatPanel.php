@@ -77,33 +77,6 @@ class View_ChatPanel extends \View{
 				->addClass('msginputbox')
 				->validate('required');
 		$this->send_button = $this->add('Button',null,'send_button')->set(' ')->setIcon('fa fa fa-send')->addClass('btn btn-primary');
-
-		// $msg_field->on('focus',function(){
-		// 	if($this->usertyping) return;
-
-		// 	$msg = [
-		// 			'message'=>"",
-		// 			'sticky'=>false,
-		// 			'desktop'=>false,
-		// 			'js'=>(string)$this->app->js()->show()->_selector('.chat-user-typing')
-		// 		];
-		// 	$ml = $this->add('rakesh\apartment\Model_MessageSent');
-		// 	$ml->pushToWebSocket([$this->contact_to_id],$msg);
-
-		// 	$this->usertyping = true;
-		// });
-		// $msg_field->on('focusout',function(){
-		// 	$msg = [
-		// 			'message'=>"",
-		// 			'sticky'=>false,
-		// 			'desktop'=>false,
-		// 			'js'=>(string)$this->app->js()->hide()->_selector('.chat-user-typing')
-		// 		];
-		// 	$ml = $this->add('rakesh\apartment\Model_MessageSent');
-		// 	$ml->pushToWebSocket([$this->contact_to_id],$msg);
-
-		// 	$this->usertyping = false;
-		// });
 	}
 
 	function addChatHistory(){
@@ -117,10 +90,10 @@ class View_ChatPanel extends \View{
 				$l->current_row_html['member_name'] = $l->model['from'];
 			}else{
 				$l->current_row_html['chat_direction'] = "right";
-				$l->current_row_html['member_name'] = $l->model['to'];
+				$l->current_row_html['member_name'] = $l->model['from'];
 			}
 
-			if($l->model['image_id']){
+			if($l->model['image']){
 				$l->current_row_html['profile_image'] = $l->model['image'];
 			}else{
 				$l->current_row_html['profile_image'] = $this->default_img_url;

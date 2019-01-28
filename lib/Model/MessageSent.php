@@ -39,6 +39,9 @@ class Model_MessageSent extends \xepan\communication\Model_Communication_Abstrac
 		$this->pushToWebSocket($to_id,$msg,'chatmessage');
 	}
 
+		// send custom message to
+		// $ml = $this->add('rakesh\apartment\Model_MessageSent');
+		// 	$ml->pushToWebSocket([$this->contact_to_id],$msg);
 	function pushToWebSocket($to_id,$msg,$cmd='notification'){
 
 		$this->server = $this->app->getConfig('ap-websocket-server','ws://127.0.0.1:8890');
