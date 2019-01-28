@@ -16,23 +16,30 @@ class Model_MessageSent extends \xepan\communication\Model_Communication_Abstrac
 	function afterSave(){
 
 		// append html
+		$default_img_url = 'websites/'.$this->app->current_website_name.'/www/dist/img/avatar04.png';
 		$msg = [
 				'title'=>$this['from'].' messaged you:',
 				'message'=>$this['description'],
 				'type'=>'',
 				'sticky'=>false,
 				'desktop'=>strip_tags($this['description']),
-				'js'=>(string) $this->app->js()->_selector('.ap-chat-message-trigger-reload')->trigger('reload')
+				'from'=>$this['from'],
+				'to'=>$this['to'],
+				'from_image'=>($this['image']?:$default_img_url),
+				'send_date' => date('M d H:i a',strtotime($this['created_at'])),
+				'cmd'=>'chatmessage'
 			];
+			// 'js'=>(string) $this->app->js()->_selector('.ap-chat-message-trigger-reload')->trigger('reload')
+
 		$to_id = [];
 		foreach ($this['to_raw'] as $key => $value) {
 			$to_id[] = $value['id'];
 		}
 
-		$this->pushToWebSocket($to_id,$msg);
+		$this->pushToWebSocket($to_id,$msg,'chatmessage');
 	}
 
-	function pushToWebSocket($to_id,$msg){
+	function pushToWebSocket($to_id,$msg,$cmd='notification'){
 
 		$this->server = $this->app->getConfig('ap-websocket-server','ws://127.0.0.1:8890');
 		
@@ -42,11 +49,11 @@ class Model_MessageSent extends \xepan\communication\Model_Communication_Abstrac
 
 		$uu_ids = [];
 		foreach ($to_id as $id) {
-			$uu_ids [] = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $id;
+			$uu_ids [] = str_replace("_", "",$this->app->normalizeName($this->app->apartment['name'])).'_'.$this->app->apartment->id.'_'.$id;
 		}
 
-		$data = ['clients'=>$uu_ids,'message'=>$msg,'cmd'=>'notification'];
-
+		$data = ['clients'=>$uu_ids,'message'=>$msg,'cmd'=>$cmd];
+		
 		$client = new \Hoa\Websocket\Client(
 		    new \Hoa\Socket\Client($this->server)
 		);
