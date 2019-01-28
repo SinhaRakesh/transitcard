@@ -95,4 +95,13 @@ class Model_MemberAbstract extends \xepan\commerce\Model_Customer{
 	function getFlatIds(){
 		return explode(",",$this->app->apartmentmember['flat']);
 	}
+
+	function getUUID($member_id=0){
+		if($member_id){
+			$model = $this->add('rakesh\apartment\Model_MemberAbstract')->load($member_id);
+			return str_replace("_", "",$this->app->normalizeName($model['apartment'])).'_'.$model['apartment_id'].'_'.$member_id;
+		}
+		
+		return str_replace("_", "",$this->app->normalizeName($this->app->apartment['name'])).'_'.$this->app->apartment->id.'_'.$this->app->apartmentmember->id;
+	}
 }
