@@ -73,40 +73,37 @@ class View_ChatPanel extends \View{
 
 		$this->form = $form = $this->add('Form',null,'message_form');
 		$msg_field = $form->addField('Line','message');
-		$msg_field->setAttr('autofocus','autofocus')
-				->setAttr('PlaceHolder','Type a message')
+		$msg_field->setAttr('PlaceHolder','Type a message')
 				->addClass('msginputbox')
 				->validate('required');
-
 		$this->send_button = $this->add('Button',null,'send_button')->set(' ')->setIcon('fa fa fa-send')->addClass('btn btn-primary');
 
-		$msg_field->on('focus',function(){
-			if($this->usertyping) return;
+		// $msg_field->on('focus',function(){
+		// 	if($this->usertyping) return;
 
-			$msg = [
-					'message'=>"",
-					'sticky'=>false,
-					'desktop'=>false,
-					'js'=>(string)$this->app->js()->show()->_selector('.chat-user-typing')
-				];
-			$ml = $this->add('rakesh\apartment\Model_MessageSent');
-			$ml->pushToWebSocket([$this->contact_to_id],$msg);
+		// 	$msg = [
+		// 			'message'=>"",
+		// 			'sticky'=>false,
+		// 			'desktop'=>false,
+		// 			'js'=>(string)$this->app->js()->show()->_selector('.chat-user-typing')
+		// 		];
+		// 	$ml = $this->add('rakesh\apartment\Model_MessageSent');
+		// 	$ml->pushToWebSocket([$this->contact_to_id],$msg);
 
-			$this->usertyping = true;
-		});
-		$msg_field->on('focusout',function(){
-			$msg = [
-					'message'=>"",
-					'sticky'=>false,
-					'desktop'=>false,
-					'js'=>(string)$this->app->js()->hide()->_selector('.chat-user-typing')
-				];
-			$ml = $this->add('rakesh\apartment\Model_MessageSent');
-			$ml->pushToWebSocket([$this->contact_to_id],$msg);
+		// 	$this->usertyping = true;
+		// });
+		// $msg_field->on('focusout',function(){
+		// 	$msg = [
+		// 			'message'=>"",
+		// 			'sticky'=>false,
+		// 			'desktop'=>false,
+		// 			'js'=>(string)$this->app->js()->hide()->_selector('.chat-user-typing')
+		// 		];
+		// 	$ml = $this->add('rakesh\apartment\Model_MessageSent');
+		// 	$ml->pushToWebSocket([$this->contact_to_id],$msg);
 
-			$this->usertyping = false;
-		});
-
+		// 	$this->usertyping = false;
+		// });
 	}
 
 	function addChatHistory(){
@@ -175,7 +172,7 @@ class View_ChatPanel extends \View{
 		// if contact is selected then updated name
 		$this->template->trySet('selected_name',$this->contact_to_name?:'Chat History');
 		$this->template->trySet('selected_member_img',$this->contact_to_image?:$this->default_img_url);
-
+		$this->template->trySet('aptchatwith',$this->app->apartmentmember->getUUID($this->contact_to_id));
 		// form submission
 		if($this->contact_to_id && $this->form->isSubmitted()){
 			
@@ -196,20 +193,6 @@ class View_ChatPanel extends \View{
 			$send_msg->save();
 			
 			$send_date = date('M d H:i a',strtotime($send_msg['created_at']));
-			// $this->chat_history_lister->js()->reload()->execute();
-			// chatpanel html 1 append html send message 
-			// $send_html = '<li class="sent">
-   //                <div class="message-wrapper">
-   //                  <img src="'.$this->contact_to_image.'" alt="" style="" />
-   //                  <div class="message-content">'.$message.'</div>
-   //                </div>
-   //                <div class="message-otherinfo-wrapper">
-   //                  <div class="chat-otherinfo">
-   //                    <span class="">'.$send_date.'</span>
-   //                  </div>
-   //                </div>
-   //              </li>';
-	// $this->chat_history_lister->js()->append($send_html)->_selector('.messages > ul'),
 
 			$send_html = '<div class="direct-chat-msg">
 							<div class="direct-chat-info clearfix">
@@ -223,6 +206,7 @@ class View_ChatPanel extends \View{
 			$js_array = [
 				$this->form->js()->_selector('.msginputbox')->val(""),
 				$this->chat_history_lister->js()->append($send_html)->_selector('.direct-chat-messages'),
+				$this->form->js()->univ()->chatScrollToTop()
 			];
 			
 			$this->form->js(null,$js_array)->univ()->execute();
@@ -232,6 +216,18 @@ class View_ChatPanel extends \View{
 		
 		$this->app->stickyForget('chatid');
 		$this->js('click')->univ()->redirect($this->app->url('dashboard',['mode'=>'chat']))->_selector('.backtochatmember');
+
+
+		$wshost = 'ws://127.0.0.1:8890/';
+		$uu_id = $this->app->apartmentmember->getUUID();
+		$this->js(true)->_load('apwsclient')->eapartment_chatpanel(
+				[
+					'connected'=>true,
+					'username'=>$this->app->apartmentmember['name'],
+					'wshost'=>$wshost,
+					'uu_id'=>$uu_id,
+					'chat_with'=>$this->contact_to_id
+				]);
 		parent::recursiveRender();
 	}
 	
