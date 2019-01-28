@@ -10,6 +10,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 		parent::init();
 		
 		$this->app->stickyGET('mode');
+		
 		// $menu = $this->add('Menu');
 		// $menu->addMenuItem($this->app->url(null,['mode'=>'apartment']),'Apartment');
 		// $menu->addMenuItem($this->app->url(null,['mode'=>'flat']),'Flat');
@@ -29,6 +30,11 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 
 		$menu_active = 'active_dashboard_class';
 		switch ($_GET['mode']){
+			case 'socketchat':
+				$menu_active = '';
+				$title = "Socket Chat";
+				$view = $dashboard->add('rakesh\apartment\View_SocketChat');
+				break;
 			case 'apartment':
 				$menu_active = 'active_apartment_class';
 				$title = "Apartment Settings";
@@ -254,11 +260,11 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 
 	function recursiveRender(){
 		
-		// regiter login customer for live chat
+		// regiter login customer for live chat/push notification
 		if(isset($this->app->apartment->id)){
 			$host = "ws://127.0.0.1:8890/";
-			$uu_id = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $this->app->apartmentmember->id;
-			$this->app->js(true)->_load('apwsclient')->univ()->runWebSocketClient($host,$uu_id);
+			$uu_id = $this->app->apartmentmember->getUUID();
+			$this->app->js(true)->_load('apwsclient')->univ()->runWebSocketClient($host,$uu_id,['name'=>$this->app->apartmentmember['name']]);
 		}
 		parent::recursiveRender();
 	}
