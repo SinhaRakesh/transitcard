@@ -143,13 +143,12 @@ class View_ChatPanel extends \View{
 			$chat_history_model->addCondition([['from_id',$this->contact_to_id],['to_id',$this->contact_to_id]]);
 		}
 		$chat_history_model->setOrder('id','desc');
-		$chat_history_model->setLimit(10);
+		$chat_history_model->setLimit(5);
 		$result = $chat_history_model->getRows();
 		$result = array_reverse($result);
-		// $sql = 'SELECT * FROM (SELECT * FROM communication ORDER BY id DESC LIMIT 10 ) AS a ORDER BY id;';
-		// $result = $chat_history_model->_dsql()->expr($sql)->execute()->getAll();
 		$this->chat_history_lister->setSource($result);
 		// $this->chat_history_lister->setModel($chat_history_model);
+		// $this->chat_history_lister->add('misc\Controller_AutoPaginator')->setLimit(5);
 
 		// if contact is selected then updated name
 		$this->template->trySet('selected_name',$this->contact_to_name?:'Chat History');

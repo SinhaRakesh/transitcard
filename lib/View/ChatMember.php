@@ -14,7 +14,9 @@ class View_ChatMember extends \View{
 		// 	$this->add('View_Error')->set('first update partment data');
 		// 	return;
 		// }
-
+		
+		$this->app->stickyGET('active');
+		$this->app->stickyGET('mode');
 		$this->tab = $this->add('Tabs');
 		// $group_tab = $tab->addTab('Groups');
 
@@ -76,7 +78,7 @@ class View_ChatMember extends \View{
 		$crud->grid->addColumn('edit');
 		$crud->grid->addColumn('delete');
 
-		$this->app->stickyForget('mode');
+		// $this->app->stickyForget('mode');
 		$crud->on('click','tr')->univ()->location(
 				[
 					$this->api->url('dashboard'),
@@ -101,8 +103,14 @@ class View_ChatMember extends \View{
 				$l->current_row_html['profile_image'] = 'websites/apartment/www/dist/img/avatar04.png';
 			}
 
-			$l->current_row_html['uuid'] = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $l->model->id;
+			$l->current_row_html['uuid'] = str_replace("_", "",$this->app->normalizeName($this->app->apartment['name'])).'_'.$this->app->apartment->id.'_'. $l->model->id;
 			$l->current_row_html['chaturl'] = $this->app->url('dashboard',['mode'=>'chatpanel','chatid'=>$l->model->id]);
+
+			if($l->model['chatpanel_last_login_at'] == "0000-00-00 00:00:00" OR $l->model['chatpanel_last_login_at'] == "0000-00-00"){
+				$l->current_row_html['last_login_at'] = " ";
+			}else{
+				$l->current_row_html['last_login_at'] = " Last Login at ".$this->add('xepan\base\xDate')->diff($this->app->now,$l->model['chatpanel_last_login_at']);
+			}
 		});
 
 		$member_model = $this->add('rakesh\apartment\Model_Member');
@@ -112,14 +120,11 @@ class View_ChatMember extends \View{
 
 		$this->member_lister->setModel($member_model);
 		$this->member_lister->addQuickSearch(['name']);
-
 		$this->member_lister->addPaginator(25);
-
+		
 	}
 
-	function recursiveRender(){
-
-
+	// function recursiveRender(){
 		// // reload member chat
 		// $js_reload = [
 		// 	$this->chat_history_lister->js()->reload([
@@ -135,7 +140,7 @@ class View_ChatMember extends \View{
 		// // $uu_id = $this->app->normalizeName($this->app->apartment['name']).'_'.$this->app->apartment->id.'_'. $this->app->apartmentmember->id;
 		// // $this->app->js(true)->_load('wsclient')->univ()->runWebSocketClient($host,$uu_id);
 
-		parent::recursiveRender();
+		// parent::recursiveRender();
+	// }
 
-	}
 }
