@@ -22,9 +22,18 @@
                   <span class="contact-statusonline"></span>
                   <img src="{profile_image}{/}" alt="" />
                   <div class="meta">
-                    <p class="name">{$name}</p>
-                    {$last_message}
-                    {$last_login_at}
+                    <div class="name">
+                      {$name}
+                      {last_login_at_wrapper}
+                      <small class="pull-right">
+                        <i class="fa fa-clock-o"></i>&nbsp;Last Login: {$last_login_at}
+                      </small>
+                      {/last_login_at_wrapper}
+                    </div>
+                    <div class="aptchat-last-message">
+                      {$last_message} 
+                      <small><i class="fa fa-clock-o"></i>&nbsp;{$last_message_created_at}</small>
+                    </div>
                   </div>
                 </div>
               </li>
