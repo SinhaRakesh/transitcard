@@ -35,7 +35,7 @@ class Model_MemberAbstract extends \xepan\commerce\Model_Customer{
 		$model_j->addField('feedback_read_at')->type('int')->system(true);
 		$model_j->addField('communication_read_at')->type('int')->system(true);
 		$model_j->addField('chatmessage_read_at')->type('int')->system(true);
-		$model_j->addField('chatpanel_last_login_at')->type('datetime')->system(true);
+		$model_j->addField('chatpanel_last_login_at')->type('datetime');
 
 		$model_j->addField('is_group')->defaultValue(false)->type('boolean');
 

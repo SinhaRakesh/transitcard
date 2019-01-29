@@ -22,29 +22,29 @@ class View_MemberEdit extends \View{
 			$model->addCondition([['is_flat_owner',true],['is_apartment_admin',true]]);
 		}
 		$model->addExpression('email_id_1')->set(function($m,$q){
-			$email = $m->add('xepan\base\Model_Contact_Email');
-			$email->addCondition("contact_id",$q->fieldQuery('customer_id'));
+			$email = $m->add('xepan\base\Model_Contact_Email',['table_alias'=>'email1']);
+			$email->addCondition("contact_id",$m->getElement('customer_id'));
 			$email->addCondition("head","Official");
 			$email->setLimit(1);
 			return $q->expr('[0]',[$email->fieldQuery('value')]);
 		});
 		$model->addExpression('email_id_2')->set(function($m,$q){
-			$email = $m->add('xepan\base\Model_Contact_Email');
-			$email->addCondition("contact_id",$q->fieldQuery('customer_id'));
+			$email = $m->add('xepan\base\Model_Contact_Email',['table_alias'=>'email2']);
+			$email->addCondition("contact_id",$m->getElement('customer_id'));
 			$email->addCondition("head","Personal");
 			$email->setLimit(1);
 			return $q->expr('[0]',[$email->fieldQuery('value')]);
 		});
 		$model->addExpression('mobile_no_1')->set(function($m,$q){
-			$phone = $m->add('xepan\base\Model_Contact_Phone');
-			$phone->addCondition("contact_id",$q->fieldQuery('customer_id'));
+			$phone = $m->add('xepan\base\Model_Contact_Phone',['table_alias'=>'phone1']);
+			$phone->addCondition("contact_id",$m->getElement('customer_id'));
 			$phone->addCondition("head","Official");
 			$phone->setLimit(1);
 			return $q->expr('[0]',[$phone->fieldQuery('value')]);
 		});
 		$model->addExpression('mobile_no_2')->set(function($m,$q){
-			$phone = $m->add('xepan\base\Model_Contact_Phone');
-			$phone->addCondition("contact_id",$q->fieldQuery('customer_id'));
+			$phone = $m->add('xepan\base\Model_Contact_Phone',['table_alias'=>'phone2']);
+			$phone->addCondition("contact_id",$m->getElement('customer_id'));
 			$phone->addCondition("head","Personal");
 			$phone->setLimit(1);
 			return $q->expr('[0]',[$phone->fieldQuery('value')]);
@@ -61,7 +61,7 @@ class View_MemberEdit extends \View{
 			}
 
 		}else{
-			$this->title = "Add New Member";
+			$this->title = "Add Flat Owner";
 		}
 
 		$form = $this->add('Form');
@@ -165,6 +165,7 @@ class View_MemberEdit extends \View{
 				$user['password'] = $form['password'];
 				$user['username'] = $form['login_user_name'];
 				$user->save();
+				
 				$form->model['user_id'] = $user->id;
 				$form->save();
 				if($form['flat']){

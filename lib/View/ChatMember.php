@@ -107,12 +107,16 @@ class View_ChatMember extends \View{
 			$l->current_row_html['chaturl'] = $this->app->url('dashboard',['mode'=>'chatpanel','chatid'=>$l->model->id]);
 
 			if($l->model['chatpanel_last_login_at'] == "0000-00-00 00:00:00" OR $l->model['chatpanel_last_login_at'] == "0000-00-00"){
-				$l->current_row_html['last_login_at_wrapper'] = " ";
+				$l->current_row_html['last_login_at_wrapper'] = "";
 			}else{
 				$l->current_row_html['last_login_at'] = $this->add('xepan\base\xDate')->diff($this->app->now,$l->model['chatpanel_last_login_at']);
 			}
 
-			$l->current_row_html['last_message_created_at'] = $this->add('xepan\base\xDate')->diff($this->app->now,$l->model['last_message_created_at'])."</p>";
+			if($l->model['last_message']){
+				$l->current_row_html['last_message_created_at'] = $this->add('xepan\base\xDate')->diff($this->app->now,$l->model['last_message_created_at'])."</p>";
+			}else{
+				$l->current_row_html['last_message_wrapper'] = " ";
+			}
 
 		});
 

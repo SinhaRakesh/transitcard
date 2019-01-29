@@ -49,6 +49,7 @@ class View_Member extends \View{
 		
 		$crud->grid->removeColumn('image');
 		$crud->grid->removeColumn('flat_name');
+		$crud->grid->removeColumn('status');
 		$crud->grid->addFormatter('name','Wrap');
 		$crud->grid->js(true)->find('.main-box-body')->addClass('table-responsive');
 		// if($crud->isEditing()){
