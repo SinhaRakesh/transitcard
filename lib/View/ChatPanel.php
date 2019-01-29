@@ -67,6 +67,15 @@ class View_ChatPanel extends \View{
 		}
 
 		$this->title = 'Chat with '.$this->contact_to_name;
+
+		// update date and count
+		$this->app->apartmentmember['chatpanel_last_login_at'] = $this->app->now;
+		// $this->app->apartmentmember['chatmessage_read_at'] = $this->add("rakesh\apartment\Model_MessageSent")
+		// 			->addCondition([['from_id',$this->app->apartmentmember->id],['from_id',$this->contact_to_id]])
+		// 			->addCondition([['to_id',$this->app->apartmentmember->id],['to_id',$this->contact_to_id]])
+		// 			->setOrder('id','desc')
+		// 			->setLimit(1)->tryLoadAny()->id;
+		$this->app->apartmentmember->save()->reload();
 	}
 
 	function addForm(){
@@ -201,6 +210,7 @@ class View_ChatPanel extends \View{
 					'uu_id'=>$uu_id,
 					'chat_with'=>$this->contact_to_id
 				]);
+		$this->js(true)->univ()->chatScrollToTop();
 		parent::recursiveRender();
 	}
 	
