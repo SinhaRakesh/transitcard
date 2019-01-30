@@ -18,9 +18,9 @@ class View_MemberEdit extends \View{
 
 		$model = $this->add('rakesh\apartment\Model_Member');
 		$model->addCondition('apartment_id',@$this->app->apartment->id);
-		if($this->app->userIsApartmentAdmin){
-			$model->addCondition([['is_flat_owner',true],['is_apartment_admin',true]]);
-		}
+		// if($this->app->userIsApartmentAdmin){
+		// 	$model->addCondition([['is_flat_owner',true],['is_apartment_admin',true]]);
+		// }
 		$model->addExpression('email_id_1')->set(function($m,$q){
 			$email = $m->add('xepan\base\Model_Contact_Email',['table_alias'=>'email1']);
 			$email->addCondition("contact_id",$m->getElement('customer_id'));
@@ -167,6 +167,7 @@ class View_MemberEdit extends \View{
 				$user->save();
 				
 				$form->model['user_id'] = $user->id;
+				$form->model['is_flat_owner'] = true;
 				$form->save();
 				if($form['flat']){
 					$flat_model->associateWith($form['flat'],$form->model->id);
