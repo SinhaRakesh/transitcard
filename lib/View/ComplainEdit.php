@@ -44,7 +44,8 @@ class View_ComplainEdit extends \View{
 		}else{
 			$this->title = "New Complain";
 			$model->addCondition('created_by_id',$this->app->apartmentmember->id);
-			$model->addCondition('status','Draft');
+			$model->addCondition('pending_by_id',$this->app->apartmentmember->id);
+			$model->addCondition('status','Pending');
 		}
 		
 		$form_field = ['complain_to_department_id','category','description','is_urgent'];
@@ -68,6 +69,7 @@ class View_ComplainEdit extends \View{
 
 		if($form->isSubmitted()){
 			$form->save();
+			$form->model->sendNotification();
 			$this->app->redirect($this->app->url('dashboard',['mode'=>'complain']));
 		}
 

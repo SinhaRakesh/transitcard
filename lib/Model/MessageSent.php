@@ -9,16 +9,16 @@ class Model_MessageSent extends \xepan\communication\Model_Communication_Abstrac
 		$this->addCondition('status','Sent');
 		$this->addCondition('direction','Out');
 		
-		$this->addHook('afterSave',$this);
-		$this->addHook('afterInsert',$this);
+		// $this->addHook('afterSave',$this);
+		// $this->addHook('afterInsert',$this);
 	}
 	
-	function afterSave(){
-
+	function sendNotification(){
 		// append html
 		$default_img_url = 'websites/'.$this->app->current_website_name.'/www/dist/img/avatar04.png';
+		$title = ($this['title']?$this['title']:$this['from'].' messaged you:');
 		$msg = [
-				'title'=>$this['from'].' messaged you:',
+				'title'=>$title,
 				'message'=>$this['description'],
 				'type'=>'',
 				'sticky'=>false,
@@ -27,7 +27,7 @@ class Model_MessageSent extends \xepan\communication\Model_Communication_Abstrac
 				'to'=>$this['to'],
 				'from_image'=>($this['image']?:$default_img_url),
 				'send_date' => date('M d H:i a',strtotime($this['created_at'])),
-				'cmd'=>'chatmessage'
+				'cmd'=>($this['type']?:'notification')
 			];
 			// 'js'=>(string) $this->app->js()->_selector('.ap-chat-message-trigger-reload')->trigger('reload')
 
@@ -35,8 +35,8 @@ class Model_MessageSent extends \xepan\communication\Model_Communication_Abstrac
 		foreach ($this['to_raw'] as $key => $value) {
 			$to_id[] = $value['id'];
 		}
-
-		$this->pushToWebSocket($to_id,$msg,'chatmessage');
+		
+		$this->pushToWebSocket($to_id,$msg,$this['type']);
 	}
 
 		// send custom message to
