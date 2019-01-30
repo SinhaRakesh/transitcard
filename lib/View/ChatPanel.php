@@ -171,7 +171,9 @@ class View_ChatPanel extends \View{
 			$send_msg['related_id'] = $this->app->apartment->id;
 			// $send_msg['title'] = $f['subject'];
 			$send_msg['description'] = $message = $this->form['message'];
+			$send_msg['Type'] = 'chatmessage';
 			$send_msg->save();
+			$send_msg->sendNotification();
 			
 			$send_date = date('M d H:i a',strtotime($send_msg['created_at']));
 
