@@ -104,6 +104,11 @@ class View_InvoiceEdit extends \View{
 
 			$form->model['updated_at'] = $this->app->now;
 			$form->update();
+
+			if($form->model['status'] === "Paid"){
+				$form->model->sendNotification();
+			}
+
 			$this->app->redirect($this->app->url('dashboard',['mode'=>'invoices']));
 		}
 	}
