@@ -3,7 +3,11 @@
 namespace rakesh\apartment;
 
 class Model_Expenses extends \rakesh\apartment\Model_PaymentTransaction{
-
+	public $status = ['Paid','Due'];
+ 	public $actions = [
+ 					'Due'=>['view','paid','edit','delete'],
+ 					'Paid'=>['view','edit','delete']
+ 				];
 	function init(){
 		parent::init();
 

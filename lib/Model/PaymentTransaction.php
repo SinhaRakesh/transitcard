@@ -5,7 +5,7 @@ namespace rakesh\apartment;
 class Model_PaymentTransaction extends \xepan\base\Model_Table{
 	public $table = "r_payment_transaction";
  	public $status = ['Paid','Due'];
- 	public $action = [
+ 	public $actions = [
  					'Due'=>['view','paid','edit','delete'],
  					'Paid'=>['view','edit','delete']
  				];
@@ -24,8 +24,8 @@ class Model_PaymentTransaction extends \xepan\base\Model_Table{
 		$this->addField('amount')->type('int')->defaultValue(0);
 		$this->addField('panelty')->type('int')->defaultValue(0);
 
-		$this->addField('created_at')->type('datetime')->defaultValue($this->app->now);
-		$this->addField('updated_at')->type('datetime')->defaultValue($this->app->now);
+		$this->addField('created_at')->type('datetime');
+		$this->addField('updated_at')->type('datetime');
 		$this->addField('paid_at')->type('datetime');
 
 		$this->addField('payment_type')->setValueList(['cash'=>'cash','cheque'=>'cheque','online'=>'online','other'=>'other']);
@@ -36,11 +36,30 @@ class Model_PaymentTransaction extends \xepan\base\Model_Table{
 		$this->addField('is_expences')->type('boolean')->defaultValue(false);
 		$this->addField('is_invoice')->type('boolean')->defaultValue(false);
 
-		$this->addExpression('net_amount')->set('sum(amount + panelty)');
+		$this->addExpression('net_amount')->set('amount + panelty');
 
 		$this->addField('status')->setValueList(['Paid'=>'Paid','Due'=>'Due'])->defaultValue('Due');
-		$this->addCondition('apartment_id',@$this->app->apartment->id);
 
+		$this->addCondition('apartment_id',@$this->app->apartment->id);
+		$this->addHook('beforeSave',$this);
 		$this->add('dynamic_model\Controller_AutoCreator');
 	}
+
+	function beforeSave(){
+		if(!$this['created_at']) $this['created_at'] = $this->app->now;
+		$this['updated_at'] = $this->app->now;
+
+		if($this['status'] == "Paid" AND !$this['paid_at']) $this['paid_at'] = $this->app->now;
+	}
+
+	function paid(){
+		$this['status'] = 'Paid';
+		$this['paid_by_id'] = $this->app->apartmentmember->id;
+		$this['paid_at'] = $this->app->now;
+		$this->save();
+		
+		// $this->sendNotification();
+		// send push notification all apartment admin and to user;
+	}
+
 }
