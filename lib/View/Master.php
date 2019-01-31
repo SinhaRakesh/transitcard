@@ -20,7 +20,8 @@ class View_Master extends \View{
 				'fields'=>[
 							'flat_size'=>'Text',
 							'flat_status'=>'Text',
-							'complain_category'=>'Text'
+							'complain_category'=>'Text',
+							'expenses_category'=>'Text'
 							],
 					'config_key'=>'Apartment_Config',
 					'application'=>'rakesh\apartment'
@@ -34,6 +35,7 @@ class View_Master extends \View{
 		$notice_tab = $tabs->addTab('Notice Board');
 		$complain_tab = $tabs->addTab('Complain Category');
 		$complain_department_tab = $tabs->addTab('Complain Department');
+		$expenses_category = $tabs->addTab('Expenses Category');
 
 
 		// flat size
@@ -96,6 +98,18 @@ class View_Master extends \View{
 		$complain_dept_crud->grid->addColumn('edit');
 		$complain_dept_crud->grid->addColumn('delete');
 
+
+		// expenses_category
+		$form_ex = $expenses_category->add('Form');
+		$form_ex->addField('Text','expenses_category')
+			->setFieldHint('Comma(,) seperated values i.e. Lift,Electrician')
+				->set($master_model['expenses_category']);
+		$form_ex->addSubmit('Save');
+		if($form_ex->isSubmitted()){
+			$master_model['expenses_category'] = $form_ex['expenses_category'];
+			$master_model->save();
+			$form_size->js(null,$form_ex->js()->reload())->univ()->successMessage('saved successfully ')->execute();
+		}
 
 	}
 }

@@ -149,8 +149,18 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "Edit Complain";
 				$view = $dashboard->add('rakesh\apartment\View_ComplainEdit');
 				break;
-
-			
+			case 'expenses':
+				$this->addClass('clear-page-padding');
+				$menu_active = 'active_expenses_class';
+				$title = "Expenses";
+				$view = $dashboard->add('rakesh\apartment\View_Expenses');
+				break;
+			case 'exedit':
+				$this->addClass('clear-page-padding');
+				$menu_active = 'active_expenses_class';
+				$title = "Expenses Edit";
+				$view = $dashboard->add('rakesh\apartment\View_ExpensesEdit');
+				break;
 			default:
 				$menu_active = 'active_dashboard_class';
 				if($this->app->userIsApartmentAdmin){
@@ -203,9 +213,19 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	            <i class="fa fa-support text-yellow"></i> <span>Complain</span>
 	          </a>
 	        </li>
+
+	        <li class="{$active_staff_class}">
+	          <a href="?page=dashboard&mode=expenses">
+	            <i class="fa fa-money text-red"></i> <span>Expenses</span>
+	            <span class="pull-right-container">
+	              <small class="label pull-right bg-yellow"></small>
+	            </span>
+	          </a>
+	        </li>
+
 	        <li class="{$active_helpdesk_class}">
 	          <a href="?page=dashboard&mode=helpdesk">
-	            <i class="fa fa-headphones text-red"></i> <span>Help Desk</span>
+	            <i class="fa fa-headphones text-green"></i> <span>Help Desk</span>
 	          </a>
 	        </li>
 
@@ -221,17 +241,17 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 
 	    if($this->app->userIsApartmentAdmin){
 		    $menu_html .= '<li class="{$active_master}">
-		          <a href="?page=dashboard&mode=master">
-		            <i class="fa fa-cog text-red"></i> <span>Master</span>
-		          </a>
-		        </li>';
+				<a href="?page=dashboard&mode=master">
+					<i class="fa fa-cog text-red"></i> <span>Master</span>
+				</a>
+			</li>';
 		    
 		    $menu_html .= '<li class="{$active_apartment_class}">
-		          <a href="?page=dashboard&mode=apartment">
-		            <i class="fa fa-cog text-red"></i> <span>Apartment Settings</span>
-		          </a>
-		        </li>';
-	    }
+				<a href="?page=dashboard&mode=apartment">
+					<i class="fa fa-cog text-red"></i> <span>Apartment Settings</span>
+				</a>
+			</li>';
+		}
 
 	    // feedback and suggestion are temporary commented
 	    	   //      <li class="{$active_suggestion_class}">
