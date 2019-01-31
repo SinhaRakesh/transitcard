@@ -14,12 +14,22 @@ class View_Invoice extends \View{
 			return;
 		}
 
+		$status = $this->app->stickyGET('status');
+
 		$inv = $this->add('rakesh\apartment\Model_Invoice');
 		$inv->addCondition('apartment_id',$this->app->apartment->id);
 		$inv->getElement('created_at')->caption('Bill Month');
 		$inv->getElement('payment_narration')->caption('Payment Detail');
+		if($status == "Paid" OR $status == "Due"){
+			$inv->addCondition('status',$status);
+		}
 
-		$crud = $this->add('xepan\hr\CRUD',['actionsWithoutACL'=>true,'entity_name'=>' Maintenance Bill']);
+		$crud = $this->add('xepan\hr\CRUD',[
+				'actionsWithoutACL'=>true,
+				'entity_name'=>' Maintenance Bill',
+				'edit_page'=>$this->app->url('dashboard',['mode'=>'invoiceedit']),
+				'action_page'=>$this->app->url('dashboard',['mode'=>'invoiceedit'])
+			]);
 		$crud->grid->js(true)->find('.main-box-body')->addClass('table-responsive');
 		$crud->grid->addHook('formatRow',function($g){
 
@@ -49,9 +59,11 @@ class View_Invoice extends \View{
 			$g->current_row_html['name'] = $exhtml;
 		});
 
+
 		$crud->setModel($inv,['member','name','flat','created_at','net_amount','status','paid_by','paid_at','payment_type','payment_narration']);
 
-		$crud->grid->addQuickSearch(['name','member','flat','status']);
+		$crud->grid->addPaginator(25);
+		$form_search = $crud->grid->addQuickSearch(['name','member','flat','status']);
 		$crud->grid->removeColumn('edit');
 		$crud->grid->removeColumn('delete');
 		$crud->grid->removeColumn('status');
@@ -65,5 +77,22 @@ class View_Invoice extends \View{
 		$crud->grid->removeColumn('attachment_icon');
 		$crud->grid->addFormatter('name','wrap');
 
+		$crud->add('rakesh\apartment\Controller_ACL');
+		// -------------------------------------
+		$status_model = clone($inv);
+		$counts = $status_model->_dsql()->del('fields')->field('status')->field('sum(amount) counts')->group('Status')->get();
+		$counts_redefined = [];
+		foreach ($counts as $cnt) {
+			$counts_redefined[$cnt['status']] = $cnt['counts'];
+			$counts_redefined['All'] += $cnt['counts'];
+		}
+		$btn_set = $crud->grid->add('ButtonSet',null,'grid_heading_left')->addClass('btn-group');
+		$all_btn = $btn_set->addButton('All')->addClass('btn btn-primary')->set('Total Amount: '.$counts_redefined['All']);
+		$paid_btn = $btn_set->addButton('Paid')->addClass('btn btn-success')->set('Paid: '.$counts_redefined['Paid']);
+		$due_btn = $btn_set->addButton('Due')->addClass('btn btn-danger')->set('Due: '.$counts_redefined['Due']);
+
+		$paid_btn->js('click',$crud->js()->univ()->reload(['status'=>'Paid']));
+		$all_btn->js('click',$crud->js()->univ()->reload(['status'=>'All']));
+		$due_btn->js('click',$crud->js()->univ()->reload(['status'=>'Due']));
 	}
 }

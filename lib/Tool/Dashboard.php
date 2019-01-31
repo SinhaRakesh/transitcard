@@ -78,6 +78,12 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "Maintenance Amount Management";
 				$view = $dashboard->add('rakesh\apartment\View_Invoice');
 				break;
+			case 'invoiceedit':
+				$this->addClass('clear-page-padding');
+				$menu_active = 'active_invoice_class';
+				$title = "Bill Edit";
+				$view = $dashboard->add('rakesh\apartment\View_InvoiceEdit');
+				break;
 
 			case 'visitor':
 				$menu_active = 'active_visitor_class';

@@ -50,7 +50,14 @@ class Model_PaymentTransaction extends \xepan\base\Model_Table{
 		if(!$this['created_at']) $this['created_at'] = $this->app->now;
 		$this['updated_at'] = $this->app->now;
 
-		if($this['status'] == "Paid" AND !$this['paid_at']) $this['paid_at'] = $this->app->now;
+		if($this['status'] == "Paid" AND !$this['paid_at']){
+			$this['paid_at'] = $this->app->now;
+			$this['paid_by_id'] = $this->app->apartmentmember->id;
+		}
+
+		if($this['is_invoice'] && !$this['name']){
+			$this['name'] = date('Ym',strtotime($this->app->today))."-".$this['flat_id']."-".$this['member_id'];
+		}
 	}
 
 	function paid(){

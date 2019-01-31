@@ -111,7 +111,24 @@ class Controller_ACL extends \AbstractController {
 													'Due'=>['view','paid','edit','delete']
 												],
 										]
-								]
+								],
+					'rakesh\apartment\Model_Invoice'=>[
+									'member'=>[
+											'edit'=>false,'delete'=>false,'view'=>true,'add'=>false,
+											'actions'=>[
+													'Paid'=>['view'],
+													'Due'=>['view']
+												],
+										],
+									'admin'=>[
+										'edit'=>true,'delete'=>true,'view'=>true,'add'=>true,
+										'actions'=>[
+													'Paid'=>['view','edit','delete'],
+													'Due'=>['view','paid','edit','delete']
+												],
+										]
+								],
+
 
 				];
 	}
