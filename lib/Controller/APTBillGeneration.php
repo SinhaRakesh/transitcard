@@ -67,7 +67,7 @@ class Controller_APTBillGeneration extends \AbstractController {
 			$query = 'INSERT INTO `r_payment_transaction` (`apartment_id`, `member_id`, `flat_id`, `paid_by_id`, `affiliate_id`, `name`, `amount`, `panelty`, `created_at`, `updated_at`, `is_expences`, `is_invoice`, `status`, `invoice_narration`) VALUES ';
 			$values = "";
 			foreach ($flats as $flat) {
-				$name = date('mY',strtotime($this->app->today))."-".$flat->id."-".$flat['member_id'];
+				$name = date('Ym',strtotime($this->app->today))."-".$flat->id."-".$flat['member_id'];
 				$narration = "Maintenance fees for Flat: ".$flat['name']." for Member: ".$flat['member']." of apartment: ".$ap_model['name']." for month: ".$this->app->today;
 				$values .= "('".$ap_model->id."', '".$flat['member_id']."', '".$flat->id."', NULL, NULL, '".$name."', '".$ap_model['maintenance_amount']."', '0', '".$this->app->now."', '".$this->app->now."', '0', '1', 'Due', '".$narration."'),";
 			}

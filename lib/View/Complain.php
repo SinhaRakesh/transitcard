@@ -52,7 +52,7 @@ class View_Complain extends \View{
 				null,
 				['view/complaingrid']
 			);
-		// $crud->grid->js(true)->find('.main-box-body')->addClass('table-responsive');
+		$crud->grid->js(true)->find('.main-box-body')->addClass('table-responsive');
 		$crud->setModel($model);
 		$crud->grid->addHook('formatRow',function($g){
 			if($g->model['image']){

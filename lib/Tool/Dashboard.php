@@ -203,6 +203,11 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	            <i class="fa fa-cog text-red"></i> <span>Visitors</span>
 	          </a>
 	        </li>
+	        <li class="{$active_invoice_class}">
+	          <a href="?page=dashboard&mode=invoices">
+	            <i class="fa fa-money text-yellow"></i> <span>Maintenance Bill</span>
+	          </a>
+	        </li>
 	        <li class="{$active_chat_class}">
 	          <a href="?page=dashboard&mode=chat">
 	            <i class="fa fa-comment text-blue"></i> <span>Chat</span>
