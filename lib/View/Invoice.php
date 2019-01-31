@@ -18,6 +18,10 @@ class View_Invoice extends \View{
 
 		$inv = $this->add('rakesh\apartment\Model_Invoice');
 		$inv->addCondition('apartment_id',$this->app->apartment->id);
+		if(!$this->app->userIsApartmentAdmin){
+			$inv->addCondition('member_id',$this->app->apartmentmember->id);
+		}
+
 		$inv->getElement('created_at')->caption('Bill Month');
 		$inv->getElement('payment_narration')->caption('Payment Detail');
 		if($status == "Paid" OR $status == "Due"){
