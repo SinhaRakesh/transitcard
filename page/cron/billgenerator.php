@@ -2,7 +2,7 @@
 
 namespace rakesh\apartment;
 
-class page_cron_billgenerator extends \xepan\base\Page{
+class page_cron_billgenerator extends \Page{
 
 	public $title = "Bill Generator";
 
@@ -12,6 +12,6 @@ class page_cron_billgenerator extends \xepan\base\Page{
 		ini_set("memory_limit", "-1");
    		set_time_limit(0);
    		
-		$this->add('rakesh\apartment\Controller_BillGeneration',['debug'=>true])->run();
+		$this->add('rakesh\apartment\Controller_APTBillGeneration')->run();
 	}
 }

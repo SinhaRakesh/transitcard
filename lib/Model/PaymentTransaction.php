@@ -13,10 +13,10 @@ class Model_PaymentTransaction extends \xepan\base\Model_Table{
 	function init(){
 		parent::init();
 
-		$this->hasOne('rakesh\apartment\Apartment','apartment_id')->defaultValue($this->app->apartment->id);
+		$this->hasOne('rakesh\apartment\Apartment','apartment_id')->defaultValue(@$this->app->apartment->id);
 		$this->hasOne('rakesh\apartment\Model_Member','member_id');
 		$this->hasOne('rakesh\apartment\Model_Flat','flat_id');
-		$this->hasOne('rakesh\apartment\Model_Member','created_by_id')->defaultValue($this->app->apartmentmember->id);
+		$this->hasOne('rakesh\apartment\Model_Member','created_by_id')->defaultValue(@$this->app->apartmentmember->id);
 		$this->hasOne('rakesh\apartment\Model_Member','paid_by_id');
 		$this->hasOne('rakesh\apartment\Model_Affiliate','affiliate_id');
 		
@@ -31,6 +31,7 @@ class Model_PaymentTransaction extends \xepan\base\Model_Table{
 		$this->addField('payment_type')->setValueList(['cash'=>'cash','cheque'=>'cheque','online'=>'online','other'=>'other']);
 		$this->addField('payment_narration')->type('text');
 		$this->addField('expenses_narration')->type('text');
+		$this->addField('invoice_narration')->type('text');
 		$this->addField('expenses_category');
 
 		$this->addField('is_expences')->type('boolean')->defaultValue(false);

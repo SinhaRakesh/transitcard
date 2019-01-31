@@ -46,6 +46,10 @@ class Model_Apartment extends \xepan\base\Model_Table{
 
 		$this->addField('maintenance_amount')->hint('maintenance amount per month')->defaultValue(0);
 		$this->addField('penelty_amount')->hint('panelty amount applicable after last submission date')->defaultValue(0);
+
+		// used when invoice is generated on
+		$this->addField('bill_generated_on_date')->type('date')->system(true);
+		$this->addField('bill_generated_on_time')->type('time')->system(true);
 		// $this->addField('penelty_based_on')->setValueList(['']);
 
 	}

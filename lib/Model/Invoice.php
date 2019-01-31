@@ -2,16 +2,14 @@
 
 namespace rakesh\apartment;
 
-class Model_Invoice extends \xepan\commerce\Model_SalesInvoice{
+class Model_Invoice extends \rakesh\apartment\Model_PaymentTransaction{
 	function init(){
 		parent::init();
 
-		$this->addExpression('customer_apartment_id')->set(function($m,$q){
-			$x = $m->add('rakesh\apartment\Model_Member',['table_alias'=>'flat_member']);
-			return $x->addCondition('id',$m->getElement('contact_id'))
-					->_dsql()
-					->del('fields')
-					->field('apartment_id');
-		})->allowHTML(true);
+		$this->addCondition('is_expences',false);
+		$this->addCondition('is_invoice',true);
+		$this->getElement('name')->caption('Invoice No');
+		$this->getElement('status')->defaultValue('Due');
+		
 	}
 }

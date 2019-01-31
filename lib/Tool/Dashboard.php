@@ -286,6 +286,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 			$uu_id = $this->app->apartmentmember->getUUID();
 			$this->app->js(true)->_load('apwsclient')->univ()->runWebSocketClient($host,$uu_id,['name'=>$this->app->apartmentmember['name']]);
 		}
+		
 		parent::recursiveRender();
 	}
 }
