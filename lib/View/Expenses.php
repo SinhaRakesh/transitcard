@@ -59,9 +59,9 @@ class View_Expenses extends \View{
 		$crud->grid->removeColumn('status');
 		$crud->grid->removeColumn('created_at');
 		$crud->grid->removeAttachment();
+		$crud->add('rakesh\apartment\Controller_ACL');
 
 
-		// $crud->add('rakesh\apartment\Controller_ACL');
 		$btn_set = $crud->grid->add('ButtonSet',null,'grid_heading_left')->addClass('btn-group');
 		$all_btn = $btn_set->addButton('All')->addClass('btn btn-primary')->set('Total Amount: '.$counts_redefined['All']);
 		$paid_btn = $btn_set->addButton('Paid')->addClass('btn btn-success')->set('Paid: '.$counts_redefined['Paid']);

@@ -33,10 +33,19 @@ class Controller_ACL extends \AbstractController {
 			}else
 				$this->acl_array = $acl_array['member'];
 
+			if($this->hasAction()){
+				$this->ACLObject->getModel()->actions = $this->acl_array['actions'];
+			}
+
 			if(!$this->canAdd()) $this->ACLObject->add_button->destroy();
 			if(!$this->canEdit()) $this->ACLObject->grid->removeColumn('edit');
 			if(!$this->canDelete()) $this->ACLObject->grid->removeColumn('delete');
 		}
+	}
+
+	function hasAction(){
+		if(isset($this->acl_array['actions'])) return true;
+		return false;
 	}
 
 	function canAdd(){
@@ -86,6 +95,22 @@ class Controller_ACL extends \AbstractController {
 					'rakesh\apartment\Model_NoticeBoard'=>[
 									'member'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false],
 									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
+								],
+					'rakesh\apartment\Model_Expenses'=>[
+									'member'=>[
+											'edit'=>false,'delete'=>false,'view'=>true,'add'=>false,
+											'actions'=>[
+													'Paid'=>['view'],
+													'Due'=>['view']
+												],
+										],
+									'admin'=>[
+										'edit'=>true,'delete'=>true,'view'=>true,'add'=>true,
+										'actions'=>[
+													'Paid'=>['view','edit','delete'],
+													'Due'=>['view','paid','edit','delete']
+												],
+										]
 								]
 
 				];
