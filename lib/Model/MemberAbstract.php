@@ -53,6 +53,9 @@ class Model_MemberAbstract extends \xepan\commerce\Model_Customer{
 			return $x->addCondition('member_id',$q->getField('id'))->_dsql()->del('fields')->field($q->expr('group_concat([0] SEPARATOR ",")',[$x->getElement('name_with_block')]));
 		})->allowHTML(true);
 
+		$model_j->addField('education')->type('text');
+		$model_j->addField('skills')->type('text');
+		$this->getElement('remark')->caption('About You');
 
 		// $model_j->addField('mobile_no');
 		// $model_j->addField('email_id');

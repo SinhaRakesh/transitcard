@@ -167,6 +167,10 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "Expenses Edit";
 				$view = $dashboard->add('rakesh\apartment\View_ExpensesEdit');
 				break;
+			case 'profile':
+				$title = "Your Profile";
+				$view = $dashboard->add('rakesh\apartment\View_Profile');
+				break;
 			default:
 				$menu_active = 'active_dashboard_class';
 				if($this->app->userIsApartmentAdmin){
