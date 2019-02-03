@@ -13,7 +13,7 @@ class Model_MessageSent extends \xepan\communication\Model_Communication_Abstrac
 		// $this->addHook('afterInsert',$this);
 	}
 	
-	function sendNotification(){
+	function sendNotification($other=[]){
 		// append html
 		$default_img_url = 'websites/'.$this->app->current_website_name.'/www/dist/img/avatar04.png';
 		$title = ($this['title']?$this['title']:$this['from'].' messaged you:');
@@ -30,6 +30,8 @@ class Model_MessageSent extends \xepan\communication\Model_Communication_Abstrac
 				'cmd'=>($this['type']?:'notification')
 			];
 			// 'js'=>(string) $this->app->js()->_selector('.ap-chat-message-trigger-reload')->trigger('reload')
+		if(isset($other['js']) && strlen($other['js']) > 0)
+			$msg['js'] = (string)$other['js'];
 
 		$to_id = [];
 		foreach ($this['to_raw'] as $key => $value) {

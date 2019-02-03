@@ -65,7 +65,7 @@ class View_Visitor extends \View{
 			$exhtml = '<div class="box collapsed-box" style="border:0px;box-shadow:none;">
 					  <div class="">
 						<div type="button" class="" data-widget="collapse" style="background-color:white;padding:0px;margin:0px;text-align:left;">';
-			$exhtml .= '<img class="pull-left" style="width:50px;height:50px;" src="'.$g->model['image'].'" />';
+			$exhtml .= '<img class="pull-left" style="width:50px;height:50px;" src="'.($g->model['image']?:'websites/'.$this->app->current_website_name.'/www/dist/img/default-50x50.gif').'" />';
 			$exhtml .= '<div class="box-title pull-left" style="margin-left:5px;">'.$name.'</div> </div></div>
 						<div class="box-body" style="display: none;clear:both;">
 					    '.$v_detail.'

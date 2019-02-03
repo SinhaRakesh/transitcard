@@ -90,7 +90,7 @@ class Controller_ACL extends \AbstractController {
 									],
 									'admin'=>['edit'=>true,'delete'=>false,'view'=>true,'add'=>true,
 										'actions'=>[
-														'Requested'=>['view'],
+														'Requested'=>['view','edit'],
 														'Permitted'=>['view'],
 														'Denied'=>['view','delete']
 													]

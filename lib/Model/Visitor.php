@@ -95,6 +95,7 @@ class Model_Visitor extends \xepan\base\Model_Table{
 			$sub_type = "VisitorRequest";
 			$title = "Visitor Request ";
 			$detail = "Name: ".$this['name']." <br/>Purpose: ".$this['title']." <br/>".$this['message'];
+			$js = $this->app->js()->univ()->newWindow($this->app->url("dashboard",['mode'=>'visitoraction','rrecord'=>$this['id']]));
 		}else{
 			$sub_type = "Visitor".$this['status'];
 			$from_id = $this[strtolower($this['status']).'_by_id'];
@@ -104,29 +105,31 @@ class Model_Visitor extends \xepan\base\Model_Table{
 
 			$title = "Visitor Request :: ".$this['status'];
 			$detail = "request ".$this['status']." by ".$this[strtolower($this['status']).'_by'];
+			$js = "";
 		}
 
 		$send_msg = $this->add('rakesh\apartment\Model_MessageSent');
-		$send_msg->addCondition('to_id',$to_id);
+		// $send_msg->addCondition('to_id',$to_id);
 		// $send_msg->addCondition('related_document_id',$this->app->apartment->id);
-		$send_msg->addCondition('created_by_id',$this->app->apartmentmember->id);
-		$send_msg->addCondition('related_id',$this->id);
-		$send_msg->addCondition('sub_type',$sub_type);
-		$send_msg->tryLoadAny();
-		
-		$send_msg['from_id'] = $from_id;
-		$send_msg['from_raw'] = $from_row;
-		// $send_msg['to_id'] = $to_id;
-		$send_msg['to_raw'] = json_encode($to_row);
-		$send_msg['mailbox'] = "Visitor";
-		// $send_msg['related_document_id'] = $this->app->apartment->id;
-		// $send_msg['created_by_id'] = $this->app->apartmentmember->id;
-		// $send_msg['related_id'] = $this->id;
-		$send_msg['title'] = $title;
-		$send_msg['description'] = $detail;
-		$send_msg['type'] = 'notification';
-		$send_msg->save();
-		$send_msg->sendNotification();
+		// $send_msg->addCondition('created_by_id',$this->app->apartmentmember->id);
+		// $send_msg->addCondition('related_id',$this->id);
+		// $send_msg->addCondition('sub_type',$sub_type);
+		// $send_msg->tryLoadAny();
+		// if($send_msg->loaded()){
+			$send_msg['from_id'] = $from_id;
+			$send_msg['from_raw'] = $from_row;
+			$send_msg['to_id'] = $to_id;
+			$send_msg['to_raw'] = json_encode($to_row);
+			$send_msg['mailbox'] = "Visitor";
+			$send_msg['related_document_id'] = $this->app->apartment->id;
+			$send_msg['created_by_id'] = $this->app->apartmentmember->id;
+			$send_msg['related_id'] = $this->id;
+			$send_msg['title'] = $title;
+			$send_msg['description'] = $detail;
+			$send_msg['type'] = 'notification';
+			$send_msg->save();
+		// }
+		$send_msg->sendNotification(['js'=>$js]);
 	}
 
 }

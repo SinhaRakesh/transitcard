@@ -74,6 +74,8 @@ $.each({
 					}
 
 				}
+
+				console.log($data);
 				if(("js" in $data) !=false){
 					eval($data.js);
 				}
