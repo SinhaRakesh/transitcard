@@ -77,7 +77,7 @@ class Controller_ACL extends \AbstractController {
 									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
 								],
 					'rakesh\apartment\Model_Member'=>[
-									'member'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true],
+									'member'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false],
 									'admin'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>true]
 								],
 					'rakesh\apartment\Model_Visitor'=>[
