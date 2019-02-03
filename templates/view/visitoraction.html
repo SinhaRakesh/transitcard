@@ -1,0 +1,27 @@
+<div class="{$class}" id="{$_name}" style="{$style}">
+  <div class="box box-widget widget-user-2">
+    <div class="widget-user-header bg-yellow">
+      <div class="widget-user-image">
+        <img class="img-circle" src="{$profile_image}" alt="User Avatar">
+      </div>
+      <!-- /.widget-user-image -->
+      <h3 class="widget-user-username">{$name}</h3>
+      <div class="widget-user-desc">
+        <i class="fa fa-mobile"></i> {$mobile_no}
+        <i class="fa fa-envelope"></i> {$email_id}
+        <i class="fa fa-home"></i> {$address}
+        <br/>{$visitor_narration}
+      </div>
+    </div>
+    <div class="box-footer no-padding">
+      <ul class="nav nav-stacked">
+        <li><div style="padding: 8px;"><b>Purpose:</b> {$title}<br/>{$message}</div></li>
+        <li><div style="padding: 8px;"><b>Request Date:</b> {$created_at}</div></li>
+        <li><div style="padding: 8px;"><b>Meeting with:</b> {$member} {$flat}</div></li>
+        <li><div style="padding: 8px;"><b>Vehical:</b> {$vehical_type} {$vehical_no} {$vehical_model} {$vehical_color} {$vehical_detail}</div></li>
+        <li><div style="padding: 8px;"><b>Persons: </b><span class="pull-right badge bg-aqua">{$person_count}</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+</div>

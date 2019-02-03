@@ -95,7 +95,7 @@ class Model_Visitor extends \xepan\base\Model_Table{
 			$sub_type = "VisitorRequest";
 			$title = "Visitor Request ";
 			$detail = "Name: ".$this['name']." <br/>Purpose: ".$this['title']." <br/>".$this['message'];
-			$js = $this->app->js()->univ()->newWindow($this->app->url("dashboard",['mode'=>'visitoraction','rrecord'=>$this['id']]));
+			$js = $this->app->js()->univ()->newWindow($this->app->url("dashboard",['mode'=>'visitoraction','vrecord'=>$this['id']]));
 		}else{
 			$sub_type = "Visitor".$this['status'];
 			$from_id = $this[strtolower($this['status']).'_by_id'];
