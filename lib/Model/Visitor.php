@@ -7,10 +7,12 @@ class Model_Visitor extends \xepan\base\Model_Table{
 	public $title_field = 'name';
 	public $status = ['Requested','Permitted','Denied'];
 	public $actions = [
-			'Requested'=>['View','Permitted','Denied'],
-			'Permitted'=>['View'],
-			'Denied'=>['View']
+			'Requested'=>['view','permitted','denied','edit'],
+			'Permitted'=>['view'],
+			'Denied'=>['view']
 		];
+
+	public $status_color = ['Requested'=>'warning','Permitted'=>'success','Denied'=>'danger'];
 	public $acl_type = "Apartment";
 
 	function init(){
@@ -20,8 +22,10 @@ class Model_Visitor extends \xepan\base\Model_Table{
 		$this->hasOne('xepan\base\Model_Contact','created_by_id')->system(true)->caption('Visitor Added By'); // must be employee or gatekipper
 		$this->hasOne('rakesh\apartment\Model_Flat','flat_id');
 		$this->hasOne('rakesh\apartment\Model_Member','member_id');
-
+		
 		$this->addField('name');
+		$this->add('xepan/filestore/Field_File',['name'=>'image_id'])->allowHTML(true);
+
 		$this->addField('mobile_no');
 		$this->addField('email_id');
 		$this->addField('address')->type('text');
@@ -45,7 +49,7 @@ class Model_Visitor extends \xepan\base\Model_Table{
 
 		$this->addField('status')->enum($this->status)->defaultValue('Requested');
 
-		$this->add('dynamic_model/Controller_AutoCreator');
+		// $this->add('dynamic_model/Controller_AutoCreator');
 		$this->addHook('beforeSave',$this);
 	}
 
@@ -57,5 +61,72 @@ class Model_Visitor extends \xepan\base\Model_Table{
 			}
 		}
 
+		if(!$this['member_id'] && $this['flat_id']){
+			$f_model = $this->add('rakesh\apartment\Model_Flat')->load($this['flat_id']);
+			$this['member_id'] = $f_model['member_id'];
+		}
 	}
+
+	function permitted(){
+		$this['permitted_at'] = $this->app->now;
+		$this['permitted_by_id'] = $this->app->apartmentmember->id;
+		$this['status'] = "Permitted";
+		$this->save();
+		$this->sendNotification();
+	}
+
+	function denied(){
+		$this['denied_at'] = $this->app->now;
+		$this['denied_by_id'] = $this->app->apartmentmember->id;
+		$this['status'] = "Denied";
+		$this->save();
+		$this->sendNotification();
+	}
+
+
+	function sendNotification(){
+
+		if($this['status'] == 'Requested'){
+			// send to apartment admin message
+			$from_id = $this['created_by_id'];
+			$from_row = ['id'=>$this['created_by_id'],'name'=>[$this['created_by']]];
+			$to_id = "";
+			$to_row = [['name'=>$this['member'],'id'=>$this['member_id']]];
+			$sub_type = "VisitorRequest";
+			$title = "Visitor Request ";
+			$detail = "Name: ".$this['name']." <br/>Purpose: ".$this['title']." <br/>".$this['message'];
+		}else{
+			$sub_type = "Visitor".$this['status'];
+			$from_id = $this[strtolower($this['status']).'_by_id'];
+			$from_row = [['name'=>$this[strtolower($this['status']).'_by'],'id'=>$from_id]];
+			$to_id = $this['created_by_id'];
+			$to_row = [['name'=>$this['created_by'],'id'=>$this['created_by_id']]];
+
+			$title = "Visitor Request :: ".$this['status'];
+			$detail = "request ".$this['status']." by ".$this[strtolower($this['status']).'_by'];
+		}
+
+		$send_msg = $this->add('rakesh\apartment\Model_MessageSent');
+		$send_msg->addCondition('to_id',$to_id);
+		// $send_msg->addCondition('related_document_id',$this->app->apartment->id);
+		$send_msg->addCondition('created_by_id',$this->app->apartmentmember->id);
+		$send_msg->addCondition('related_id',$this->id);
+		$send_msg->addCondition('sub_type',$sub_type);
+		$send_msg->tryLoadAny();
+		
+		$send_msg['from_id'] = $from_id;
+		$send_msg['from_raw'] = $from_row;
+		// $send_msg['to_id'] = $to_id;
+		$send_msg['to_raw'] = json_encode($to_row);
+		$send_msg['mailbox'] = "Visitor";
+		// $send_msg['related_document_id'] = $this->app->apartment->id;
+		// $send_msg['created_by_id'] = $this->app->apartmentmember->id;
+		// $send_msg['related_id'] = $this->id;
+		$send_msg['title'] = $title;
+		$send_msg['description'] = $detail;
+		$send_msg['type'] = 'notification';
+		$send_msg->save();
+		$send_msg->sendNotification();
+	}
+
 }

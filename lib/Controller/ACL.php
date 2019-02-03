@@ -77,12 +77,24 @@ class Controller_ACL extends \AbstractController {
 									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
 								],
 					'rakesh\apartment\Model_Member'=>[
-									'member'=>['edit'=>false,'delete'=>false,'view'=>false,'add'=>false],
-									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]	
+									'member'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true],
+									'admin'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>true]
 								],
 					'rakesh\apartment\Model_Visitor'=>[
-									'member'=>['edit'=>true,'delete'=>false,'view'=>true,'add'=>true],
-									'admin'=>['edit'=>true,'delete'=>false,'view'=>true,'add'=>true]
+									'member'=>['edit'=>true,'delete'=>false,'view'=>true,'add'=>false,
+										'actions'=>[
+												'Requested'=>['view','permitted','denied'],
+												'Permitted'=>['view'],
+												'Denied'=>['view']
+											]
+									],
+									'admin'=>['edit'=>true,'delete'=>false,'view'=>true,'add'=>true,
+										'actions'=>[
+														'Requested'=>['view'],
+														'Permitted'=>['view'],
+														'Denied'=>['view','delete']
+													]
+												]
 								],
 					'rakesh\apartment\Model_Category'=>[
 									'member'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false],

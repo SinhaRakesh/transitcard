@@ -19,7 +19,7 @@ class View_VisitorEdit extends \View{
 		$visitor_id = $this->app->stickyGET('r_visitor_id');
 		
 		$model = $this->add('rakesh\apartment\Model_Visitor');
-
+		$model->addCondition('apartment_id',$this->app->apartment->id);
 		if($action == "edit"){
 			$this->title = "Edit Visitor";
 			$model->addCondition('id',$visitor_id);
@@ -36,7 +36,8 @@ class View_VisitorEdit extends \View{
 		$form->add('xepan\base\Controller_FLC')
 			->addContentSpot()
 			->layout([
-					'name~Visitor Name'=>'Visitor Detail~c1~12',
+					'name~Visitor Name'=>'Visitor Detail~c1~6',
+					'image_id~Visitor Photo'=>'c7~6',
 					'mobile_no'=>'c2~6',
 					'email_id'=>'c3~6',
 					'address'=>'c4~6',
@@ -52,24 +53,31 @@ class View_VisitorEdit extends \View{
 					'title'=>'Meeting Purpose~d1~12',
 					'message'=>'d2~12',
 
-					'flat_id~Flat'=>'Meeting With~e1~6',
-					'member_id~Member'=>'e2~6',
+					'flat_id~Flat Member'=>'Meeting With~e1~6',
 					'FormButtons~&nbsp;'=>'z1~12'
 				]);
 
-		$form->setModel($model,['name','mobile_no','email_id','address','title','message','flat_id','member_id','visitor_narration','vehical_type','vehical_no','vehical_model','vehical_color','vehical_detail','person_count']);
-		$form->getElement('flat_id')->setEmptyText('Please Select');
+		$form->setModel($model,['name','image_id','mobile_no','email_id','address','title','message','flat_id','visitor_narration','vehical_type','vehical_no','vehical_model','vehical_color','vehical_detail','person_count']);
+		$field_flat = $form->getElement('flat_id');
+		$field_flat->setEmptyText('Please Select');
+		$field_flat->getModel()
+				->addCondition('apartment_id',$this->app->apartment->id)
+				->title_field = "name_with_member";
 
 		$form->getElement('name')->validate('required');
 		$form->getElement('mobile_no')->validate('required');
 		$form->getElement('title')->validate('required');
-		$form->getElement('member_id')->validate('required');
+
+		// $field_member = $form->getElement('member_id');
+		// $field_member->getModel()->addCondition('apartment_id',$this->app->apartment->id);
+		// $field_member->validate('required');
 
 
 		$form->addSubmit('Submit')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){
 			$form->save();
+			$form->model->sendNotification();
 			$this->app->redirect($this->app->url('dashboard',['mode'=>'visitor']));
 		}
 

@@ -14,34 +14,35 @@ class View_Visitor extends \View{
 			return;
 		}
 
-		$crud = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'visitoredit']),'action_page'=>$this->app->url('dashboard',['mode'=>'visitoredit'])]);
 		$model = $this->add('rakesh\apartment\Model_Visitor');
 		$model->addCondition('apartment_id',$this->app->apartment->id);
-		if($this->app->apartmentmember['flat']){
+
+		$crud = $this->add('xepan\hr\CRUD',
+				[
+				'actionsWithoutACL'=>true,
+				'status_color'=>$model->status_color,
+				'edit_page'=>$this->app->url('dashboard',['mode'=>'visitoredit']),
+				'action_page'=>$this->app->url('dashboard',['mode'=>'visitoredit'])]
+			);
+
+		if(!$this->app->userIsApartmentAdmin){
 			$model->addCondition([
-					['created_by_id',$this->app->apartmentmember->id],
-					['member_id',$this->app->apartmentmember->id],
-					['flat_id',explode(",",$this->app->apartmentmember['flat'])]
-				]);
-		}else{
-			$model->addCondition([
-					['created_by_id',$this->app->apartmentmember->id],
-					['member_id',$this->app->apartmentmember->id]
+					['flat_id',$this->app->apartmentmember['flat_id']],
+					['member_id',$this->app->apartmentmember['id']],
 				]);
 		}
 		
 		$model->setOrder('id','desc');
 
+		// $crud->grid->addColumn('avatar');
 		$crud->grid->addColumn('visitor_detail');
-		$crud->grid->addColumn('purpose');
-		$crud->grid->addColumn('meeting_with');
-		$crud->setModel($model);
-		$crud->grid->addQuickSearch(['name']);
-
-		$crud->grid->addColumn('edit');
-		$crud->grid->addColumn('delete');
-
+		// $crud->add('xepan\base\Controller_Avatar',['name_field'=>'name']);
+		
 		$crud->grid->addHook('formatRow',function($g){
+			$date = $this->add('xepan\base\xDate');
+			$diff = $date->diff($this->app->now,$g->model['created_at']);
+			$vehical_detail = "vehical ".$g->model['vehical_type']."<strong> No:</strong> ".$g->model['vehical_no']." ".$g->model['vehical_model']." ".$g->model['vehical_color']." <i class='fa fa-users'></i> Persons ".$g->model['person_count'];
+
 			$v_detail = '<div class="box-comment">
 							<div class="comment-text">
 								<span class="username"> '.$g->model['name'].'</span>
@@ -53,23 +54,41 @@ class View_Visitor extends \View{
 							$v_detail .= '<br/><i class="fa fa-envelope">&nbsp;</i><span class="text-muted">'.($g->model['email_id']?:'----------').'</span>';
 						// if($g->model['address'])
 							$v_detail .= '<br/><i class="fa fa-map-marker">&nbsp;</i><span class="text-muted">'.($g->model['address']?:'----------').'</span>';
-
+						$v_detail .="<br/>Meeting with: <span class='text-muted'>".$g->model['member']." ".$g->model['flat']."</span>";
 			$v_detail .= '</div>';
 
-			$g->current_row_html['visitor_detail'] = $v_detail;
-			$g->current_row_html['purpose'] = $g->model['title'].'<div class="text-muted">'.$g->model['message']."</div>";
-			$g->current_row_html['meeting_with'] = $g->model['member'].'<div class="text-muted">'.$g->model['flat']."</div>";
+			$name = $g->model['name']." <span class='fa fa-clock-o'> ".$diff."</span>".
+					"<br/> ".$g->model['title'].
+					"<br/><p class='text-muted'>".$g->model['message']."</p>".$vehical_detail;
+					;
+			// ------------------- expander html
+			$exhtml = '<div class="box collapsed-box" style="border:0px;box-shadow:none;">
+					  <div class="">
+						<div type="button" class="" data-widget="collapse" style="background-color:white;padding:0px;margin:0px;text-align:left;">';
+			$exhtml .= '<img class="pull-left" style="width:50px;height:50px;" src="'.$g->model['image'].'" />';
+			$exhtml .= '<div class="box-title pull-left" style="margin-left:5px;">'.$name.'</div> </div></div>
+						<div class="box-body" style="display: none;clear:both;">
+					    '.$v_detail.'
+					  </div>
+					</div>';
+
+			$g->current_row_html['visitor_detail'] = $exhtml;
 		});
+		$crud->setModel($model);
+		$crud->grid->addQuickSearch(['name','title','message','']);
+
 
 		$crud->grid->js(true)->find('.main-box-body')->addClass('table-responsive');
 		$fields = $model->getActualFields();
 		foreach ($fields as $key => $value) {
-			if($value == "status") continue;
 			$crud->grid->removeColumn($value);
 		}
-
-		$crud->grid->addPaginator(25);
+		$crud->grid->removeColumn('edit');
+		$crud->grid->removeColumn('delete');
+		$crud->grid->removeAttachment();
+		$crud->grid->addPaginator(10);
+		$crud->grid->addFormatter('visitor_detail','wrap');
+		$crud->add('rakesh\apartment\Controller_ACL');
 		
-		$acl = $crud->add('rakesh\apartment\Controller_ACL');
 	}
 }

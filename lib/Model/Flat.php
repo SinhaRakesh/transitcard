@@ -31,7 +31,11 @@ class Model_Flat extends \xepan\base\Model_Table{
 		// $this->addField('last_bill_generation_date');
 		
 		$this->addExpression('name_with_block')->set(function($m,$q){
-			return $q->expr('CONCAT([1]," (",[0],")")',[$m->getElement('block'),$m->getElement('name')]);
+			return $q->expr('CONCAT([1]," (",IFNULL([0]," "),")")',[$m->getElement('block'),$m->getElement('name')]);
+		});
+
+		$this->addExpression('name_with_member')->set(function($m,$q){
+			return $q->expr('CONCAT([0]," :: ",IFNULL([1]," "))',[$m->getElement('name_with_block'),$m->getElement('member')]);
 		});
 
 		$this->is([

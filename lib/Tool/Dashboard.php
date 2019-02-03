@@ -171,6 +171,10 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				$title = "Your Profile";
 				$view = $dashboard->add('rakesh\apartment\View_Profile');
 				break;
+			case 'visitoraction':
+				$title = "Visitor Request";
+				$view = $dashboard->add('rakesh\apartment\View_VisitorAction');
+				break;
 			default:
 				$menu_active = 'active_dashboard_class';
 				if($this->app->userIsApartmentAdmin){
