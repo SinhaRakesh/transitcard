@@ -14,7 +14,22 @@ class View_Profile extends \View{
 			return;
 		}
 
+		if(!$this->app->apartmentmember['image']){
+			$this->app->apartmentmember['image'] = 'websites/'.$this->app->current_website_name.'/www/dist/img/avatar04.png';
+		}
+
 		$this->setModel($this->app->apartmentmember);
+
+		if($this->app->apartmentmember['skills']){
+			$skil = explode(",", $this->app->apartmentmember['skills']);
+			$values = "";
+			$label = ['label-danger','label-success','label-info','label-danger','label-warning'];
+			foreach ($skil as $key => $value) {
+				$rand = rand(0,4);
+				$values .= '<span class="label '.$label[$rand].'">'. $value .'</span>';
+			}
+			$this->template->trySetHtml('skills_value',$values);
+		}
 
 		$this->passwordForm();
 		$this->updateProfileForm();
@@ -63,33 +78,52 @@ class View_Profile extends \View{
 		$col1 = $col->addColumn('4');
 		$col2 = $col->addColumn('8');
 		if($this->app->apartmentmember['image_id']){
-			$col1->add('View')->setElement('image')->setAttr('src',$this->app->apartmentmember['image'])->setStyle('width','200px;');
+			$col1->add('View')->setElement('image')->setAttr('src',$this->app->apartmentmember['image'])->setStyle('width','100px;');
 		}
+
 		$form = $col2->add('Form');
-		// $form->add('xepan\base\Controller_FLC')
-		// 	->showLables(true)
-		// 	->addContentSpot()
-		// 	->layout([
-		// 		'change_profile_image~&nbsp;'=>'Update Your Image~b1~12',
-		// 		'FormButtons~&nbsp;'=>'c4~12',
-		// 	]);
 		$field_upload = $form->addField('xepan\base\Upload','change_profile_image')->validate('required');
 		$field_upload->setModel('xepan/filestore/Image');
 		$field_upload->setFormatFilesTemplate('view/fileupload');
 
-		$form->addSubmit('Update Photo')->addClass('btn btn-success');
+		$form->addSubmit('Update Photo')->addClass('btn btn-primary')->setStyle('margin-top','10px');
 		
 		if($form->isSubmitted()){			
-			// $this->add('xepan\filestore\Model_Image')
-			// 	->load($this->app->apartmentmember['image_id'])
-			// 	->delete();
-
+			if(!$form['change_profile_image']) $form->displayError('change_profile_image','profile image must not be empty');
 			$this->app->apartmentmember['image_id'] = $form['change_profile_image'];
 			$this->app->apartmentmember->save()->reload();
 			$this->app->redirect($this->app->url());
 		}
 
+		$this->add('View',null,'setting_form')->setElement('hr');
+		$form_contact = $this->add('Form',null,'setting_form');
+		$form_contact->add('xepan\base\Controller_FLC')
+				->showLables(true)
+				->makePanelsCoppalsible(true)
+				->layout([
+					'first_name'=>'Update Your Profile~c1~3',
+					'last_name'=>'c2~3',
+					'organization'=>'c3~3',
+					'post'=>'c4~3',
+					'country_id~Country'=>'c5~3',
+					'state_id~State'=>'c6~3',
+					'city'=>'c7~3',
+					'address'=>'c8~3',
+					'dob'=>'c9~4',
+					'marriage_date'=>'c10~4',
+					'relation_with_head'=>'c11~4',
+					'education'=>'c12~4~ie. B.Tech in Computer science',
+					'skills'=>'c13~4~comma(,) seperated multiple values ie. ui design, reading, dancing',
+					'remark~About You'=>'c14~4',
+					'FormSubmit~&nbsp;'=>'c15~12'
+				]);
 
+		$form_contact->setModel($this->app->apartmentmember,['first_name','last_name','country_id','state_id','city','address','organization','post','dob','relation_with_head','marriage_date','education','skills','remark']);
+		$form_contact->addSubmit('Update')->addClass('btn btn-primary');
+		if($form_contact->isSubmitted()){
+			$form_contact->update();
+			$form_contact->js(null,$form_contact->js()->univ()->successMessage('Profile Updated Successfully'))->univ()->redirect($this->app->url())->execute();
+		}
 	}
 
 	function defaultTemplate(){

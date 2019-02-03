@@ -12,9 +12,9 @@ class View_Dashboard extends \View{
 		$this->template->trySet('profile_image',($this->app->apartmentmember['image']?:"websites/".$this->app->current_website_name."/www/dist/img/avatar04.png"));
 
 		if($this->app->apartment['is_flat_owner']){
-			$this->template->trySet('relation_with_owner',"Family Head");
+			// $this->template->trySet('relation_with_owner',"Family Head");
 		}else{
-			$this->template->trySet('relation_with_owner',"Family Member");
+			// $this->template->trySet('relation_with_owner',"Family Member");
 		}
 
 		// $this->template->trySet('page_title',$this->app->page_name);
