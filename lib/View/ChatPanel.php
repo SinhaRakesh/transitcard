@@ -169,9 +169,9 @@ class View_ChatPanel extends \View{
 			$send_msg['mailbox'] = "InternalMessage";
 			$send_msg['created_by_id'] = $this->contact_to_id;
 			$send_msg['related_id'] = $this->app->apartment->id;
-			// $send_msg['title'] = $f['subject'];
+			$send_msg['title'] = $this->contact_to_name." messaged you";
 			$send_msg['description'] = $message = $this->form['message'];
-			$send_msg['Type'] = 'chatmessage';
+			$send_msg['type'] = 'chatmessage';
 			$send_msg->save();
 			$send_msg->sendNotification();
 			
@@ -201,7 +201,7 @@ class View_ChatPanel extends \View{
 		$this->js('click')->univ()->redirect($this->app->url('dashboard',['mode'=>'chat']))->_selector('.backtochatmember');
 
 
-		$wshost = 'ws://127.0.0.1:8890/';
+		$wshost = $this->app->getConfig('ap-websocket-server');
 		$uu_id = $this->app->apartmentmember->getUUID();
 		$this->js(true)->_load('apwsclient')->eapartment_chatpanel(
 				[

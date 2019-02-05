@@ -21,7 +21,7 @@ $.each({
 		try {
 		      socket = new WebSocket(host);
 		      socket.onopen = function () {
-		      		console.log('ws client user register request'+uu_id);
+		      		// console.log('ws client user register request'+uu_id);
 		      		if(other.length > 0)
 		        		socket.send(JSON.stringify({'cmd':'register','uu_id':uu_id,'name':other.name}));
 		        	else
@@ -37,6 +37,7 @@ $.each({
 				}
 
 				var $data = JSON.parse(msg.data);
+				// console.log($data);
 
 				if($data.cmd == "registered"){
 					if($('.apt-chatwith').attr('data-aptchatwith') === $data.register_uu_id){
@@ -69,13 +70,21 @@ $.each({
 						'</div>';
 						$('.direct-chat-messages').append($send_html);
 						$.univ().chatScrollToTop();
+
+						// getting param is chatpanel or not
+						var results = new RegExp('[\?&]mode=([^&#]*)').exec(window.location.href);
+					    $mode = null;
+					    if (results!=null) {
+					    	$mode = decodeURI(results[1]) || 0;
+					    }
+						if($mode != 'chatpanel')
+							$.univ().notify(title, $data.message, type, desktop, undefined, sticky, icon);
 					}else{
 						$.univ().notify(title, $data.message, type, desktop, undefined, sticky, icon);
 					}
 
 				}
 
-				console.log($data);
 				if(("js" in $data) !=false){
 					eval($data.js);
 				}
@@ -104,7 +113,8 @@ $.each({
 	},
 	chatScrollToTop: function(){
 		var $messages = $('.direct-chat-messages');
-		$messages.animate({'scrollTop':$messages[0].scrollHeight});
+		if($messages.length)
+			$messages.animate({'scrollTop':$messages[0].scrollHeight});
 	}
 }, $.univ._import);
 
