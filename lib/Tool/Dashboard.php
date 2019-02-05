@@ -296,12 +296,10 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 
 	}
 
-
 	function recursiveRender(){
-		
 		// regiter login customer for live chat/push notification
 		if(isset($this->app->apartment->id)){
-			$host = "ws://127.0.0.1:8890/";
+			$host = $this->app->getConfig('ap-websocket-server');
 			$uu_id = $this->app->apartmentmember->getUUID();
 			$this->app->js(true)->_load('apwsclient')->univ()->runWebSocketClient($host,$uu_id,['name'=>$this->app->apartmentmember['name']]);
 		}

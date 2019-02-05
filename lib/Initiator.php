@@ -6,7 +6,7 @@ class Initiator extends \Controller_Addon {
     public $addon_name = 'r_apartment';
 
     function setup_admin(){
-
+        
     	if($this->app->is_admin){
             $this->routePages('rakesh_apartment');
             $this->addLocation(array('template'=>'templates','js'=>'templates/js','css'=>['templates/css','templates/js']))
@@ -32,6 +32,8 @@ class Initiator extends \Controller_Addon {
         $this->routePages('rakesh_apartment');
         $this->addLocation(array('template'=>'templates','js'=>'templates/js','css'=>['templates/css','templates/js']))
         ->setBaseURL('./shared/apps/rakesh/apartment/');
+
+        $this->app->readConfig('./shared/apps/rakesh/apartment/config-default.php');
 
         $model = $this->add('rakesh\apartment\Model_Member');
         $this->app->addHook('userCreated',[$model,'createNewMember']);
