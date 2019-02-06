@@ -38,8 +38,14 @@ class Controller_ACL extends \AbstractController {
 			}
 
 			if(!$this->canAdd()) $this->ACLObject->add_button->destroy();
-			if(!$this->canEdit()) $this->ACLObject->grid->removeColumn('edit');
-			if(!$this->canDelete()) $this->ACLObject->grid->removeColumn('delete');
+			if(!$this->canEdit()){
+				$this->ACLObject->grid->removeColumn('edit');
+				$this->ACLObject->grid->addColumn('template','edit')->setTemplate(' ');
+			}
+			if(!$this->canDelete()){
+				$this->ACLObject->grid->removeColumn('delete');
+				$this->ACLObject->grid->addColumn('template','delete')->setTemplate(' ');
+			} 
 		}
 	}
 

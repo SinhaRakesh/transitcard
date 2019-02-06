@@ -14,8 +14,6 @@ class View_Staff extends \View{
 			return;
 		}
 
-		$v = $this->add('View_Info')->addClass('callout callout-info');
-		$v->add('H4')->set('Todo Staff, we are working on it');
-
+		
 	}
 }

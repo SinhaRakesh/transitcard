@@ -98,19 +98,26 @@ class View_HelpDesk extends \View{
 			}
 		}
 
+			
 		$form = $this->add('Form');
 		$form->add('xepan\base\Controller_FLC')
 			->addContentSpot()
 			->layout([
-					'name'=>'c1~6',
-					'status'=>'c2~6',
-					'contact_no'=>'c3~6',
-					'email_id'=>'c4~6',
-					'address'=>'c5~6',
-					'narration'=>'c6~6',
-					'FormButtons~&nbsp;'=>'c7~12',
+					'name'=>'c1~4',
+					'organization'=>'c2~4',
+					'image_id~Photo'=>'c3~4',
+					'contact_no'=>'c7~4',
+					'intercom_number'=>'c8~4',
+					'email_id'=>'c9~4',
+					'status'=>'c11~4',
+					'address'=>'c12~4',
+					'narration'=>'c13~4',
+					'FormButtons~&nbsp;'=>'c15~12',
 				]);
+		// $form->layout->add('View',null,'image_id')->setElement('img')->setAttr('src',$model['image'])->setStyle('width','50px');
 		$form->setModel($model);
+		$form->getElement('image_id')
+			->setFormatFilesTemplate('view/fileupload');
 
 		$action = $_GET['action'];
 		if($action == "add"){
@@ -118,6 +125,7 @@ class View_HelpDesk extends \View{
 		}elseif($action == "edit"){
 			$this->title = "Edit Record";
 		}
+
 		$form->addSubmit('Save')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){			
@@ -178,15 +186,35 @@ class View_HelpDesk extends \View{
 		if(!$this->app->userIsApartmentAdmin){
 			$model->addCondition('status','Active');
 		}
-		$model->setOrder('name','desc');
+		$model->setOrder('name','asc');
 
-		$lister = $this->add('xepan\base\CRUD',['edit_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate']),'action_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate'])]);
+		$lister = $this->add('xepan\base\CRUD',
+				[
+					'edit_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate']),
+					'action_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate'])
+				],null,['view/helplister']);
+
 		$btn = $lister->addButton('Back')->addClass('btn btn-warning');
 		$btn->js('click',$this->js()->reload(['helpid'=>0]));
-		$lister->setModel($model,['name','contact_no','email_id','address','narration']);
 
-		
-		$lister->grid->addQuickSearch(['name','contact_no']);
+		$lister->grid->addHook('formatRow',function($g){
+			if($g->model['image_id'])
+				$g->current_row_html['profile_image'] = $g->model['image'];
+			else
+				$g->current_row_html['profile_image'] = 'websites/'.$this->app->current_website_name.'/www/dist/img/avatar04.png';
+
+			if($g->model['status'] == "Active"){
+				$g->current_row_html['status_class'] = 'label-success';
+			}else{
+				$g->current_row_html['status_class'] = 'label-danger';
+			}
+
+			$color = ['bg-yellow','bg-blue','bg-info','bg-success','bg-green','bg-red','bg-gray','bg-orange','bg-warning'];
+			$g->current_row['bg_color'] = $color[rand(0,8)];
+		});
+
+		$lister->setModel($model);
+		$lister->grid->addQuickSearch(['name','contact_no','organization','email_id','address']);
 		$lister->grid->addColumn('edit');
 		$lister->grid->addColumn('delete');
 		$lister->add('rakesh\apartment\Controller_ACL');

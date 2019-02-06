@@ -1,0 +1,83 @@
+<div class="{$class}" id="{$_name}" style="{$style}">
+  {Pannel}
+  <header class="clearfix atk-actions">
+    <div style="width:100%" class="filter-block">
+      <div class="pull-left">{$grid_heading_left}</div>
+      <div class="pull-right">{$grid_buttons} </div>
+      <div class="form-group pull-right xepan-filter-form">
+        {quick_search_wrapper}
+        <span class="form-control pull-left">
+          {$quick_search}
+          {quick_search_icon}{/}
+        </span>
+        {/}
+      </div>
+    </div>
+  </header>
+  {/Pannel}
+
+  <div class="row">
+    {$header}
+    {rows}{row}
+      <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+        <div class="box box-widget widget-user-2">
+          <div class="widget-user-header {$bg_color}">
+            <div class="widget-user-image">
+              <img class="img-circle" src="{$profile_image}" alt="User Avatar">
+            </div>
+            <!-- /.widget-user-image -->
+            <h3 class="widget-user-username">{$name}</h3>
+            <h5 class="widget-user-desc">{$organization}<br/>
+              <span class="label label-primary">{$category}</span>
+              <span class="label {$status_class}">{$status}</span>
+            </h5>
+          </div>
+          <div class="box-footer no-padding">
+            <ul class="nav nav-stacked">
+              <li>
+                <div style="padding: 8px;">
+                  <b><i class="fa fa-mobile">&nbsp;</i></b>Contact No: {$contact_no}
+                </div>
+              </li>
+              <li>
+                <div style="padding: 8px;">
+                  <b><i class="fa fa-phone">&nbsp;</i></b>Intercom No: {$intercom_number}
+                </div>
+              </li>
+              <li>
+                <div style="padding: 8px;">
+                  <b><i class="fa fa-envelope">&nbsp;</i></b>Email Id: {$email_id}
+                </div>
+              </li>
+              <li>
+                <div style="padding: 8px;height: 50px;max-height: 50px; overflow-y: scroll;">
+                  <b><i class="fa fa-map-marker">&nbsp;</i></b>Address: {$address}
+                </div>
+              </li>
+              <li>
+                <div style="padding: 8px;height: 50px;max-height: 50px; overflow-y: scroll;">
+                  <b><i class="fa fa-info">&nbsp;</i></b>Info: {$narration}
+                </div>
+              </li>
+              <li>
+                <div class="btn-group" style="padding: 8px;">
+                  {edit_wrapper}{$edit}{/edit_wrapper}
+                  {delete_wrapper}{$delete}{/delete_wrapper}
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>  
+      </div>
+    {/row}{/rows}
+  </div>
+
+  {not_found}
+    <div class="alert alert-info alert-dismissible">
+      <h4><i class="icon fa fa-info"></i> No Record Found!</h4>
+      {$not_found_message}
+    </div>
+    </div>
+  {/}
+
+</div>
