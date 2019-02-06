@@ -24,7 +24,7 @@ class View_QuickLink extends \View{
             		</div>
             		<div class="col-md-3 col-lg-3 col-sm-6 col-xs-6">
 		              <a href="?page=dashboard&mode=visitor" class="btn btn-app bg-green btn-block boxshadow" >
-		                <i class="fa fa-users"></i> Visitors
+		                <i class="fa fa-users"></i> Invite Visitors
 		              </a>
             		</div>
             		<div class="col-md-3 col-lg-3 col-sm-6 col-xs-6" >
