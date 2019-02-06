@@ -191,7 +191,8 @@ class View_HelpDesk extends \View{
 		$lister = $this->add('xepan\base\CRUD',
 				[
 					'edit_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate']),
-					'action_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate'])
+					'action_page'=>$this->app->url('dashboard',['mode'=>'helpdesk','type'=>'affiliate']),
+					'custom_template'=>true
 				],null,['view/helplister']);
 
 		$btn = $lister->addButton('Back')->addClass('btn btn-warning');
