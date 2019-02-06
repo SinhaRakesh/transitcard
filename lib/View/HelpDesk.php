@@ -218,6 +218,7 @@ class View_HelpDesk extends \View{
 		$lister->grid->addQuickSearch(['name','contact_no','organization','email_id','address']);
 		$lister->grid->addColumn('edit');
 		$lister->grid->addColumn('delete');
+		$lister->grid->addPaginator(10);
 		$lister->add('rakesh\apartment\Controller_ACL');
 
 	}
