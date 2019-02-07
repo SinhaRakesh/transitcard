@@ -3,6 +3,12 @@
 namespace rakesh\apartment;
 
 class Model_Staff extends \rakesh\apartment\Model_MemberAbstract{
+	public $status = ['Active','InActive'];
+	public $actions = [
+					'Active'=>['view','edit','delete','deactivate'],
+					'InActive'=>['view','edit','delete','activate']
+				];
+	
 	function init(){
 		parent::init();
 		

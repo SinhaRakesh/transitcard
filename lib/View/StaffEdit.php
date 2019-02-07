@@ -98,6 +98,11 @@ class View_StaffEdit extends \View{
 
 		$form->setModel($model,['staff_type','image_id','first_name','last_name','dob','organization','country_id','state_id','city','address','aadhar_card_no','aadhar_card_photo','aadhar_card_photo_id','pan_card_number','pan_card_photo_id','police_verification_number','police_verification_photo_id','status']);
 		
+		$status_field = $form->addField('DropDown','status')->setValueList(array_combine($model->status,$model->status));
+		if($model->loaded()){
+			$status_field->set($model['status']);
+		}
+
 		$form->getElement('aadhar_card_photo_id')->setFormatFilesTemplate('view/fileupload');
 		$form->getElement('pan_card_photo_id')->setFormatFilesTemplate('view/fileupload');
 		$form->getElement('police_verification_photo_id')->setFormatFilesTemplate('view/fileupload');
@@ -109,8 +114,8 @@ class View_StaffEdit extends \View{
 		$form->getElement('staff_type')->validate('required');
 		$form->getElement('first_name')->validate('required');
 		$form->getElement('last_name')->validate('required');
-		$form->getElement('login_user_name')->validate('required');
-		$form->getElement('password')->validate('required');
+		// $form->getElement('login_user_name')->validate('required');
+		// $form->getElement('password')->validate('required');
 
 		if($model->loaded()){
 			$form->getElement('login_user_name')->set($form->model['user']);
@@ -137,10 +142,8 @@ class View_StaffEdit extends \View{
 				}
 
 				$user = $this->add('xepan\base\Model_User');
-				if($model->loaded()){
-					$user->load($model['user_id']);
-				}else
-					$user->addCondition('username',$form['login_user_name']);
+				$user->addCondition('username',$form['login_user_name']);
+				$user->tryLoadAny();
 
 				$this->add('BasicAuth')
 					->usePasswordEncryption('md5')
@@ -162,12 +165,14 @@ class View_StaffEdit extends \View{
 				if($form['login_user_name']){
 					$user['password'] = $form['password'];
 					$user['username'] = $form['login_user_name'];
+					$user['status'] = $form['status'];
 					$user->save();
 
 					$form->model['user_id'] = $user->id;
 				}
 				
 				$form->model['is_flat_owner'] = false;
+				$form->model['status'] = $form['status'];
 				$form->model['relation_with_head'] = "none";
 				$form->model['aadhar_card_no'] = $form['aadhar_card_no'];
 				$form->model['police_verification_number'] = $form['police_verification_number'];
@@ -218,7 +223,7 @@ class View_StaffEdit extends \View{
 					$phone->save();
 				}
 
-				if($form['aadhar_card_photo_id']){
+				if($form['aadhar_card_photo_id'] > 0){
 					$model_attach = $this->add('xepan\base\Model_Attachment')
 						->addCondition('contact_id',$member_model->id)
 						->addCondition('title','aadhar_card_photo');
@@ -226,7 +231,7 @@ class View_StaffEdit extends \View{
 					$model_attach['file_id'] = $form['aadhar_card_photo_id'];
 					$model_attach->save();
 				}
-				if($form['pan_card_photo_id']){
+				if($form['pan_card_photo_id'] > 0){
 					$model_attach = $this->add('xepan\base\Model_Attachment')
 						->addCondition('contact_id',$member_model->id)
 						->addCondition('title','pan_card_photo');
@@ -234,7 +239,7 @@ class View_StaffEdit extends \View{
 					$model_attach['file_id'] = $form['pan_card_photo_id'];
 					$model_attach->save();
 				}
-				if($form['police_verification_photo_id']){
+				if($form['police_verification_photo_id'] > 0){
 					$model_attach = $this->add('xepan\base\Model_Attachment')
 						->addCondition('contact_id',$member_model->id)
 						->addCondition('title','police_verification_photo');

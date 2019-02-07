@@ -63,9 +63,9 @@ class Model_MemberAbstract extends \xepan\commerce\Model_Customer{
 		$model_j->addField('pan_card_number');
 		$model_j->addField('police_verification_number');
 		
-		$model_j->addField('aadhar_card_photo_id');
-		$model_j->addField('pan_card_photo_id');
-		$model_j->addField('police_verification_photo_id');
+		$model_j->addField('aadhar_card_photo_id')->type('int')->defaultValue(0);
+		$model_j->addField('pan_card_photo_id')->type('int')->defaultValue(0);
+		$model_j->addField('police_verification_photo_id')->type('int')->defaultValue(0);
 
 		$this->addHook('beforeDelete',$this);
 		$this->addHook('beforeSave',$this);
