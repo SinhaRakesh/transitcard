@@ -49,7 +49,9 @@ class View_StaffEdit extends \View{
 					'mobile_no_2'=>'c22~3',
 					'email_id_1'=>'c23~3',
 					'email_id_2'=>'c24~3',
-					'organization~Organization\ Business'=>'c31~4',
+					'organization~Organization\ Business'=>'c31~3',
+					'status'=>'c32~3',
+
 					'login_user_name'=>'Login Credential~b1~6~Please enter valid Email Id or Mobile No',
 					'password'=>'b2~6',
 					'image_id~Profile Photo'=>'Documents~d1~3',
@@ -94,7 +96,7 @@ class View_StaffEdit extends \View{
 		$police_card_photo->setModel($police_model);
 
 
-		$form->setModel($model,['staff_type','image_id','first_name','last_name','dob','organization','country_id','state_id','city','address','aadhar_card_no','aadhar_card_photo','aadhar_card_photo_id','pan_card_number','pan_card_photo_id','police_verification_number','police_verification_photo_id']);
+		$form->setModel($model,['staff_type','image_id','first_name','last_name','dob','organization','country_id','state_id','city','address','aadhar_card_no','aadhar_card_photo','aadhar_card_photo_id','pan_card_number','pan_card_photo_id','police_verification_number','police_verification_photo_id','status']);
 		
 		$form->getElement('aadhar_card_photo_id')->setFormatFilesTemplate('view/fileupload');
 		$form->getElement('pan_card_photo_id')->setFormatFilesTemplate('view/fileupload');
@@ -157,11 +159,14 @@ class View_StaffEdit extends \View{
 			try{
 				$this->api->db->beginTransaction();
 
-				$user['password'] = $form['password'];
-				$user['username'] = $form['login_user_name'];
-				$user->save();
+				if($form['login_user_name']){
+					$user['password'] = $form['password'];
+					$user['username'] = $form['login_user_name'];
+					$user->save();
+
+					$form->model['user_id'] = $user->id;
+				}
 				
-				$form->model['user_id'] = $user->id;
 				$form->model['is_flat_owner'] = false;
 				$form->model['relation_with_head'] = "none";
 				$form->model['aadhar_card_no'] = $form['aadhar_card_no'];
@@ -249,13 +254,6 @@ class View_StaffEdit extends \View{
 
 			$this->app->redirect($this->app->url('dashboard',['mode'=>'staff']));
 
-		}
-
-		if(!$model->loaded()){
-			$testmodel = $this->add('xepan\base\Model_Attachment');
-			$testmodel->load(3);
-			$test = $this->add('Form');
-			$test->setModel($testmodel);
 		}
 
 	}
