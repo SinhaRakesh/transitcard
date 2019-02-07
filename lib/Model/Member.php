@@ -8,6 +8,8 @@ class Model_Member extends \rakesh\apartment\Model_MemberAbstract{
 		parent::init();
 
 		$this->addCondition([['is_group',false],['is_group',null]]);
+		$this->addCondition([['is_staff',false],['is_staff',null]]);
+
 	}
 
 	function getPermittedGroups(){

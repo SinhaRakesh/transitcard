@@ -2,10 +2,10 @@
 
 namespace rakesh\apartment;
 
-class View_MemberEdit extends \View{
+class View_StaffEdit extends \View{
 
 	public $options = [];
-	public $title = "Flat Members";
+	public $title = "Staff";
 	function init(){
 		parent::init();
 		
@@ -13,45 +13,15 @@ class View_MemberEdit extends \View{
 			$this->add('View_Error')->set('first update apartment data');
 			return;
 		}
+		
 		$action = $this->app->stickyGET("action");
 		$contact_id = $this->app->stickyGET("contact_id");
 
-		$model = $this->add('rakesh\apartment\Model_Member');
+		$model = $this->add('rakesh\apartment\Model_Staff');
 		$model->addCondition('apartment_id',@$this->app->apartment->id);
-		// if($this->app->userIsApartmentAdmin){
-		// 	$model->addCondition([['is_flat_owner',true],['is_apartment_admin',true]]);
-		// }
-		$model->addExpression('email_id_1')->set(function($m,$q){
-			$email = $m->add('xepan\base\Model_Contact_Email',['table_alias'=>'email1']);
-			$email->addCondition("contact_id",$m->getElement('customer_id'));
-			$email->addCondition("head","Official");
-			$email->setLimit(1);
-			return $q->expr('[0]',[$email->fieldQuery('value')]);
-		});
-		$model->addExpression('email_id_2')->set(function($m,$q){
-			$email = $m->add('xepan\base\Model_Contact_Email',['table_alias'=>'email2']);
-			$email->addCondition("contact_id",$m->getElement('customer_id'));
-			$email->addCondition("head","Personal");
-			$email->setLimit(1);
-			return $q->expr('[0]',[$email->fieldQuery('value')]);
-		});
-		$model->addExpression('mobile_no_1')->set(function($m,$q){
-			$phone = $m->add('xepan\base\Model_Contact_Phone',['table_alias'=>'phone1']);
-			$phone->addCondition("contact_id",$m->getElement('customer_id'));
-			$phone->addCondition("head","Official");
-			$phone->setLimit(1);
-			return $q->expr('[0]',[$phone->fieldQuery('value')]);
-		});
-		$model->addExpression('mobile_no_2')->set(function($m,$q){
-			$phone = $m->add('xepan\base\Model_Contact_Phone',['table_alias'=>'phone2']);
-			$phone->addCondition("contact_id",$m->getElement('customer_id'));
-			$phone->addCondition("head","Personal");
-			$phone->setLimit(1);
-			return $q->expr('[0]',[$phone->fieldQuery('value')]);
-		});
 
 		if($action == "edit" && $contact_id){
-			$this->title = "Edit Member Details";
+			$this->title = "Edit Staff Details";
 			$model->addCondition('id',$contact_id);
 			$model->tryLoadAny();
 
@@ -59,34 +29,37 @@ class View_MemberEdit extends \View{
 				$this->add('View_Error')->set('you are not authorize, 1008');
 				return;
 			}
-
 		}else{
-			$this->title = "Add Flat Owner";
+			$this->title = "Add Staff";
 		}
 
 		$form = $this->add('Form');
 		$form->add('xepan\base\Controller_FLC')
 			->addContentSpot()
 			->layout([
-					'first_name'=>'Member Section~c1~6',
-					'last_name'=>'c2~6',
-					'country_id~Country'=>'c3~3',
-					'state_id~State'=>'c4~3',
-					'city'=>'c5~3',
-					'address'=>'c6~3',
-					'mobile_no_1'=>'c7~3',
-					'mobile_no_2'=>'c8~3',
-					'email_id_1'=>'c9~3',
-					'email_id_2'=>'c10~3',
-					'image_id~Profile Picture'=>'a1~12',
-					'organization~Organization\Business'=>'c14~6',
-					'post'=>'c15~6',
-					'relation_with_head'=>'c12~4',
-					'dob'=>'c11~4',
-					'marriage_date'=>'c13~4',
-					'login_user_name'=>'Login Credential~b1~6~Please enter member valid Email Id or Mobile No',
+					'staff_type'=>'Staff Section~c1~3',
+					'first_name'=>'c2~3',
+					'last_name'=>'c3~3',
+					'dob'=>'c4~3',
+					'country_id~Country'=>'c11~3',
+					'state_id~State'=>'c12~3',
+					'city'=>'c13~3',
+					'address'=>'c14~3',
+					'mobile_no_1'=>'c21~3',
+					'mobile_no_2'=>'c22~3',
+					'email_id_1'=>'c23~3',
+					'email_id_2'=>'c24~3',
+					'organization~Organization\ Business'=>'c31~4',
+					'login_user_name'=>'Login Credential~b1~6~Please enter valid Email Id or Mobile No',
 					'password'=>'b2~6',
-					'flat'=>'Flat Association~b3~12',
+					'image_id~Profile Photo'=>'Documents~d1~3',
+					'aadhar_card_no'=>'d2~3',
+					'aadhar_card_photo_id'=>'d2~3',
+					'pan_card_number'=>'d3~3',
+					'pan_card_photo_id'=>'d3~3',
+					'police_verification_number'=>'d4~3',
+					'police_verification_photo_id'=>'d4~3',
+					'FormButtons~&nbsp;'=>'e1~12',
 				]);
 
 		$form->addField('login_user_name');
@@ -96,11 +69,42 @@ class View_MemberEdit extends \View{
 		$form->addField('email_id_1')->set($model['email_id_1']);
 		$form->addField('email_id_2')->set($model['email_id_2']);
 
-		$flat_model = $this->add('rakesh\apartment\Model_Flat')->addCondition('apartment_id',@$this->app->apartment->id);
-		$flat_field = $form->addField('xepan\base\Multiselect','flat');
-		$flat_field->setModel($flat_model);
-		$flat_field->setEmptyText('Please Select Associated Flat');
-		$form->setModel($model,['first_name','last_name','dob','relation_with_head','marriage_date','organization','post','country_id','state_id','city','address','image_id','image']);
+		// aadhar card
+		$aadhar_model = $this->add('xepan\filestore\Model_File',['policy_add_new_type'=>true]);
+		if($model->loaded() && $model['aadhar_card_photo_id'] > 0){
+			$aadhar_model->tryLoad($model['aadhar_card_photo_id']);
+		}
+		$aadhar_card_photo = $model->getElement('aadhar_card_photo_id')->display(['form'=>'xepan\base\Upload']);
+		$aadhar_card_photo->setModel($aadhar_model);
+
+		// pancard card
+		$pan_model = $this->add('xepan\filestore\Model_File',['policy_add_new_type'=>true]);
+		if($model->loaded() && $model['pan_card_photo_id'] > 0){
+			$pan_model->tryLoad($model['pan_card_photo_id']);
+		}
+		$pan_card_photo = $model->getElement('pan_card_photo_id')->display(['form'=>'xepan\base\Upload']);
+		$pan_card_photo->setModel($pan_model);
+
+		// policecard card
+		$police_model = $this->add('xepan\filestore\Model_File',['policy_add_new_type'=>true]);
+		if($model->loaded() && $model['police_verification_photo_id'] > 0){
+			$police_model->tryLoad($model['police_verification_photo_id']);
+		}
+		$police_card_photo = $model->getElement('police_verification_photo_id')->display(['form'=>'xepan\base\Upload']);
+		$police_card_photo->setModel($police_model);
+
+
+		$form->setModel($model,['staff_type','image_id','first_name','last_name','dob','organization','country_id','state_id','city','address','aadhar_card_no','aadhar_card_photo','aadhar_card_photo_id','pan_card_number','pan_card_photo_id','police_verification_number','police_verification_photo_id']);
+		
+		$form->getElement('aadhar_card_photo_id')->setFormatFilesTemplate('view/fileupload');
+		$form->getElement('pan_card_photo_id')->setFormatFilesTemplate('view/fileupload');
+		$form->getElement('police_verification_photo_id')->setFormatFilesTemplate('view/fileupload');
+		$img_field = $form->getElement('image_id');
+		$img_field->getModel()->check_db_inTransaction_at_delete = false;
+		$img_field->setFormatFilesTemplate('view/fileupload');
+
+		// validation required
+		$form->getElement('staff_type')->validate('required');
 		$form->getElement('first_name')->validate('required');
 		$form->getElement('last_name')->validate('required');
 		$form->getElement('login_user_name')->validate('required');
@@ -109,13 +113,12 @@ class View_MemberEdit extends \View{
 		if($model->loaded()){
 			$form->getElement('login_user_name')->set($form->model['user']);
 			$form->getElement('password')->set($form->model['login_password']);
-			$form->getElement('flat')->set(explode(",",$form->model['flat']));
 		}
 
 		$form->addSubmit('Save')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){
-
+			
 			if($form['login_user_name'] && !$form['password']) $form->displayError('password','login password must not be empty');
 
 			// condition 1 : check login user name is already exit or not
@@ -150,14 +153,6 @@ class View_MemberEdit extends \View{
 					}
 			}
 
-			// condition 2 : check flat is already associated with other or not
-			if($form['flat']){
-				$flat_model = $this->add('rakesh\apartment\Model_Flat');
-				$result = $flat_model->checkMemberAssociation($form['flat'],$model->id);
-
-				if(!$result['result'])
-					$form->displayError('flat',"Flat Already Associated with other Member are: ".trim($result['message'],", ") );
-			}
 
 			try{
 				$this->api->db->beginTransaction();
@@ -167,11 +162,14 @@ class View_MemberEdit extends \View{
 				$user->save();
 				
 				$form->model['user_id'] = $user->id;
-				$form->model['is_flat_owner'] = true;
+				$form->model['is_flat_owner'] = false;
+				$form->model['relation_with_head'] = "none";
+				$form->model['aadhar_card_no'] = $form['aadhar_card_no'];
+				$form->model['police_verification_number'] = $form['police_verification_number'];
+				$form->model['pan_card_number'] = $form['pan_card_number'];
+
+				// $form->model['image_id'] = $form['image_id']?:0;
 				$form->save();
-				if($form['flat']){
-					$flat_model->associateWith($form['flat'],$form->model->id);
-				}
 				
 				$member_model = $form->model;
 				$member_model->reload();
@@ -215,6 +213,31 @@ class View_MemberEdit extends \View{
 					$phone->save();
 				}
 
+				if($form['aadhar_card_photo_id']){
+					$model_attach = $this->add('xepan\base\Model_Attachment')
+						->addCondition('contact_id',$member_model->id)
+						->addCondition('title','aadhar_card_photo');
+					$model_attach->tryLoadAny();
+					$model_attach['file_id'] = $form['aadhar_card_photo_id'];
+					$model_attach->save();
+				}
+				if($form['pan_card_photo_id']){
+					$model_attach = $this->add('xepan\base\Model_Attachment')
+						->addCondition('contact_id',$member_model->id)
+						->addCondition('title','pan_card_photo');
+					$model_attach->tryLoadAny();
+					$model_attach['file_id'] = $form['pan_card_photo_id'];
+					$model_attach->save();
+				}
+				if($form['police_verification_photo_id']){
+					$model_attach = $this->add('xepan\base\Model_Attachment')
+						->addCondition('contact_id',$member_model->id)
+						->addCondition('title','police_verification_photo');
+					$model_attach->tryLoadAny();
+					$model_attach['file_id'] = $form['police_verification_photo_id'];
+					$model_attach->save();
+				}
+
 				// contact no association
 				$this->api->db->commit();
 			}catch(\Exception_StopInit $e){
@@ -224,10 +247,16 @@ class View_MemberEdit extends \View{
 				throw $e;
 			}
 
-			$this->app->redirect($this->app->url('dashboard',['mode'=>'member']));
+			$this->app->redirect($this->app->url('dashboard',['mode'=>'staff']));
 
 		}
 
-			
+		if(!$model->loaded()){
+			$testmodel = $this->add('xepan\base\Model_Attachment');
+			$testmodel->load(3);
+			$test = $this->add('Form');
+			$test->setModel($testmodel);
+		}
+
 	}
 }

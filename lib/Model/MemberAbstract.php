@@ -57,8 +57,16 @@ class Model_MemberAbstract extends \xepan\commerce\Model_Customer{
 		$model_j->addField('skills')->type('text');
 		$this->getElement('remark')->caption('About You');
 
-		// $model_j->addField('mobile_no');
-		// $model_j->addField('email_id');
+		$model_j->addField('is_staff')->type('boolean')->defaultValue(false);
+		$model_j->addField('staff_type');
+		$model_j->addField('aadhar_card_no');
+		$model_j->addField('pan_card_number');
+		$model_j->addField('police_verification_number');
+		
+		$model_j->addField('aadhar_card_photo_id');
+		$model_j->addField('pan_card_photo_id');
+		$model_j->addField('police_verification_photo_id');
+
 		$this->addHook('beforeDelete',$this);
 		$this->addHook('beforeSave',$this);
 	}

@@ -107,8 +107,13 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 				break;
 			case 'staff':
 				$menu_active = 'active_staff_class';
-				$title = "staff Management";
+				$title = "Staff Management";
 				$view = $dashboard->add('rakesh\apartment\View_Staff');
+				break;
+			case 'staffedit':
+				$menu_active = 'active_staff_class';
+				$title = "Update Staff";
+				$view = $dashboard->add('rakesh\apartment\View_StaffEdit');
 				break;
 			case 'helpdesk':
 				$menu_active = 'active_helpdesk_class';
@@ -233,7 +238,7 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	          </a>
 	        </li>
 
-	        <li class="{$active_staff_class}">
+	        <li class="{$active_expenses_class}">
 	          <a href="?page=dashboard&mode=expenses">
 	            <i class="fa fa-money text-red"></i> <span>Expenses</span>
 	            <span class="pull-right-container">

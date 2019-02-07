@@ -21,8 +21,9 @@ class View_Master extends \View{
 							'flat_size'=>'Text',
 							'flat_status'=>'Text',
 							'complain_category'=>'Text',
-							'expenses_category'=>'Text'
-							],
+							'expenses_category'=>'Text',
+							'staff_type'=>'Text'
+						],
 					'config_key'=>'Apartment_Config',
 					'application'=>'rakesh\apartment'
 			]);
@@ -36,6 +37,7 @@ class View_Master extends \View{
 		$complain_tab = $tabs->addTab('Complain Category');
 		$complain_department_tab = $tabs->addTab('Complain Department');
 		$expenses_category = $tabs->addTab('Expenses Category');
+		$staff_type = $tabs->addTab('Staff Type');
 
 
 		// flat size
@@ -109,6 +111,20 @@ class View_Master extends \View{
 			$master_model['expenses_category'] = $form_ex['expenses_category'];
 			$master_model->save();
 			$form_size->js(null,$form_ex->js()->reload())->univ()->successMessage('saved successfully ')->execute();
+		}
+
+		// staff type
+		$form_stype = $staff_type->add('Form');
+		$field_stype = $form_stype->addField('Text','staff_type')
+			->setFieldHint('Comma(,) seperated values i.e. Security Guard, Gatekipper, Servent etc.')
+				->set($master_model['staff_type']);
+		if(!$master_model['staff_type']) 
+			$field_stype->set('Security Guard, Gatekipper, Servent');
+		$form_stype->addSubmit('Save');
+		if($form_stype->isSubmitted()){
+			$master_model['staff_type'] = $form_stype['staff_type'];
+			$master_model->save();
+			$form_stype->js(null,$form_stype->js()->reload())->univ()->successMessage('saved successfully ')->execute();
 		}
 
 	}
