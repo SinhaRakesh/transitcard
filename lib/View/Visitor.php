@@ -25,7 +25,9 @@ class View_Visitor extends \View{
 				'action_page'=>$this->app->url('dashboard',['mode'=>'visitoredit'])]
 			);
 
-		if(!$this->app->userIsApartmentAdmin){
+		if($this->app->userIsStaff){
+			$model->addCondition('created_by_id',$this->app->apartmentmember['id']);
+		}elseif(!$this->app->userIsApartmentAdmin){
 			$model->addCondition([
 					['flat_id',$this->app->apartmentmember['flat_id']],
 					['member_id',$this->app->apartmentmember['id']],
