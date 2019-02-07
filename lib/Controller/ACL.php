@@ -30,6 +30,8 @@ class Controller_ACL extends \AbstractController {
 
 			if($this->app->userIsApartmentAdmin){
 				$this->acl_array = $acl_array['admin'];
+			}elseif($this->app->userIsStaff){
+				$this->acl_array = $acl_array['staff'];
 			}else
 				$this->acl_array = $acl_array['member'];
 
@@ -52,6 +54,28 @@ class Controller_ACL extends \AbstractController {
 					$this->ACLObject->grid->addColumn('template','delete')->setTemplate(' ');
 				}
 			} 
+		}else{
+			if($this->app->userIsApartmentAdmin) return;
+			
+			if($this->hasAction()){
+				$this->ACLObject->getModel()->actions = $this->acl_array['actions'];
+			}
+
+			if(!$this->canAdd()) $this->ACLObject->add_button->destroy();
+			if(!$this->canEdit()){
+				$this->ACLObject->grid->row_edit = false;
+				$this->ACLObject->grid->removeColumn('edit');
+				if(isset($this->ACLObject->custom_template)){
+					$this->ACLObject->grid->addColumn('template','edit')->setTemplate(' ');
+				}
+			}
+			if(!$this->canDelete()){
+				$this->ACLObject->grid->row_delete = false;
+				$this->ACLObject->grid->removeColumn('delete');
+				if(isset($this->ACLObject->custom_template)){
+					$this->ACLObject->grid->addColumn('template','delete')->setTemplate(' ');
+				}
+			} 	
 		}
 	}
 
@@ -62,14 +86,17 @@ class Controller_ACL extends \AbstractController {
 
 	function canAdd(){
 		if(isset($this->acl_array['add'])) return $this->acl_array['add'];
+		return false;
 	}
 
 	function canEdit(){
 		if(isset($this->acl_array['edit'])) return $this->acl_array['edit'];
+		return false;
 	}
 
 	function canDelete(){
 		if(isset($this->acl_array['delete'])) return $this->acl_array['delete'];
+		return false;
 	}
 
 	/*
@@ -82,15 +109,18 @@ class Controller_ACL extends \AbstractController {
 		$this->acl_value = [
 					'rakesh\apartment\Model_Block'=>[
 									'member'=>['edit'=>false,'delete'=>false,'view'=>false,'add'=>false],
-									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
+									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true],
+									'staff'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false]
 								],
 					'rakesh\apartment\Model_Flat'=>[
 									'member'=>['edit'=>false,'delete'=>false,'view'=>false,'add'=>false],
-									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
+									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true],
+									'staff'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false]
 								],
 					'rakesh\apartment\Model_Member'=>[
 									'member'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false],
-									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
+									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true],
+									'staff'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false]
 								],
 					'rakesh\apartment\Model_Visitor'=>[
 									'member'=>['edit'=>true,'delete'=>false,'view'=>true,'add'=>false,
@@ -99,18 +129,26 @@ class Controller_ACL extends \AbstractController {
 												'Permitted'=>['view'],
 												'Denied'=>['view']
 											]
-									],
+										],
 									'admin'=>['edit'=>true,'delete'=>false,'view'=>true,'add'=>true,
 										'actions'=>[
-														'Requested'=>['view','edit'],
-														'Permitted'=>['view'],
-														'Denied'=>['view','delete']
-													]
+													'Requested'=>['view','edit'],
+													'Permitted'=>['view'],
+													'Denied'=>['view','delete']
 												]
+										],
+									'staff'=>['edit'=>true,'delete'=>false,'view'=>true,'add'=>true,
+											'actions'=>[
+													'Requested'=>['view','edit'],
+													'Permitted'=>['view'],
+													'Denied'=>['view']
+												]
+										],
 								],
 					'rakesh\apartment\Model_Category'=>[
 									'member'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false],
-									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true]
+									'admin'=>['edit'=>true,'delete'=>true,'view'=>true,'add'=>true],
+									'admin'=>['edit'=>false,'delete'=>false,'view'=>false,'add'=>false]
 								],
 					'rakesh\apartment\Model_Affiliate'=>[
 									'member'=>['edit'=>false,'delete'=>false,'view'=>true,'add'=>false],

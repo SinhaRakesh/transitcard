@@ -222,7 +222,10 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	            <i class="fa fa-cog text-red"></i> <span>Visitors</span>
 	          </a>
 	        </li>
-	        <li class="{$active_invoice_class}">
+	        ';
+
+	    if(!$this->app->userIsStaff){
+	    	$menu_html .= '<li class="{$active_invoice_class}">
 	          <a href="?page=dashboard&mode=invoices">
 	            <i class="fa fa-money text-yellow"></i> <span>Maintenance Bill</span>
 	          </a>
@@ -245,14 +248,14 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	              <small class="label pull-right bg-yellow"></small>
 	            </span>
 	          </a>
-	        </li>
+	        </li>';
+	    }
 
-	        <li class="{$active_helpdesk_class}">
+	    $menu_html .= '<li class="{$active_helpdesk_class}">
 	          <a href="?page=dashboard&mode=helpdesk">
 	            <i class="fa fa-headphones text-green"></i> <span>Help Desk</span>
 	          </a>
 	        </li>
-
 	        <li class="{$active_staff_class}">
 	          <a href="?page=dashboard&mode=staff">
 	            <i class="fa fa-cog text-red"></i> <span>Staff</span>
@@ -260,9 +263,8 @@ class Tool_Dashboard extends \xepan\cms\View_Tool{
 	              <small class="label pull-right bg-yellow"></small>
 	            </span>
 	          </a>
-	        </li>
-	    ';
-
+	        </li>';
+	    
 	    if($this->app->userIsApartmentAdmin){
 		    $menu_html .= '<li class="{$active_master}">
 				<a href="?page=dashboard&mode=master">

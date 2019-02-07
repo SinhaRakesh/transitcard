@@ -14,7 +14,7 @@ class View_QuickLink extends \View{
 			return;
 		}
 		
-		$this->add('View')->setHtml('<div class="box">
+		$html = '<div class="box">
             <div class="box-body">
             	<div class="row no-margin no-padding">
             		<div class="col-md-3 col-lg-3 col-sm-6 col-xs-6">
@@ -31,15 +31,21 @@ class View_QuickLink extends \View{
 			            <a href="?page=dashboard&mode=helpdesk" class="btn btn-app bg-purple btn-block">
 			            	<i class="glyphicon glyphicon-headphones"></i> Help Desk
 			            </a>
-            		</div>
-            		<div class="col-md-3 col-lg-3 col-sm-6 col-xs-6">
+            		</div>';
+            		
+		if(!$this->app->userIsStaff){
+			$html .= '<div class="col-md-3 col-lg-3 col-sm-6 col-xs-6">
 		              <a href="?page=dashboard&mode=chat" class="btn btn-app bg-maroon btn-block" >
 		                <i class="fa fa-comments-o"></i> Communication
 		              </a>
-            		</div>
-            	</div>
+            		</div>';
+		}
+		
+        $html .= '</div>
             </div>
-          </div>');
+          </div>';
+
+		$this->add('View')->setHtml($html);
 		
 	}
 }

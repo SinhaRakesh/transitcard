@@ -38,19 +38,34 @@ class Initiator extends \Controller_Addon {
         $model = $this->add('rakesh\apartment\Model_Member');
         $this->app->addHook('userCreated',[$model,'createNewMember']);
 
-        $this->app->apartmentmember = $memeber_model = $this->add('rakesh\apartment\Model_Member');
-
-        if($memeber_model->loadLoggedIn()){
-            if(!($this->app->apartment = $this->app->recall($this->app->auth->model->id.'_apartment',false)) AND $memeber_model['apartment_id']){
+        $this->app->apartmentmember = $member_model = $this->add('rakesh\apartment\Model_Member');
+        if($member_model->loadLoggedIn()){
+            if(!($this->app->apartment = $this->app->recall($this->app->auth->model->id.'_apartment',false)) AND $member_model['apartment_id']){
                 $this->app->apartment = $this->app->apartmentmember->ref('apartment_id');
                 $this->app->memorize($this->app->auth->model->id.'_apartment', $this->app->apartment);
             }
 
-            if($memeber_model['is_apartment_admin']){
+            if($member_model['is_apartment_admin']){
                 $this->app->userIsApartmentAdmin = true;
             }else
                 $this->app->userIsApartmentAdmin = false;
+
+            if($member_model['is_staff']){
+                $this->app->userIsStaff = true;
+            }else
+                $this->app->userIsStaff = false;
+        }else{
+            $this->app->apartmentmember = $member_model = $this->add('rakesh\apartment\Model_Staff');
+            if($member_model->loadLoggedIn()){
+                if(!($this->app->apartment = $this->app->recall($this->app->auth->model->id.'_apartment',false)) AND $member_model['apartment_id']){
+                    $this->app->apartment = $this->app->apartmentmember->ref('apartment_id');
+                    $this->app->memorize($this->app->auth->model->id.'_apartment', $this->app->apartment);
+                }
+                $this->app->userIsApartmentAdmin = false;
+                $this->app->userIsStaff = true;
+            }
         }
+
 
         $this->app->apartment = $this->app->recall($this->app->auth->model->id.'_apartment');
         
